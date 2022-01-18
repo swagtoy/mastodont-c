@@ -13,11 +13,12 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_H
-#define MASTODONT_H
-#include "mastodont_types.h"
+#ifndef MASTODONT_TYPES_H
+#define MASTODONT_TYPES_H
 
-int mastodont_init(mastodont_t* data);
-int mastodont_free(mastodont_t* data);
+typedef struct mastodont {
+    int https;
+    char* url;
+} mastodont_t;
 
-#endif /* MASTODONT_H */
+#endif /* MASTODONT_TYPES_H */
