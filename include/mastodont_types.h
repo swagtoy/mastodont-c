@@ -17,7 +17,6 @@
 #define MASTODONT_TYPES_H
 
 typedef struct mastodont {
-    int https;
     char* url;
 } mastodont_t;
 
