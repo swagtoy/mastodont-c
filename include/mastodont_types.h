@@ -15,9 +15,18 @@
 
 #ifndef MASTODONT_TYPES_H
 #define MASTODONT_TYPES_H
+#include <curl/curl.h>
+
+#define MSTDNT_URLSIZE 2048
 
 typedef struct mastodont {
     char* url;
+    CURL* curl;
 } mastodont_t;
+
+struct mstdnt_response {
+    char* data;
+    size_t size;
+};
 
 #endif /* MASTODONT_TYPES_H */

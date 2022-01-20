@@ -13,18 +13,22 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_H
-#define MASTODONT_H
+#ifndef MASTODONT_TIMELINE_H
+#define MASTODONT_TIMELINE_H
 #include <mastodont_types.h>
-#include <mastodont_timeline.h>
 
-/* Functions required form curl */
-void mastodont_global_curl_init();
-void mastodont_global_curl_cleanup();
+struct mstdnt_timeline_public_args {
+    int local;
+    int remote;
+    int only_media;
+    char* max_id;
+    char* since_id;
+    char* min_id;
+    int limit;
+};
 
-int mastodont_init(mastodont_t* data);
-void mastodont_free(mastodont_t* data);
+int mastodont_timeline_public(mastodont_t* data,
+                              struct mstdnt_timeline_public_args* args,
+                              struct mstdnt_response* response);
 
-void mastodont_response_cleanup(struct mstdnt_response* response);
-
-#endif /* MASTODONT_H */
+#endif /* MASTODONT_TIMELINE_H */
