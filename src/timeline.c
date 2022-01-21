@@ -40,8 +40,13 @@ int mastodont_timeline_public(mastodont_t* data,
 
     res = mastodont_fetch_curl(data, "/api/v1/timelines/public", &results);
 
-    printf("Size of data: %zd\n", results.size);
+    cJSON* parse = cJSON_Parse(results.response);
 
+    
+
+    /* Cleanup */
+free:
+    cJSON_Delete(parse);
     mastodont_fetch_results_cleanup(&results);
     
     return res;

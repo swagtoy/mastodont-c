@@ -24,6 +24,7 @@ typedef struct mastodont {
     CURL* curl;
 } mastodont_t;
 
+/* FIXME */
 struct mstdnt_response {
     char* data;
     size_t size;

@@ -13,6 +13,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef MASTODONT_FETCH_H
+#define MASTODONT_FETCH_H
 #include <cjson/cJSON.h>
 #include <mastodont_types.h>
 
@@ -26,4 +28,5 @@ void mastodont_fetch_results_cleanup(struct mastodont_fetch_results* res);
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* url,
                          struct mastodont_fetch_results* results);
-/*cJSON* mastodont_call_json();*/
+
+#endif /* MASTODONT_FETCH_H */
