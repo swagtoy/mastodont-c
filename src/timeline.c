@@ -14,6 +14,8 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
+#include "mastodont_fetch.h"
 #include "mastodont_timeline.h"
 
 int mastodont_timeline_public(mastodont_t* data,
@@ -21,8 +23,7 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_response* response)
 {
     int res;
-    char url[MSTDNT_URLSIZE];
-    strncpy(url, data->url, MSTDNT_URLSIZE-1);
+    struct mastodont_fetch_results results = { 0 };
     /* Default args */
     struct mstdnt_timeline_public_args _args;
     if (args == NULL)
@@ -37,12 +38,11 @@ int mastodont_timeline_public(mastodont_t* data,
         args = &_args;
     }
 
-    /* Copy string */
-    strncat(url, "/api/v1/timelines/public", MSTDNT_URLSIZE-1);
-    curl_easy_setopt(data->curl, CURLOPT_URL, url);
-    
-    res = curl_easy_perform(data->curl);
+    res = mastodont_fetch_curl(data, "/api/v1/timelines/public", &results);
 
-    curl_easy_cleanup(data->curl);
+    printf("Size of data: %zd\n", results.size);
+
+    mastodont_fetch_results_cleanup(&results);
+    
     return res;
 }
