@@ -42,7 +42,7 @@ int mastodont_timeline_public(mastodont_t* data,
 
     cJSON* parse = cJSON_Parse(results.response);
 
-    
+    /* Compile pretty object and set it
 
     /* Cleanup */
 free:
