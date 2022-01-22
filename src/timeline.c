@@ -23,7 +23,7 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_response* response)
 {
     int res;
-    struct mastodont_fetch_results results = { 0 };
+    struct mstdnt_fetch_results results = { 0 };
     /* Default args */
     struct mstdnt_timeline_public_args _args;
     if (args == NULL)
@@ -41,8 +41,11 @@ int mastodont_timeline_public(mastodont_t* data,
     res = mastodont_fetch_curl(data, "/api/v1/timelines/public", &results);
 
     cJSON* parse = cJSON_Parse(results.response);
-
-    /* Compile pretty object and set it
+    if (!parse)
+    {
+        
+    }
+    
 
     /* Cleanup */
 free:

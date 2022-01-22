@@ -13,22 +13,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_TYPES_H
-#define MASTODONT_TYPES_H
-#include <curl/curl.h>
+#ifndef MASTODONT_APPLICATION
+#define MASTODONT_APPLICATION
 
-#define MSTDNT_URLSIZE 2048
-typedef unsigned char mstdnt_bool;
+/* Status: Complete */
 
-typedef struct mastodont {
-    char* url;
-    CURL* curl;
-} mastodont_t;
-
-/* FIXME */
-struct mstdnt_response {
-    char* data;
-    size_t size;
+struct mstdnt_application
+{
+    char* name;
+    char* website;
+    char* vapid_key;
 };
 
-#endif /* MASTODONT_TYPES_H */
+#endif /* MASTODONT_ACCOUNT */

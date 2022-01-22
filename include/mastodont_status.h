@@ -1,0 +1,76 @@
+/*
+ * This program is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option) any
+ * later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#ifndef MASTODONT_STATUS
+#define MASTODONT_STATUS
+#include "mastodont_types.h"
+#include "mastodont_attachment.h"
+#include "mastodont_application.h"
+#include "mastodont_mention.h"
+
+/* Status: Complete, not implemented */
+
+enum mstdnt_status_visibility
+{
+    MSTDNT_VISIBILITY_PUBLIC,
+    MSTDNT_VISIBILITY_UNLISTED,
+    MSTDNT_VISIBILITY_PRIVATE,
+    MSTDNT_VISIBILITY_DIRECT,
+    MSTDNT_VISIBILITY_LIST,
+    MSTDNT_VISIBILITY_LOCAL
+};
+
+struct mstdnt_status
+{
+    char* id;
+    char* uri;
+    char* created_at;
+    struct mstdnt_account account;
+    char* content;
+    enum mstdnt_status_visibility visibility;
+    mstdnt_bool sensitive;
+    char* spoiler_text;
+    mstdnt_attachment media_attachments[];
+    struct mstdnt_application application;
+
+    /* Rendering attributes */
+    struct mstdnt_mention mentions[];
+    struct mstdnt_tag tags[];
+    struct mstdnt_emoji emojis[];
+
+    /* Information attributes */
+    unsigned reblogs_count;
+    unsigned favourites_count;
+    unsigned replies_count;
+
+    /* Nullable attributes */
+    char* url;
+    char* in_reply_to_id;
+    char* in_reply_to_account_id;
+    struct mstdnt_status* status;
+    struct mstdnt_poll* poll;
+    struct mstdnt_card* card;
+    char* language;
+    char* text;
+
+    /* Authorized user attributes */
+    mstdnt_bool favourited;
+    mstdnt_bool reblogged;
+    mstdnt_bool muted;
+    mstdnt_bool bookmarked;
+    mstdnt_bool pinned;
+};
+
+#endif /* MASTODONT_STATUS */

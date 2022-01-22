@@ -18,15 +18,15 @@
 #include <cjson/cJSON.h>
 #include <mastodont_types.h>
 
-struct mastodont_fetch_results
+struct mstdnt_fetch_results
 {
     char* response;
     size_t size;
 };
 
-void mastodont_fetch_results_cleanup(struct mastodont_fetch_results* res);
+void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res);
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* url,
-                         struct mastodont_fetch_results* results);
+                         struct mstdnt_fetch_results* results);
 
 #endif /* MASTODONT_FETCH_H */

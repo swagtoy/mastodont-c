@@ -13,22 +13,30 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_TYPES_H
-#define MASTODONT_TYPES_H
-#include <curl/curl.h>
+#ifndef MASTODONT_ATTACHMENT
+#define MASTODONT_ATTACHMENT
 
-#define MSTDNT_URLSIZE 2048
-typedef unsigned char mstdnt_bool;
+/* Status: Complete, not implemented */
 
-typedef struct mastodont {
-    char* url;
-    CURL* curl;
-} mastodont_t;
-
-/* FIXME */
-struct mstdnt_response {
-    char* data;
-    size_t size;
+enum mstdnt_attachment_type
+{
+    MSTDNT_ATTACHMENT_UNKNOWN,
+    MSTDNT_ATTACHMENT_IMAGE,
+    MSTDNT_ATTACHMENT_GIFV,
+    MSTDNT_ATTACHMENT_VIDEO,
+    MSTDNT_ATTACHMENT_AUDIO
 };
 
-#endif /* MASTODONT_TYPES_H */
+struct mstdnt_attachment
+{
+    char* id;
+    enum mstdnt_attachment_type type;
+    char* url;
+    char* preview_url;
+    char* remote_url;
+    char* hash; /* <- Likely wrong */
+    char* description;
+    char* blurhash;
+};
+
+#endif /* MASTODONT_ATTACHMENT */
