@@ -19,6 +19,9 @@
 #include "mastodont_attachment.h"
 #include "mastodont_application.h"
 #include "mastodont_mention.h"
+#include "mastodont_account.h"
+#include "mastodont_emoji.h"
+#include "mastodont_tag.h"
 
 /* Status: Complete, not implemented */
 
@@ -42,13 +45,13 @@ struct mstdnt_status
     enum mstdnt_status_visibility visibility;
     mstdnt_bool sensitive;
     char* spoiler_text;
-    mstdnt_attachment media_attachments[];
+    struct mstdnt_attachment* media_attachments;
     struct mstdnt_application application;
 
     /* Rendering attributes */
-    struct mstdnt_mention mentions[];
-    struct mstdnt_tag tags[];
-    struct mstdnt_emoji emojis[];
+    struct mstdnt_mention* mentions;
+    struct mstdnt_tag* tags;
+    struct mstdnt_emoji* emojis;
 
     /* Information attributes */
     unsigned reblogs_count;

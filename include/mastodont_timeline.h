@@ -16,6 +16,7 @@
 #ifndef MASTODONT_TIMELINE_H
 #define MASTODONT_TIMELINE_H
 #include <mastodont_types.h>
+#include <mastodont_status.h>
 
 struct mstdnt_timeline_public_args {
     int local;
@@ -29,6 +30,6 @@ struct mstdnt_timeline_public_args {
 
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
-                              struct mstdnt_response* response);
+                              struct mstdnt_status* response[]);
 
 #endif /* MASTODONT_TIMELINE_H */

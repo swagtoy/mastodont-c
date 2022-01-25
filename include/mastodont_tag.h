@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_TAG
 #define MASTODONT_TAG
+#include "mastodont_history.h"
 
 struct mstdnt_tag
 {

@@ -25,6 +25,4 @@ void mastodont_global_curl_cleanup();
 int mastodont_init(mastodont_t* data);
 void mastodont_free(mastodont_t* data);
 
-void mastodont_response_cleanup(struct mstdnt_response* response);
-
 #endif /* MASTODONT_H */

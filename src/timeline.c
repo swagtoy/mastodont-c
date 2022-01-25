@@ -20,9 +20,10 @@
 
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
-                              struct mstdnt_response* response)
+                              struct mstdnt_status* statuses[])
 {
     int res;
+    cJSON* p;
     struct mstdnt_fetch_results results = { 0 };
     /* Default args */
     struct mstdnt_timeline_public_args _args;
@@ -38,18 +39,19 @@ int mastodont_timeline_public(mastodont_t* data,
         args = &_args;
     }
 
-    res = mastodont_fetch_curl(data, "/api/v1/timelines/public", &results);
+    res = mastodont_fetch_curl(data, "api/v1/timelines/public", &results);
 
-    cJSON* parse = cJSON_Parse(results.response);
-    if (!parse)
+    cJSON* parse = cJSON_ParseWithLength(results.response, results.size);
+    if (parse == NULL)
     {
-        
+        const char* jerror = cJSON_GetErrorPtr();
+        if (jerror)
+            fprintf(stderr, "cJSON_Parse: %s\n", jerror);
+        goto cleanup;
     }
     
-
-    /* Cleanup */
-free:
-    cJSON_Delete(parse);
+cleanup:
+    if (parse) cJSON_Delete(parse);
     mastodont_fetch_results_cleanup(&results);
     
     return res;

@@ -22,8 +22,3 @@ void mastodont_free(mastodont_t* data)
 {
     curl_easy_cleanup(data->curl);
 }
-
-void mastodont_response_cleanup(struct mstdnt_response* response)
-{
-    free(response->data);
-}

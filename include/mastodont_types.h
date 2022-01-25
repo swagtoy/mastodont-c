@@ -20,15 +20,10 @@
 #define MSTDNT_URLSIZE 2048
 typedef unsigned char mstdnt_bool;
 
-typedef struct mastodont {
+typedef struct mastodont
+{
     char* url;
     CURL* curl;
 } mastodont_t;
-
-/* FIXME */
-struct mstdnt_response {
-    char* data;
-    size_t size;
-};
 
 #endif /* MASTODONT_TYPES_H */

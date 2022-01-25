@@ -26,7 +26,7 @@ struct mstdnt_emoji
     mstdnt_bool visible_in_picker;
 
     /* Optional */
-    char* category
+    char* category;
 };
 
 

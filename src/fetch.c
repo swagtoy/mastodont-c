@@ -21,7 +21,7 @@
 static size_t write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
 {
     size_t size = nmemb * _size; /* Mostly pointless, but portable */
-    struct mastodont_fetch_results* res = _content; /* Cast */
+    struct mstdnt_fetch_results* res = _content; /* Cast */
     char* data;
  
     if ((data = realloc(res->response, res->size + size + 1)) == NULL)
@@ -31,21 +31,21 @@ static size_t write_callback(char* ptr, size_t _size, size_t nmemb, void* _conte
     }
  
     res->response = data;
-    memcpy(&(res->response[res->size]), data, size);
+    memcpy(&(res->response[res->size]), ptr, size);
     res->size += size;
     res->response[res->size] = 0;
  
     return size;
 }
 
-void mastodont_fetch_results_cleanup(struct mastodont_fetch_results* res)
+void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 {
     free(res->response);
 }
 
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* _url,
-                         struct mastodont_fetch_results* results)
+                         struct mstdnt_fetch_results* results)
 {
     int res;
 
@@ -60,6 +60,10 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
 
     res = curl_easy_perform(mstdnt->curl);
+    if (res != CURLE_OK)
+    {
+        printf("curl_easy_perform: %s\n", curl_easy_strerror(res));
+    }
 
     return res;
 }
