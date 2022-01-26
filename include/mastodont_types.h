@@ -16,6 +16,7 @@
 #ifndef MASTODONT_TYPES_H
 #define MASTODONT_TYPES_H
 #include <curl/curl.h>
+#include <cjson/cJSON.h>
 
 #define MSTDNT_URLSIZE 2048
 typedef unsigned char mstdnt_bool;
@@ -25,5 +26,11 @@ typedef struct mastodont
     char* url;
     CURL* curl;
 } mastodont_t;
+
+struct mstdnt_storage
+{
+    int needs_cleanup; /* Double free safe */
+    cJSON* root;
+};
 
 #endif /* MASTODONT_TYPES_H */

@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_STATUS
 #define MASTODONT_STATUS
+#include <cjson/cJSON.h>
 #include "mastodont_types.h"
 #include "mastodont_attachment.h"
 #include "mastodont_application.h"
@@ -75,5 +76,7 @@ struct mstdnt_status
     mstdnt_bool bookmarked;
     mstdnt_bool pinned;
 };
+
+int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js);
 
 #endif /* MASTODONT_STATUS */

@@ -20,11 +20,14 @@
 
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
+                              struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[])
 {
     int res;
-    cJSON* p;
+    cJSON* root, *status_j_list;
+    size_t i = 0;
     struct mstdnt_fetch_results results = { 0 };
+    
     /* Default args */
     struct mstdnt_timeline_public_args _args;
     if (args == NULL)
@@ -38,20 +41,39 @@ int mastodont_timeline_public(mastodont_t* data,
         _args.limit = 20;
         args = &_args;
     }
+    storage->needs_cleanup = 0;
 
     res = mastodont_fetch_curl(data, "api/v1/timelines/public", &results);
 
-    cJSON* parse = cJSON_ParseWithLength(results.response, results.size);
-    if (parse == NULL)
+    root = cJSON_ParseWithLength(results.response, results.size);
+    if (root == NULL)
     {
         const char* jerror = cJSON_GetErrorPtr();
         if (jerror)
             fprintf(stderr, "cJSON_Parse: %s\n", jerror);
         goto cleanup;
     }
+    storage->needs_cleanup = 1;
+
+    if (!cJSON_IsArray(root))
+    {
+        /* Likely an error */
+        goto cleanup;
+    }
+
+    /* malloc array */
+    *statuses = malloc(cJSON_GetArraySize(root) * sizeof(struct mstdnt_status));
+    if (*statuses == NULL)
+    {
+        perror("malloc");
+        goto cleanup;
+    }
     
+    cJSON_ArrayForEach(status_j_list, root)
+    {
+        mstdnt_load_status_from_json((*statuses) + i++, status_j_list->child);
+    }
 cleanup:
-    if (parse) cJSON_Delete(parse);
     mastodont_fetch_results_cleanup(&results);
     
     return res;

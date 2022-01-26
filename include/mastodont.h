@@ -25,4 +25,6 @@ void mastodont_global_curl_cleanup();
 int mastodont_init(mastodont_t* data);
 void mastodont_free(mastodont_t* data);
 
+void mastodont_storage_cleanup(struct mstdnt_storage* storage);
+
 #endif /* MASTODONT_H */
