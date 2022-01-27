@@ -25,5 +25,9 @@ void mastodont_free(mastodont_t* data)
 
 void mastodont_storage_cleanup(struct mstdnt_storage* storage)
 {
-    cJSON_Delete(storage->root);
+    if (storage->needs_cleanup)
+    {
+        cJSON_Delete(storage->root);
+        storage->needs_cleanup = 0;
+    }
 }

@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <mastodont_status.h>
+#include <mastodont_account.h>
 
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
@@ -45,6 +46,11 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
             if (strcmp("muted", v->string) == 0) status->sensitive = val;
             if (strcmp("bookmarked", v->string) == 0) status->bookmarked = val;
             if (strcmp("pinned", v->string) == 0) status->pinned = val;
+        }
+        else if (cJSON_IsObject(v))
+        {
+            if (strcmp("account", v->string) == 0)
+                mstdnt_load_account_from_json(&(status->account), v->child);
         }
     }
 }

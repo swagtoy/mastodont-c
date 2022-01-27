@@ -21,7 +21,8 @@
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
                               struct mstdnt_storage* storage,
-                              struct mstdnt_status* statuses[])
+                              struct mstdnt_status* statuses[],
+                              size_t* size)
 {
     int res;
     cJSON* root, *status_j_list;
@@ -53,6 +54,7 @@ int mastodont_timeline_public(mastodont_t* data,
             fprintf(stderr, "cJSON_Parse: %s\n", jerror);
         goto cleanup;
     }
+    storage->root = root;
     storage->needs_cleanup = 1;
 
     if (!cJSON_IsArray(root))
@@ -61,8 +63,11 @@ int mastodont_timeline_public(mastodont_t* data,
         goto cleanup;
     }
 
-    /* malloc array */
-    *statuses = malloc(cJSON_GetArraySize(root) * sizeof(struct mstdnt_status));
+    if (size) *size = cJSON_GetArraySize(root);
+
+    /* malloc array - cJSON does a loop to count, let's do it once preferably */
+    *statuses = malloc((size ? *size : cJSON_GetArraySize(root))
+                       * sizeof(struct mstdnt_status));
     if (*statuses == NULL)
     {
         perror("malloc");

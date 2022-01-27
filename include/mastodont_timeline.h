@@ -31,6 +31,7 @@ struct mstdnt_timeline_public_args {
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
                               struct mstdnt_storage* storage,
-                              struct mstdnt_status* response[]);
+                              struct mstdnt_status* statuses[],
+                              size_t* statuses_size);
 
 #endif /* MASTODONT_TIMELINE_H */

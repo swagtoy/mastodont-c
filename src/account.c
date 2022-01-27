@@ -13,15 +13,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_ACCOUNT
-#define MASTODONT_ACCOUNT
+#include <mastodont_account.h>
 
-struct mstdnt_account
+int mstdnt_load_account_from_json(struct mstdnt_status* status, cJSON* js)
 {
-    int i;
-};
-
-int mstdnt_load_account_from_json(struct mstdnt_status* status, cJSON* js);
-
-
-#endif /* MASTODONT_ACCOUNT */
+    cJSON* v;
+    for (v = js; v; v->next)
+    {
+        /* TODO */
+    }
+}
