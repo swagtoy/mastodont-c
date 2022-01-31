@@ -14,12 +14,35 @@
  */
 
 #include <mastodont_account.h>
+#include <mastodont_json_helper.h>
 
-int mstdnt_load_account_from_json(struct mstdnt_status* status, cJSON* js)
+int mstdnt_load_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {
     cJSON* v;
-    for (v = js; v; v->next)
+    struct _mstdnt_str_val strings[] = {
+        { "id", &(acct->id) },
+        { "username", &(acct->username) },
+        { "acct", &(acct->acct) },
+        { "display_name", &(acct->display_name) },
+        { "created_at", &(acct->created_at) },
+        { "note", &(acct->note) },
+        { "url", &(acct->url) },
+        { "avatar", &(acct->avatar) },
+        { "avatar_static", &(acct->avatar_static) },
+        { "header", &(acct->header) },
+        { "header_static", &(acct->header_static) },
+        { "last_status_at", &(acct->last_status_at) },
+        { "mute_expires_at", &(acct->mute_expires_at) }
+    };
+
+    struct _mstdnt_bool_val bools[] = {
+        { "locked", &(acct->locked) },
+        { "bot", &(acct->bot) }
+    };
+    
+    for (v = js; v; v = v->next)
     {
-        /* TODO */
+        _mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
+                             bools, _mstdnt_arr_len(bools));
     }
 }

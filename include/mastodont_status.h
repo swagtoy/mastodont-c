@@ -23,6 +23,7 @@
 #include "mastodont_account.h"
 #include "mastodont_emoji.h"
 #include "mastodont_tag.h"
+#include "mastodont_account.h"
 
 /* Status: Complete, not implemented */
 

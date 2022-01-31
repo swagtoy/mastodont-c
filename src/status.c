@@ -14,43 +14,45 @@
  */
 
 #include <string.h>
+#include <mastodont_json_helper.h>
 #include <mastodont_status.h>
 #include <mastodont_account.h>
 
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
+    struct _mstdnt_str_val strings[] = {
+        { "id", &(status->id) },
+        { "uri", &(status->uri) },
+        { "created_at", &(status->created_at) },
+        { "content", &(status->content) },
+        { "spoiler_text", &(status->spoiler_text) },
+        { "in_reply_to_id", &(status->in_reply_to_id) },
+        { "language", &(status->language) },
+        { "url", &(status->url) },
+        { "text", &(status->text) },
+        { "in_reply_to_account_id", &(status->in_reply_to_account_id) }
+    };
+
+    struct _mstdnt_bool_val bools[] = {
+        { "sensitive", &(status->sensitive) },
+        { "favourited", &(status->favourited) },
+        { "reblogged", &(status->reblogged) },
+        { "muted", &(status->muted) },
+        { "bookmarked", &(status->bookmarked) },
+        { "pinned", &(status->pinned) }
+    };
+    
     for (v = js; v; v = v->next)
     {
-        if (cJSON_IsString(v))
+        if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
+                                 bools, _mstdnt_arr_len(bools)) == 1)
         {
-            if(strcmp("id", v->string)==0) status->id = v->valuestring;
-            if(strcmp("uri", v->string)==0) status->uri = v->valuestring;
-            if(strcmp("created_at", v->string)==0) status->created_at = v->valuestring;
-            if(strcmp("content", v->string)==0) status->content = v->valuestring;
-            if(strcmp("spoiler_text", v->string)==0) status->spoiler_text = v->valuestring;
-            if(strcmp("in_reply_to_id", v->string)==0) status->in_reply_to_id = v->valuestring;
-            if(strcmp("in_reply_to_account_id", v->string)==0) status->in_reply_to_account_id = v->valuestring;
-            if(strcmp("in_reply_to_id", v->string)==0) status->in_reply_to_id = v->valuestring;
-            if(strcmp("language", v->string)==0) status->language = v->valuestring;
-            if(strcmp("text", v->string)==0) status->text = v->valuestring;
-            if(strcmp("in_reply_to_id", v->string)==0) status->in_reply_to_id = v->valuestring;
-        }
-        else if (cJSON_IsBool(v))
-        {
-            /* It's probably an int 1/0, but for portability reasons I'll use the typedefs */
-            const int val = cJSON_IsTrue(v) ? cJSON_True : cJSON_False;
-            if (strcmp("sensitive", v->string) == 0) status->sensitive = val;
-            if (strcmp("favourited", v->string) == 0) status->favourited = val;
-            if (strcmp("reblogged", v->string) == 0) status->reblogged = val;
-            if (strcmp("muted", v->string) == 0) status->sensitive = val;
-            if (strcmp("bookmarked", v->string) == 0) status->bookmarked = val;
-            if (strcmp("pinned", v->string) == 0) status->pinned = val;
-        }
-        else if (cJSON_IsObject(v))
-        {
-            if (strcmp("account", v->string) == 0)
-                mstdnt_load_account_from_json(&(status->account), v->child);
+            if (cJSON_IsObject(v))
+            {
+                if (strcmp("account", v->string) == 0)
+                    mstdnt_load_account_from_json(&(status->account), v->child);
+            }
         }
     }
 }

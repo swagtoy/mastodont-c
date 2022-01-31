@@ -15,13 +15,43 @@
 
 #ifndef MASTODONT_ACCOUNT
 #define MASTODONT_ACCOUNT
+#include "mastodont_types.h"
+#include <cjson/cJSON.h>
 
 struct mstdnt_account
 {
-    int i;
+    char* id;
+    char* username;
+    char* acct;
+    char* url;
+
+    /* Display attributes */
+    char* display_name;
+    char* note;
+    char* avatar;
+    char* avatar_static;
+    char* header;
+    char* header_static;
+    mstdnt_bool locked;
+    mstdnt_bool discoverable;
+
+    /* Statistic attributes */
+    char* created_at;
+    char* last_status_at;
+    unsigned statuses_count;
+    unsigned followers_count;
+    unsigned following_count;
+
+    /* Optional attributes */
+    struct mstdnt_account* moved;
+    /* struct mstdnt_field* field; */
+    mstdnt_bool bot;
+    /* struct mstdnt_source* source */
+    mstdnt_bool suspended;
+    char* mute_expires_at;
 };
 
-int mstdnt_load_account_from_json(struct mstdnt_status* status, cJSON* js);
+int mstdnt_load_account_from_json(struct mstdnt_account* status, cJSON* js);
 
 
 #endif /* MASTODONT_ACCOUNT */
