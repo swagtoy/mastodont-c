@@ -13,25 +13,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_TYPES_H
-#define MASTODONT_TYPES_H
-#include <curl/curl.h>
-#include <cjson/cJSON.h>
+#ifndef MASTODONT_URI_H
+#define MASTODONT_URI_H
+#include <mastodont_types.h>
+#include <stddef.h>
 
-#define MSTDNT_URLSIZE 2048
-#define MSTDNT_URISIZE 512
-typedef unsigned char mstdnt_bool;
-
-typedef struct mastodont
+struct mstdnt_uri
 {
-    char* url;
-    CURL* curl;
-} mastodont_t;
-
-struct mstdnt_storage
-{
-    int needs_cleanup; /* Double free safe */
-    cJSON* root;
+    char* user;
+    char* domain;
+    char storage[MSTDNT_URISIZE];
 };
 
-#endif /* MASTODONT_TYPES_H */
+struct mstdnt_uri mastodont_uristr_to_uri(char* uri, size_t len);
+
+#endif /* MASTODONT_URI_H */

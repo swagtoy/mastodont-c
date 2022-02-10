@@ -19,6 +19,7 @@
 #include "mastodont_fetch.h"
 
 int mastodont_account(mastodont_t* data,
+                      int lookup,
                       char* id,
                       struct mstdnt_account* acct,
                       struct mstdnt_storage* storage,
@@ -28,7 +29,9 @@ int mastodont_account(mastodont_t* data,
     cJSON* root;
     char url[MSTDNT_URLSIZE];
     struct mstdnt_fetch_results results = { 0 };
-    snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s", id);
+    snprintf(url, MSTDNT_URLSIZE,
+             lookup ? "/api/v1/accounts/%s" : "/api/v1/accounts/lookup?acct=%s",
+             id);
     storage->needs_cleanup = 0;
 
     res = mastodont_fetch_curl(data, url, &results);

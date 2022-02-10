@@ -18,6 +18,9 @@
 #include "mastodont_types.h"
 #include <cjson/cJSON.h>
 
+#define MSTDNT_LOOKUP_ACCT 0
+#define MSTDNT_LOOPUP_ID 1
+
 struct mstdnt_account
 {
     char* id;
@@ -52,6 +55,7 @@ struct mstdnt_account
 };
 
 int mastodont_account(mastodont_t* data,
+                      int lookup_type,
                       char* id,
                       struct mstdnt_account* acct,
                       struct mstdnt_storage* storage,
