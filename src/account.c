@@ -13,8 +13,45 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include <mastodont_account.h>
 #include <mastodont_json_helper.h>
+#include "mastodont_fetch.h"
+
+int mastodont_account(mastodont_t* data,
+                      char* id,
+                      struct mstdnt_account* acct,
+                      struct mstdnt_storage* storage,
+                      size_t* size)
+{
+    int res;
+    cJSON* root;
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s", id);
+    storage->needs_cleanup = 0;
+
+    res = mastodont_fetch_curl(data, url, &results);
+
+    /* TODO cleanup this */
+    root = cJSON_ParseWithLength(results.response, results.size);
+
+    if (root == NULL)
+    {
+        const char* jerror = cJSON_GetErrorPtr();
+        if (jerror)
+            fprintf(stderr, "cJSON_Parse: %s\n", jerror);
+        goto cleanup;
+    }
+    storage->root = root;
+    storage->needs_cleanup = 1;
+
+    mstdnt_load_account_from_json(acct, root->child);
+cleanup:
+    mastodont_fetch_results_cleanup(&results);
+
+    return res;
+}
 
 int mstdnt_load_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {

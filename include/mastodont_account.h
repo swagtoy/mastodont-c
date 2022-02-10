@@ -51,6 +51,12 @@ struct mstdnt_account
     char* mute_expires_at;
 };
 
+int mastodont_account(mastodont_t* data,
+                      char* id,
+                      struct mstdnt_account* acct,
+                      struct mstdnt_storage* storage,
+                      size_t* size);
+
 int mstdnt_load_account_from_json(struct mstdnt_account* status, cJSON* js);
 
 
