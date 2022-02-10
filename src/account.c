@@ -34,16 +34,17 @@ int mastodont_account(mastodont_t* data,
              id);
     storage->needs_cleanup = 0;
 
-    res = mastodont_fetch_curl(data, url, &results);
+    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    {
+        return 1;
+    }
 
     /* TODO cleanup this */
     root = cJSON_ParseWithLength(results.response, results.size);
 
     if (root == NULL)
     {
-        const char* jerror = cJSON_GetErrorPtr();
-        if (jerror)
-            fprintf(stderr, "cJSON_Parse: %s\n", jerror);
+        res = 1;
         goto cleanup;
     }
     storage->root = root;

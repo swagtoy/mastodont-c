@@ -60,10 +60,6 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
 
     res = curl_easy_perform(mstdnt->curl);
-    if (res != CURLE_OK)
-    {
-        printf("curl_easy_perform: %s\n", curl_easy_strerror(res));
-    }
 
     return res;
 }

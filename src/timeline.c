@@ -44,14 +44,13 @@ int mastodont_timeline_public(mastodont_t* data,
     }
     storage->needs_cleanup = 0;
 
-    res = mastodont_fetch_curl(data, "api/v1/timelines/public", &results);
+    if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
+        return 1;
 
     root = cJSON_ParseWithLength(results.response, results.size);
     if (root == NULL)
     {
-        const char* jerror = cJSON_GetErrorPtr();
-        if (jerror)
-            fprintf(stderr, "cJSON_Parse: %s\n", jerror);
+        res = 1;
         goto cleanup;
     }
     storage->root = root;
@@ -60,6 +59,7 @@ int mastodont_timeline_public(mastodont_t* data,
     if (!cJSON_IsArray(root))
     {
         /* Likely an error */
+        res = 1;
         goto cleanup;
     }
 
@@ -70,7 +70,7 @@ int mastodont_timeline_public(mastodont_t* data,
                        * sizeof(struct mstdnt_status));
     if (*statuses == NULL)
     {
-        perror("malloc");
+        res = 1;
         goto cleanup;
     }
     
