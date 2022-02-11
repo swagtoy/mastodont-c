@@ -25,7 +25,7 @@ int mastodont_account(mastodont_t* data,
                       struct mstdnt_storage* storage,
                       size_t* size)
 {
-    int res;
+    int res = 0;
     cJSON* root;
     char url[MSTDNT_URLSIZE];
     struct mstdnt_fetch_results results = { 0 };

@@ -24,7 +24,7 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_status* statuses[],
                               size_t* size)
 {
-    int res;
+    int res = 0;
     cJSON* root, *status_j_list;
     size_t i = 0;
     struct mstdnt_fetch_results results = { 0 };
