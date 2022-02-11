@@ -101,7 +101,7 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],
                                      size_t* size);
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js);
 
-int mstdnt_account_statuses(mastodont_t* data,
+int mastodont_account_statuses(mastodont_t* data,
                             char* id,
                             struct mstdnt_account_statuses_args* args,
                             struct mstdnt_storage* storage,

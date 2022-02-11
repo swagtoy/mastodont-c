@@ -88,12 +88,12 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
     }
 }
 
-int mstdnt_account_statuses(mastodont_t* data,
-                            char* id,
-                            struct mstdnt_account_statuses_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* statuses[],
-                            size_t* size)
+int mastodont_account_statuses(mastodont_t* data,
+                               char* id,
+                               struct mstdnt_account_statuses_args* args,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_status* statuses[],
+                               size_t* size)
 {
     int res;
     char url[MSTDNT_URLSIZE];
@@ -119,7 +119,7 @@ int mstdnt_account_statuses(mastodont_t* data,
     }
     storage->needs_cleanup = 0;
 
-    if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
         return 1;
 
     res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
