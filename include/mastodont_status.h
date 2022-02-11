@@ -17,6 +17,7 @@
 #define MASTODONT_STATUS
 #include <cjson/cJSON.h>
 #include "mastodont_types.h"
+#include "mastodont_fetch.h"
 #include "mastodont_attachment.h"
 #include "mastodont_application.h"
 #include "mastodont_mention.h"
@@ -78,6 +79,34 @@ struct mstdnt_status
     mstdnt_bool pinned;
 };
 
+
+struct mstdnt_account_statuses_args {
+    int pinned;
+    char* tagged;
+    int with_muted;
+    int exclude_reblogs;
+    int exclude_replies;
+    int offset;
+    int only_media;
+    char* max_id;
+    char* since_id;
+    char* min_id;
+    int limit;
+};
+
+
+int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],
+                                     struct mstdnt_storage* storage,
+                                     struct mstdnt_fetch_results* results,
+                                     size_t* size);
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js);
+
+int mstdnt_account_statuses(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_statuses_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size);
+
 
 #endif /* MASTODONT_STATUS */

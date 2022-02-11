@@ -14,6 +14,7 @@
  */
 
 #include <string.h>
+#include <stdlib.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_status.h>
 #include <mastodont_account.h>
@@ -55,4 +56,75 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
             }
         }
     }
+}
+
+int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
+                                     struct mstdnt_storage* storage,
+                                     struct mstdnt_fetch_results* results,
+                                     size_t* size)
+{
+    size_t i = 0;
+    cJSON* root, *status_j_list;
+    root = cJSON_ParseWithLength(results->response, results->size);
+    if (root == NULL)
+        return 1;
+    storage->root = root;
+    storage->needs_cleanup = 1;
+
+    if (!cJSON_IsArray(root))
+        return 1;
+
+    if (size) *size = cJSON_GetArraySize(root);
+
+    /* malloc array - cJSON does a loop to count, let's do it once preferably */
+    *statuses = malloc((size ? *size : cJSON_GetArraySize(root))
+                       * sizeof(struct mstdnt_status));
+    if (*statuses == NULL)
+        return 1;
+    
+    cJSON_ArrayForEach(status_j_list, root)
+    {
+        mstdnt_load_status_from_json((*statuses) + i++, status_j_list->child);
+    }
+}
+
+int mstdnt_account_statuses(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_statuses_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size)
+{
+    int res;
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
+    
+    /* Default args */
+    struct mstdnt_account_statuses_args _args;
+    if (args == NULL)
+    {
+        _args.pinned = 0;
+        _args.tagged = NULL;
+        _args.with_muted = 1;
+        _args.offset = 0;
+        _args.exclude_reblogs = 0;
+        _args.exclude_replies = 0;
+        _args.only_media = 0;
+        _args.max_id = NULL;
+        _args.since_id = NULL;
+        _args.min_id = NULL;
+        _args.limit = 20;
+        args = &_args;
+    }
+    storage->needs_cleanup = 0;
+
+    if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
+        return 1;
+
+    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
+
+    mastodont_fetch_results_cleanup(&results);
+    
+    return res;
 }

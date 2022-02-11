@@ -19,7 +19,7 @@
 #include "mastodont_fetch.h"
 
 int mastodont_account(mastodont_t* data,
-                      int lookup,
+                      int lookup, /* TODO move into separate function for consistancy */
                       char* id,
                       struct mstdnt_account* acct,
                       struct mstdnt_storage* storage,
@@ -30,7 +30,7 @@ int mastodont_account(mastodont_t* data,
     char url[MSTDNT_URLSIZE];
     struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
-             lookup ? "/api/v1/accounts/%s" : "/api/v1/accounts/lookup?acct=%s",
+             lookup ? "api/v1/accounts/%s" : "api/v1/accounts/lookup?acct=%s",
              id);
     storage->needs_cleanup = 0;
 
@@ -56,6 +56,7 @@ cleanup:
 
     return res;
 }
+
 
 int mstdnt_load_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {

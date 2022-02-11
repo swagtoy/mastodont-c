@@ -24,9 +24,7 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_status* statuses[],
                               size_t* size)
 {
-    int res = 0;
-    cJSON* root, *status_j_list;
-    size_t i = 0;
+    int res;
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
@@ -47,38 +45,8 @@ int mastodont_timeline_public(mastodont_t* data,
     if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
         return 1;
 
-    root = cJSON_ParseWithLength(results.response, results.size);
-    if (root == NULL)
-    {
-        res = 1;
-        goto cleanup;
-    }
-    storage->root = root;
-    storage->needs_cleanup = 1;
+    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
 
-    if (!cJSON_IsArray(root))
-    {
-        /* Likely an error */
-        res = 1;
-        goto cleanup;
-    }
-
-    if (size) *size = cJSON_GetArraySize(root);
-
-    /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *statuses = malloc((size ? *size : cJSON_GetArraySize(root))
-                       * sizeof(struct mstdnt_status));
-    if (*statuses == NULL)
-    {
-        res = 1;
-        goto cleanup;
-    }
-    
-    cJSON_ArrayForEach(status_j_list, root)
-    {
-        mstdnt_load_status_from_json((*statuses) + i++, status_j_list->child);
-    }
-cleanup:
     mastodont_fetch_results_cleanup(&results);
     
     return res;

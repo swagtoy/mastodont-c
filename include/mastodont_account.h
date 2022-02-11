@@ -19,7 +19,7 @@
 #include <cjson/cJSON.h>
 
 #define MSTDNT_LOOKUP_ACCT 0
-#define MSTDNT_LOOPUP_ID 1
+#define MSTDNT_LOOKUP_ID 1
 
 struct mstdnt_account
 {
