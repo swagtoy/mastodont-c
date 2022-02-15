@@ -19,8 +19,6 @@
 #include <cjson/cJSON.h>
 #include <mastodont_fetch.h>
 
-/* Status: Complete */
-
 struct mstdnt_application
 {
     char* name;
@@ -36,8 +34,24 @@ struct mstdnt_app_register_args
     char* website;
 };
 
+struct mstdnt_app
+{
+    char* id;
+    char* name;
+    char* website;
+    char* redirect_uri;
+    char* client_id;
+    char* client_secret;
+    char* vapid_key;
+};
+
+int mstdnt_load_app_result(struct mstdnt_storage* storage,
+                           struct mstdnt_fetch_results* results,
+                           struct mstdnt_app* app);
+
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_app_register_args* args,
-                           struct mstdnt_storage* storage);
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_app* app);
 
 #endif /* MASTODONT_ACCOUNT */

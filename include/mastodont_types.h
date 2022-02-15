@@ -18,9 +18,11 @@
 #include <curl/curl.h>
 #include <cjson/cJSON.h>
 
+#define _mstdnt_arr_len(arr) (sizeof(arr)/sizeof(arr[0]))
 #define MSTDNT_URLSIZE 2048
 #define MSTDNT_URISIZE 512
 typedef unsigned char mstdnt_bool;
+
 
 typedef struct mastodont
 {

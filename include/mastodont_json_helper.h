@@ -16,8 +16,7 @@
 #ifndef MASTODONT_JSON_HELPER_H
 #define MASTODONT_JSON_HELPER_H
 #include "mastodont_types.h"
-
-#define _mstdnt_arr_len(arr) (sizeof(arr)/sizeof(arr[0]))
+#include "mastodont_fetch.h"
 
 struct _mstdnt_str_val
 {
@@ -30,6 +29,10 @@ struct _mstdnt_bool_val
     const char* key;
     mstdnt_bool* bool_ptr;
 };
+
+int _mstdnt_json_init(cJSON** root,
+                      struct mstdnt_fetch_results* results,
+                      struct mstdnt_storage* storage);
 
 int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_str_val* str,

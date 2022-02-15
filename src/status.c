@@ -65,11 +65,8 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
 {
     size_t i = 0;
     cJSON* root, *status_j_list;
-    root = cJSON_ParseWithLength(results->response, results->size);
-    if (root == NULL)
+    if (_mstdnt_json_init(&root, results, storage))
         return 1;
-    storage->root = root;
-    storage->needs_cleanup = 1;
 
     if (!cJSON_IsArray(root))
         return 1;

@@ -43,27 +43,39 @@ int mastodont_timeline_public(mastodont_t* data,
     }
     storage->needs_cleanup = 0;
 
+    union param_value u_local, u_remote, u_only_media,
+        u_max_id, u_since_id, u_min_id, u_limit;
+    u_local.i = args->local;
+    u_remote.i = args->remote;
+    u_only_media.i = args->only_media;
+    u_max_id.s = args->max_id;
+    u_since_id.s = args->since_id;
+    u_min_id.s = args->min_id;
+    u_limit.i = args->limit;
+
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, NULL, "rat" },
-        { _MSTDNT_QUERY_STRING, "lolled", "ratted" },
+        { _MSTDNT_QUERY_INT, "local", u_local },
+        { _MSTDNT_QUERY_INT, "remote", u_remote },
+        { _MSTDNT_QUERY_INT, "only_media", u_only_media },
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
-
     
+    char* url = _mstdnt_query_string("api/v1/timelines/public", params, _mstdnt_arr_len(params));
 
-    char* url = _mstdnt_query_string("api/v1/timelines/public",
-                                     params, 2);
-
-    puts(url);
-    free (url);
-    return 1;
-                                     
-
-    if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
-        return 1;
+    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    {
+        res = 1;
+        goto cleanup;
+    }
 
     res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
 
     mastodont_fetch_results_cleanup(&results);
     
+cleanup:
+    free(url);
     return res;
 }

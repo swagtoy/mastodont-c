@@ -13,11 +13,44 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
+#include <mastodont_json_helper.h>
 #include <mastodont_application.h>
+#include <mastodont_query.h>
+
+int mstdnt_load_app_result(struct mstdnt_storage* storage,
+                           struct mstdnt_fetch_results* results,
+                           struct mstdnt_app* app)
+{
+    cJSON* root, *v;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
+
+    struct _mstdnt_str_val strings[] = {
+        { "id", &(app->id) },
+        { "name", &(app->name) },
+        { "website", &(app->website) },
+        { "redirect_uri", &(app->redirect_uri) },
+        { "client_id", &(app->client_id) },
+        { "client_secret", &(app->client_secret) },
+        { "vapid_key", &(app->vapid_key) },
+    };
+
+    for (v = root->child; v; v = v->next)
+    {
+        if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
+                                 NULL, 0) == 1)
+        {
+            return 1;
+        }
+    }
+}
+
 
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_app_register_args* args,
-                           struct mstdnt_storage* storage)
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_app* app)
 {
     int res;
     struct mstdnt_fetch_results results = { 0 };
@@ -34,13 +67,30 @@ int mastodont_register_app(mastodont_t* data,
     }
     storage->needs_cleanup = 0;
 
-    if (mastodont_fetch_curl(data, "api/v1/apps", &results) != CURLE_OK)
-        return 1;
+    union param_value u_client_name, u_redirect_uris,
+        u_scopes, u_website;
 
-    /*res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);*/
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "client_name", u_client_name },
+        { _MSTDNT_QUERY_STRING, "redirect_uris", u_redirect_uris },
+        { _MSTDNT_QUERY_STRING, "scopes", u_scopes },
+        { _MSTDNT_QUERY_STRING, "website", u_website },
+    };
+
+    char* url = _mstdnt_query_string("api/v1/apps", params, _mstdnt_arr_len(params));
+
+    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    {
+        res = 1;
+        goto cleanup;
+    }
+
+    res = mstdnt_load_app_result(storage, &results, app);
 
     mastodont_fetch_results_cleanup(&results);
-    
+
+cleanup:
+    free(url);
     return res;
 }
 

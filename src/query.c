@@ -45,7 +45,9 @@ char* _mstdnt_query_string(char* src,
 
     for (i = 0; i < param_len; ++i)
     {
-        if (params[i].key)
+        if (params[i].key &&
+            !(params[i].type == _MSTDNT_QUERY_STRING &&
+              params[i].value.s == NULL))
         {
             if (res_count++ == 0)
                 /* Replaces Null terminator */
@@ -80,8 +82,8 @@ char* _mstdnt_query_string(char* src,
 
             /* Copy over strings (skip & sign ;; +1) */
             strcpy(result + res_prev, params[i].key);
-            result[res_prev - (res_count - 1 != 0) + key_len] = '=';
-            strcpy(result + res_prev + 1 + key_len - (res_count - 1 != 0), val_ptr);
+            result[res_prev + key_len] = '=';
+            strcpy(result + res_prev + 1 + key_len, val_ptr);
         }
     }
     

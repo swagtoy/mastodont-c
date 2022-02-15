@@ -15,6 +15,18 @@
 
 #include <mastodont_json_helper.h>
 
+int _mstdnt_json_init(cJSON** root,
+                      struct mstdnt_fetch_results* results,
+                      struct mstdnt_storage* storage)
+{
+    *root = cJSON_ParseWithLength(results->response, results->size);
+    if (*root == NULL)
+        return 1;
+    storage->root = *root;
+    storage->needs_cleanup = 1;
+    return 0;
+}
+
 int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_str_val* str,
                          size_t str_len,
