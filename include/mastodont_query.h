@@ -22,7 +22,7 @@ enum _mstdnt_query_type
 {
     _MSTDNT_QUERY_STRING,
     _MSTDNT_QUERY_INT
-}
+};
 
 struct _mstdnt_query_param
 {

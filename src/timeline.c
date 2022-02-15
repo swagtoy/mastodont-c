@@ -17,6 +17,7 @@
 #include <stdlib.h>
 #include "mastodont_fetch.h"
 #include "mastodont_timeline.h"
+#include "mastodont_query.h"
 
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
@@ -41,6 +42,21 @@ int mastodont_timeline_public(mastodont_t* data,
         args = &_args;
     }
     storage->needs_cleanup = 0;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, NULL, "rat" },
+        { _MSTDNT_QUERY_STRING, "lolled", "ratted" },
+    };
+
+    
+
+    char* url = _mstdnt_query_string("api/v1/timelines/public",
+                                     params, 2);
+
+    puts(url);
+    free (url);
+    return 1;
+                                     
 
     if (mastodont_fetch_curl(data, "api/v1/timelines/public", &results) != CURLE_OK)
         return 1;

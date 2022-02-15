@@ -19,6 +19,7 @@
 
 #define CONV_SIZE 64
 
+/* TODO audit this function for overflows */
 char* _mstdnt_query_string(char* src,
                            struct _mstdnt_query_param* params,
                            size_t param_len)
@@ -26,8 +27,13 @@ char* _mstdnt_query_string(char* src,
     size_t i;
     int res_prev;
     /* If value type is an int, convert it with int->str */
+    char* val_ptr = NULL;
     char conv_val[CONV_SIZE];
     size_t src_l = strlen(src);
+
+    /* Key values */
+    size_t key_len;
+    size_t val_len;
 
     /* Result */
     size_t res_len = src_l+1;
@@ -42,31 +48,43 @@ char* _mstdnt_query_string(char* src,
         if (params[i].key)
         {
             if (res_count++ == 0)
-            {
-                result = realloc(result, ++res_len);
+                /* Replaces Null terminator */
                 result[res_len-1] = '?';
-            }
 
             /* Convert value */
             if (params[i].type == _MSTDNT_QUERY_INT)
+            {
                 snprintf(conv_val, CONV_SIZE, "%d", params[i].value.i);
+                val_ptr = conv_val;
+            }
             else /* Point to it */
-                conv_val = params[i].value.s;
-            
+                val_ptr = params[i].value.s;
+
+            /* Get lengths */
+            key_len = strlen(params[i].key);
+            val_len = strlen(val_ptr);
+
             res_prev = res_len;
-            /*        |v| & character             |v| account for '=' */
-            res_len += 1 + strlen(params[i].key) + 1 + strlen(conv_val);
+            /*        |v| & character |v| account for '=' */
+            res_len += 1 + key_len +   1 + val_len;
 
-            
-            result = realloc(result, res_len + 1);
-            if (res_count) result[res_prev] = '&';
-            
-            if (res_count) result[res_len-2] = '\0';
-            else result[res_len-1] = '\0';
 
-            /* TODO */
+            result = realloc(result, res_len + 1); /* NULL terminator space */
+            if (res_count - 1 != 0)
+                result[res_prev-1] = '&';
+
+            /* Leave an extra byte, doesn't hurt */
+            if (res_count - 1 != 0)
+                result[res_len-1] = '\0';
+            else result[res_len] = '\0';
+
+            /* Copy over strings (skip & sign ;; +1) */
+            strcpy(result + res_prev, params[i].key);
+            result[res_prev - (res_count - 1 != 0) + key_len] = '=';
+            strcpy(result + res_prev + 1 + key_len - (res_count - 1 != 0), val_ptr);
         }
     }
+    
 
     return result;
 }

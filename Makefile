@@ -1,5 +1,5 @@
 CC ?= cc
-CFLAGS = -ansi -I ./include/
+CFLAGS = -g -ansi -I ./include/
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 TARGET = libmastodont.a # shared

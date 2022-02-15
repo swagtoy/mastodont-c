@@ -23,16 +23,13 @@ int mastodont_register_app(mastodont_t* data,
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
-    struct mstdnt_timeline_public_args _args;
+    struct mstdnt_app_register_args _args;
     if (args == NULL)
     {
-        _args.local = 0; /* Defaults to false */
-        _args.remote = 0;
-        _args.only_media = 0;
-        _args.max_id = NULL;
-        _args.since_id = NULL;
-        _args.min_id = NULL;
-        _args.limit = 20;
+        _args.client_name = NULL; /* Defaults to false */
+        _args.redirect_uris = NULL;
+        _args.scopes = NULL;
+        _args.website = NULL;
         args = &_args;
     }
     storage->needs_cleanup = 0;
@@ -40,7 +37,7 @@ int mastodont_register_app(mastodont_t* data,
     if (mastodont_fetch_curl(data, "api/v1/apps", &results) != CURLE_OK)
         return 1;
 
-    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
+    /*res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);*/
 
     mastodont_fetch_results_cleanup(&results);
     

@@ -17,7 +17,7 @@
 #define MASTODONT_APPLICATION
 #include "mastodont_types.h"
 #include <cjson/cJSON.h>
-#include <mastodont_status.h>
+#include <mastodont_fetch.h>
 
 /* Status: Complete */
 
