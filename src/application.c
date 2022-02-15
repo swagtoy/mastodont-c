@@ -55,14 +55,11 @@ static int mstdnt_read_token_result(struct mstdnt_storage* storage,
         return 1;
 
     struct _mstdnt_str_val strings[] = {
-        { "grant_type", &(app->grant_type) },
-        { "client_id", &(app->client_id) },
-        { "client_secret", &(app->client_secret) },
-        { "redirect_uri", &(app->redirect_uri) },
+        { "access_token", &(app->access_token) },
+        { "token_type", &(app->token_type) },
         { "scope", &(app->scope) },
-        { "code", &(app->code) },
-        { "username", &(app->username) },
-        { "password", &(app->password) },
+        { "id", &(app->id) },
+        { "me", &(app->me) },
     };
 
     for (v = root->child; v; v = v->next)
