@@ -45,13 +45,36 @@ struct mstdnt_app
     char* vapid_key;
 };
 
-int mstdnt_load_app_result(struct mstdnt_storage* storage,
-                           struct mstdnt_fetch_results* results,
-                           struct mstdnt_app* app);
+struct mstdnt_oauth_token
+{
+    char* access_token;
+    char* token_type;
+    char* scope;
+    char* id;
+    char* me;
+    time_t time;
+};
+
+struct mstdnt_oauth_token_args
+{
+    char* grant_type;
+    char* client_id;
+    char* client_secret;
+    char* redirect_uri;
+    char* scope;
+    char* code;
+    char* username;
+    char* password;
+};
 
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_app_register_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app);
+
+int mastodont_obtain_oauth_token(mastodont_t* data,
+                                 struct mstdnt_oauth_token_args* args,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_oauth_token* app);
 
 #endif /* MASTODONT_ACCOUNT */
