@@ -13,31 +13,29 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_APPLICATION
-#define MASTODONT_APPLICATION
+#ifndef MASTODONT_QUERY_H
+#define MASTODONT_QUERY_H
+#include <stddef.h>
 #include "mastodont_types.h"
-#include <cjson/cJSON.h>
-#include <mastodont_status.h>
 
-/* Status: Complete */
-
-struct mstdnt_application
+enum _mstdnt_query_type
 {
-    char* name;
-    char* website;
-    char* vapid_key;
+    _MSTDNT_QUERY_STRING,
+    _MSTDNT_QUERY_INT
+}
+
+struct _mstdnt_query_param
+{
+    enum _mstdnt_query_type type;
+    char* key;
+    union {
+        char* s;
+        int i;
+    } value;
 };
 
-struct mstdnt_app_register_args
-{
-    char* client_name;
-    char* redirect_uris;
-    char* scopes;
-    char* website;
-};
+char* _mstdnt_query_string(char* src,
+                           struct _mstdnt_query_param* params,
+                           size_t param_len);
 
-int mastodont_register_app(mastodont_t* data,
-                           struct mstdnt_app_register_args* args,
-                           struct mstdnt_storage* storage);
-
-#endif /* MASTODONT_ACCOUNT */
+#endif /* MASTODONT_QUERY_H */

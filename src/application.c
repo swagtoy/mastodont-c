@@ -13,31 +13,37 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_APPLICATION
-#define MASTODONT_APPLICATION
-#include "mastodont_types.h"
-#include <cjson/cJSON.h>
-#include <mastodont_status.h>
-
-/* Status: Complete */
-
-struct mstdnt_application
-{
-    char* name;
-    char* website;
-    char* vapid_key;
-};
-
-struct mstdnt_app_register_args
-{
-    char* client_name;
-    char* redirect_uris;
-    char* scopes;
-    char* website;
-};
+#include <mastodont_application.h>
 
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_app_register_args* args,
-                           struct mstdnt_storage* storage);
+                           struct mstdnt_storage* storage)
+{
+    int res;
+    struct mstdnt_fetch_results results = { 0 };
+    
+    /* Default args */
+    struct mstdnt_timeline_public_args _args;
+    if (args == NULL)
+    {
+        _args.local = 0; /* Defaults to false */
+        _args.remote = 0;
+        _args.only_media = 0;
+        _args.max_id = NULL;
+        _args.since_id = NULL;
+        _args.min_id = NULL;
+        _args.limit = 20;
+        args = &_args;
+    }
+    storage->needs_cleanup = 0;
 
-#endif /* MASTODONT_ACCOUNT */
+    if (mastodont_fetch_curl(data, "api/v1/apps", &results) != CURLE_OK)
+        return 1;
+
+    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
+
+    mastodont_fetch_results_cleanup(&results);
+    
+    return res;
+}
+
