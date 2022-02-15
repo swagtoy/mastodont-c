@@ -59,7 +59,7 @@ int mastodont_register_app(mastodont_t* data,
     struct mstdnt_app_register_args _args;
     if (args == NULL)
     {
-        _args.client_name = NULL; /* Defaults to false */
+        _args.client_name = "mastodont-c"; /* Defaults to false */
         _args.redirect_uris = NULL;
         _args.scopes = NULL;
         _args.website = NULL;
@@ -69,6 +69,10 @@ int mastodont_register_app(mastodont_t* data,
 
     union param_value u_client_name, u_redirect_uris,
         u_scopes, u_website;
+    u_client_name.s = args->client_name;
+    u_redirect_uris.s = args->redirect_uris;
+    u_scopes.s = args->scopes;
+    u_website.s = args->website;
 
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_STRING, "client_name", u_client_name },
@@ -77,9 +81,11 @@ int mastodont_register_app(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "website", u_website },
     };
 
-    char* url = _mstdnt_query_string("api/v1/apps", params, _mstdnt_arr_len(params));
+    char* post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
 
-    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
+
+    if (mastodont_fetch_curl(data, "api/v1/apps", &results) != CURLE_OK)
     {
         res = 1;
         goto cleanup;
@@ -90,7 +96,7 @@ int mastodont_register_app(mastodont_t* data,
     mastodont_fetch_results_cleanup(&results);
 
 cleanup:
-    free(url);
+    free(post);
     return res;
 }
 

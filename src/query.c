@@ -29,16 +29,25 @@ char* _mstdnt_query_string(char* src,
     /* If value type is an int, convert it with int->str */
     char* val_ptr = NULL;
     char conv_val[CONV_SIZE];
-    size_t src_l = strlen(src);
+    size_t src_l;
+    if (src)
+        src_l = strlen(src);
+    else
+        src_l = 0;
 
     /* Key values */
     size_t key_len;
     size_t val_len;
 
     /* Result */
-    size_t res_len = src_l+1;
+    size_t res_len;
+    if (src_l)
+        res_len = src_l+1;
+    else
+        res_len = 0;
     char* result = malloc(res_len);
-    strncpy(result, src, res_len);
+    if (src_l)
+        strncpy(result, src, res_len);
 
     /* We'll call them res to represent the query parameters */
     int res_count = 0;
@@ -49,7 +58,7 @@ char* _mstdnt_query_string(char* src,
             !(params[i].type == _MSTDNT_QUERY_STRING &&
               params[i].value.s == NULL))
         {
-            if (res_count++ == 0)
+            if (res_count++ == 0 && src_l)
                 /* Replaces Null terminator */
                 result[res_len-1] = '?';
 
