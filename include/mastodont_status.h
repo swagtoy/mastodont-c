@@ -94,6 +94,22 @@ struct mstdnt_account_statuses_args {
     int limit;
 };
 
+struct mstdnt_create_status_args
+{
+    char* content_type;
+    int expires_in;
+    char* in_reply_to_conversation_id;
+    char* in_reply_to_id;
+    char* language;
+    char** media_ids;
+    void* poll; /* TODO */
+    int preview;
+    char* scheduled_at;
+    int sensitive;
+    char* spoiler_text;
+    char* status;
+    char* visibility;
+};
 
 int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],
                                      struct mstdnt_storage* storage,
@@ -108,5 +124,8 @@ int mastodont_account_statuses(mastodont_t* data,
                                struct mstdnt_status* statuses[],
                                size_t* size);
 
+int mastodont_create_status(mastodont_t* data,
+                            struct mstdnt_create_status_args* args,
+                            struct mstdnt_storage* storage);
 
 #endif /* MASTODONT_STATUS */

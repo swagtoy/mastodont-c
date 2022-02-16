@@ -28,6 +28,7 @@ typedef struct mastodont
 {
     char* url;
     CURL* curl;
+    char* token;
 } mastodont_t;
 
 struct mstdnt_storage

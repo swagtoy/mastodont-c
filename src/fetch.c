@@ -43,16 +43,29 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
     free(res->response);
 }
 
+#include <stdio.h>
+#define TOKEN_STR_SIZE 512
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* _url,
                          struct mstdnt_fetch_results* results)
 {
     int res;
+    char token[TOKEN_STR_SIZE] = { 0 };
+    struct curl_slist* list = NULL;
 
     /* Setup URL */
     char url[MSTDNT_URLSIZE];
     strncpy(url, mstdnt->url, MSTDNT_URLSIZE-1);
     strncat(url, _url, MSTDNT_URLSIZE-1);
+
+    /* Setup token */
+    if (mstdnt->token)
+    {
+        snprintf(token, TOKEN_STR_SIZE, "Authorization: Bearer %s",
+                 mstdnt->token);
+        list = curl_slist_append(list, token);
+        curl_easy_setopt(mstdnt->curl, CURLOPT_HTTPHEADER, list);
+    }
 
     /* Set options */
     curl_easy_setopt(mstdnt->curl, CURLOPT_URL, url);
@@ -60,6 +73,8 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
 
     res = curl_easy_perform(mstdnt->curl);
+
+    if (list) curl_slist_free_all(list);
 
     return res;
 }

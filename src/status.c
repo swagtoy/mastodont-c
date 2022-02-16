@@ -18,6 +18,7 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_status.h>
 #include <mastodont_account.h>
+#include <mastodont_query.h>
 
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
@@ -125,3 +126,68 @@ int mastodont_account_statuses(mastodont_t* data,
     
     return res;
 }
+
+int mastodont_create_status(mastodont_t* data,
+                            struct mstdnt_create_status_args* args,
+                            struct mstdnt_storage* storage)
+{
+    int res = 0;
+    char* post;
+    struct mstdnt_fetch_results results = { 0 };
+
+    /* Default args */
+    struct mstdnt_create_status_args _args;
+    if (args == NULL)
+    {
+        _args.content_type = "html"; /* TODO */
+        _args.expires_in = 0;
+        _args.in_reply_to_conversation_id = NULL;
+        _args.in_reply_to_id = NULL;
+        _args.language = NULL;
+        _args.media_ids = NULL;
+        _args.poll = NULL;
+        _args.preview = 0;
+        _args.scheduled_at = NULL;
+        _args.sensitive = 0;
+        _args.spoiler_text = NULL;
+        _args.status = NULL;
+        _args.visibility = "public";
+        args = &_args;
+    }
+    storage->needs_cleanup = 0;
+
+    union param_value u_content_type, u_expires_in,
+        u_in_reply_to_conversation_id, u_in_reply_to_id,
+        u_language, u_media_ids, u_poll, u_preview, u_scheduled_at,
+        u_sensitive, u_spoiler_text, u_status, u_visibility;
+    u_content_type.s = args->content_type;
+    u_expires_in.i = args->expires_in;
+    u_in_reply_to_conversation_id.s = args->in_reply_to_conversation_id;
+    u_in_reply_to_id.s = args->in_reply_to_id;
+    u_language.s = args->language;
+    /*u_media_ids.s = args->media_ids;*/
+    /* poll */
+    u_preview.i = args->preview;
+    u_scheduled_at.s = args->scheduled_at;
+    u_sensitive.i = args->sensitive;
+    u_spoiler_text.s = args->spoiler_text;
+    u_status.s = args->status;
+    u_visibility.s = args->visibility;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "content_type", u_content_type },
+        { _MSTDNT_QUERY_STRING, "status", u_status },
+        { _MSTDNT_QUERY_STRING, "visibility", u_visibility },
+    };
+
+    post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
+
+    curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
+            
+    if (mastodont_fetch_curl(data, "api/v1/statuses", &results) != CURLE_OK)
+        return 1;
+
+    mastodont_fetch_results_cleanup(&results);
+    return 0;
+}
+

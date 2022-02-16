@@ -15,6 +15,7 @@ void mastodont_global_curl_cleanup()
 int mastodont_init(mastodont_t* data)
 {
     data->curl = curl_easy_init();
+    data->token = NULL;
     return data->curl == NULL;
 }
 
