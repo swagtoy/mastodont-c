@@ -44,6 +44,7 @@ static int mstdnt_read_app_result(struct mstdnt_storage* storage,
             return 1;
         }
     }
+    return 0;
 }
 
 static int mstdnt_read_token_result(struct mstdnt_storage* storage,
@@ -70,6 +71,8 @@ static int mstdnt_read_token_result(struct mstdnt_storage* storage,
             return 1;
         }
     }
+
+    return 0;
 }
 
 
@@ -79,7 +82,7 @@ int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
 {
-    int res;
+    int res = 0;
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
@@ -133,7 +136,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)
 {
-    int res;
+    int res = 0;
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
