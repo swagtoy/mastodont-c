@@ -45,7 +45,7 @@ int _mstdnt_key_val_iter(cJSON* v,
             }
         }
     }
-    else if (bools && cJSON_IsBool(v))
+    if (bools && cJSON_IsBool(v))
     {
         for (i = 0; i < bool_len; ++i)
         {
