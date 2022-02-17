@@ -128,4 +128,8 @@ int mastodont_create_status(mastodont_t* data,
                             struct mstdnt_create_status_args* args,
                             struct mstdnt_storage* storage);
 
+int mastodont_favourite_status(mastodont_t* data,
+                               char* id,
+                               struct mstdnt_storage* storage);
+
 #endif /* MASTODONT_STATUS */

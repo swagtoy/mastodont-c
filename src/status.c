@@ -191,3 +191,22 @@ int mastodont_create_status(mastodont_t* data,
     return 0;
 }
 
+int mastodont_favourite_status(mastodont_t* data,
+                               char* id,
+                               struct mstdnt_storage* storage)
+{
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE,
+             "api/v1/%s/favourite", id);
+
+    storage->needs_cleanup = 0;
+
+    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+        return 1;
+
+    /* TODO Handle errors */
+
+    mastodont_fetch_results_cleanup(&results);
+    return 0;
+}
