@@ -23,6 +23,7 @@ void mastodont_global_curl_init();
 void mastodont_global_curl_cleanup();
 
 int mastodont_init(mastodont_t* data);
+int mastodont_set_token(mastodont_t* data, char* token);
 void mastodont_free(mastodont_t* data);
 
 void mastodont_storage_cleanup(struct mstdnt_storage* storage);

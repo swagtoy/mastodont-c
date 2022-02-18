@@ -51,7 +51,7 @@ int _mstdnt_key_val_iter(cJSON* v,
         {
             if (strcmp(bools[i].key, v->string) == 0)
             {
-                *(bools[i].bool_ptr) = cJSON_IsTrue(v) ? cJSON_True : cJSON_False;
+                *(bools[i].bool_ptr) = cJSON_IsTrue(v);
                 return 0;
             }
         }
