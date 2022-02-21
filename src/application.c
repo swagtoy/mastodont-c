@@ -115,7 +115,7 @@ int mastodont_register_app(mastodont_t* data,
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
 
-    if (mastodont_fetch_curl(data, "api/v1/apps", &results, CURLOPT_HTTPGET) != CURLE_OK)
+    if (mastodont_fetch_curl(data, "api/v1/apps", &results, CURLOPT_POST) != CURLE_OK)
     {
         res = 1;
         goto cleanup;
@@ -183,7 +183,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
 
-    if (mastodont_fetch_curl(data, "oauth/token", &results, CURLOPT_HTTPGET) != CURLE_OK)
+    if (mastodont_fetch_curl(data, "oauth/token", &results, CURLOPT_POST) != CURLE_OK)
     {
         res = 1;
         goto cleanup;
