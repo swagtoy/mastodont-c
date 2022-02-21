@@ -184,7 +184,7 @@ int mastodont_create_status(mastodont_t* data,
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
             
-    if (mastodont_fetch_curl(data, "api/v1/statuses", &results, CURLOPT_HTTPGET) != CURLE_OK)
+    if (mastodont_fetch_curl(data, "api/v1/statuses", &results, CURLOPT_POST) != CURLE_OK)
         return 1;
 
     mastodont_fetch_results_cleanup(&results);
@@ -207,4 +207,66 @@ int mastodont_favourite_status(mastodont_t* data,
 
     mastodont_fetch_results_cleanup(&results);
     return 0;
+}
+
+int mastodont_status_context(mastodont_t* data,
+                             char* id,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_status* statuses_before[],
+                             struct mstdnt_status* statuses_after[],
+                             size_t* size_before,
+                             size_t* size_after)
+{
+    int res = 0;
+    cJSON* root, *v, *status_item;
+    size_t* size_ptr;
+    struct mstdnt_status** stat_ptr = NULL;
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
+    storage->needs_cleanup = 0;
+
+    *size_before = 0;
+    *size_after = 0;
+
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
+    {
+        return 1;
+    }
+
+    if (_mstdnt_json_init(&root, &results, storage))
+    {
+        res = 1;
+        goto cleanup;
+    }
+    storage->root = root;
+        
+    for (v = root; v; v = v->next)
+    {
+        if (cJSON_IsObject(v))
+        {
+            /* Set pointers */
+            if (strcmp(v->child->string, "ancestors") == 0)
+            {
+                stat_ptr = statuses_before;
+                size_ptr = size_before;
+            }
+            else if (strcmp(v->child->string, "descendants") == 0) {
+                stat_ptr = statuses_after;
+                size_ptr = size_after;
+            }
+
+            *stat_ptr = malloc(cJSON_GetArraySize(v->child) * sizeof(struct mstdnt_status));
+            if (*stat_ptr == NULL)
+                return 1;
+            
+            cJSON_ArrayForEach(status_item, v->child)
+                mstdnt_load_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
+        }
+    }
+    storage->needs_cleanup = 1;
+cleanup:
+    mastodont_fetch_results_cleanup(&results);
+
+    return res;
 }

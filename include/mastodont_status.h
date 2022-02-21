@@ -123,7 +123,7 @@ int mastodont_account_statuses(mastodont_t* data,
                                struct mstdnt_storage* storage,
                                struct mstdnt_status* statuses[],
                                size_t* size);
-int mastodont_status_content(mastodont_t* data,
+int mastodont_status_context(mastodont_t* data,
                              char* id,
                              struct mstdnt_storage* storage,
                              struct mstdnt_status* statuses_before[],
