@@ -198,7 +198,7 @@ int mastodont_favourite_status(mastodont_t* data,
     char url[MSTDNT_URLSIZE];
     struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
-             "api/v1/%s/favourite", id);
+             "api/v1/statuses/%s/favourite", id);
 
     storage->needs_cleanup = 0;
 
