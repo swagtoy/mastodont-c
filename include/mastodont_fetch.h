@@ -17,6 +17,7 @@
 #define MASTODONT_FETCH_H
 #include <cjson/cJSON.h>
 #include <mastodont_types.h>
+#include <curl/curl.h>
 
 struct mstdnt_fetch_results
 {
@@ -27,6 +28,7 @@ struct mstdnt_fetch_results
 void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res);
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* url,
-                         struct mstdnt_fetch_results* results);
+                         struct mstdnt_fetch_results* results,
+                         CURLoption request_t);
 
 #endif /* MASTODONT_FETCH_H */

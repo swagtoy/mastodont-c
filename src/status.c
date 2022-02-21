@@ -117,7 +117,7 @@ int mastodont_account_statuses(mastodont_t* data,
     }
     storage->needs_cleanup = 0;
 
-    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
         return 1;
 
     res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
@@ -184,7 +184,7 @@ int mastodont_create_status(mastodont_t* data,
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
             
-    if (mastodont_fetch_curl(data, "api/v1/statuses", &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, "api/v1/statuses", &results, CURLOPT_HTTPGET) != CURLE_OK)
         return 1;
 
     mastodont_fetch_results_cleanup(&results);
@@ -202,10 +202,8 @@ int mastodont_favourite_status(mastodont_t* data,
 
     storage->needs_cleanup = 0;
 
-    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_POST) != CURLE_OK)
         return 1;
-
-    /* TODO Handle errors */
 
     mastodont_fetch_results_cleanup(&results);
     return 0;

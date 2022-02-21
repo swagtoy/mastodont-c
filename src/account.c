@@ -34,7 +34,7 @@ int mastodont_account(mastodont_t* data,
              id);
     storage->needs_cleanup = 0;
 
-    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
     {
         return 1;
     }

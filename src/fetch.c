@@ -47,7 +47,8 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 #define TOKEN_STR_SIZE 512
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* _url,
-                         struct mstdnt_fetch_results* results)
+                         struct mstdnt_fetch_results* results,
+                         CURLoption request_t)
 {
     int res;
     char token[TOKEN_STR_SIZE] = { 0 };
@@ -71,6 +72,8 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_URL, url);
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
+    /* PUT, POST, GET */
+    curl_easy_setopt(mstdnt->curl, request_t, 1);
 
     res = curl_easy_perform(mstdnt->curl);
 

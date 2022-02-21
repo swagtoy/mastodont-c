@@ -65,7 +65,7 @@ int mastodont_timeline_public(mastodont_t* data,
     
     char* url = _mstdnt_query_string("api/v1/timelines/public", params, _mstdnt_arr_len(params));
 
-    if (mastodont_fetch_curl(data, url, &results) != CURLE_OK)
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
     {
         res = 1;
         goto cleanup;
