@@ -115,6 +115,10 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],
                                      struct mstdnt_storage* storage,
                                      struct mstdnt_fetch_results* results,
                                      size_t* size);
+
+int mstdnt_load_status_from_result(struct mstdnt_status* status,
+                                   struct mstdnt_storage* storage,
+                                   struct mstdnt_fetch_results* results);
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js);
 
 int mastodont_account_statuses(mastodont_t* data,
@@ -123,6 +127,12 @@ int mastodont_account_statuses(mastodont_t* data,
                                struct mstdnt_storage* storage,
                                struct mstdnt_status* statuses[],
                                size_t* size);
+
+int mastodont_view_status(mastodont_t* data,
+                          char* id,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_status* status);
+
 int mastodont_status_context(mastodont_t* data,
                              char* id,
                              struct mstdnt_storage* storage,

@@ -59,6 +59,23 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
     }
 }
 
+int mstdnt_load_status_from_result(struct mstdnt_status* status,
+                                   struct mstdnt_storage* storage,
+                                   struct mstdnt_fetch_results* results)
+{
+    cJSON* root;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
+
+    if (!cJSON_IsObject(root))
+        return 1;
+
+    if (!mstdnt_load_status_from_json(status, root->child))
+        storage->needs_cleanup = 1;
+
+    return 1;
+}
+
 int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
                                      struct mstdnt_storage* storage,
                                      struct mstdnt_fetch_results* results,
@@ -84,6 +101,8 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
     {
         mstdnt_load_status_from_json((*statuses) + i++, status_j_list->child);
     }
+    storage->needs_cleanup = 1;
+    return 0;
 }
 
 int mastodont_account_statuses(mastodont_t* data,
@@ -209,6 +228,27 @@ int mastodont_favourite_status(mastodont_t* data,
     return 0;
 }
 
+int mastodont_view_status(mastodont_t* data,
+                          char* id,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_status* status)
+{
+    int res;
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
+    storage->needs_cleanup = 0;
+
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
+        return 1;
+
+    res = mstdnt_load_status_from_result(status, storage, &results);
+
+    mastodont_fetch_results_cleanup(&results);
+    
+    return res;    
+}
+
 int mastodont_status_context(mastodont_t* data,
                              char* id,
                              struct mstdnt_storage* storage,
@@ -228,6 +268,8 @@ int mastodont_status_context(mastodont_t* data,
 
     *size_before = 0;
     *size_after = 0;
+    *statuses_before = NULL;
+    *statuses_after = NULL;
 
     if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
     {
@@ -240,27 +282,31 @@ int mastodont_status_context(mastodont_t* data,
         goto cleanup;
     }
     storage->root = root;
-        
-    for (v = root; v; v = v->next)
+
+    for (v = root->child; v; v = v->next)
     {
-        if (cJSON_IsObject(v))
+        if (cJSON_IsObject(v->child))
         {
             /* Set pointers */
-            if (strcmp(v->child->string, "ancestors") == 0)
+            if (strcmp(v->string, "ancestors") == 0)
             {
                 stat_ptr = statuses_before;
                 size_ptr = size_before;
             }
-            else if (strcmp(v->child->string, "descendants") == 0) {
+            if (strcmp(v->string, "descendants") == 0) {
                 stat_ptr = statuses_after;
                 size_ptr = size_after;
             }
 
-            *stat_ptr = malloc(cJSON_GetArraySize(v->child) * sizeof(struct mstdnt_status));
+            /* Skip allocating empty arrays */
+            if (cJSON_GetArraySize(v) <= 0)
+                continue;
+
+            *stat_ptr = malloc(cJSON_GetArraySize(v) * sizeof(struct mstdnt_status));
             if (*stat_ptr == NULL)
                 return 1;
             
-            cJSON_ArrayForEach(status_item, v->child)
+            cJSON_ArrayForEach(status_item, v)
                 mstdnt_load_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
         }
     }
