@@ -17,6 +17,8 @@
 #define MASTODONT_H
 #include <mastodont_types.h>
 #include <mastodont_timeline.h>
+#include <mastodont_account.h>
+#include <mastodont_list.h>
 
 /* Functions required form curl */
 void mastodont_global_curl_init();
