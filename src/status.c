@@ -23,40 +23,30 @@
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
-    struct _mstdnt_str_val strings[] = {
-        { "id", &(status->id) },
-        { "uri", &(status->uri) },
-        { "created_at", &(status->created_at) },
-        { "content", &(status->content) },
-        { "spoiler_text", &(status->spoiler_text) },
-        { "in_reply_to_id", &(status->in_reply_to_id) },
-        { "language", &(status->language) },
-        { "url", &(status->url) },
-        { "text", &(status->text) },
-        { "in_reply_to_account_id", &(status->in_reply_to_account_id) }
-    };
-
-    struct _mstdnt_bool_val bools[] = {
-        { "sensitive", &(status->sensitive) },
-        { "favourited", &(status->favourited) },
-        { "reblogged", &(status->reblogged) },
-        { "muted", &(status->muted) },
-        { "bookmarked", &(status->bookmarked) },
-        { "pinned", &(status->pinned) }
+    struct _mstdnt_val_ref vals[] = {
+        { "id", &(status->id), _mstdnt_val_string_call, NULL },
+        { "uri", &(status->uri), _mstdnt_val_string_call, NULL },
+        { "created_at", &(status->created_at), _mstdnt_val_string_call, NULL },
+        { "content", &(status->content), _mstdnt_val_string_call, NULL },
+        { "spoiler_text", &(status->spoiler_text), _mstdnt_val_string_call, NULL },
+        { "in_reply_to_id", &(status->in_reply_to_id), _mstdnt_val_string_call, NULL },
+        { "language", &(status->language), _mstdnt_val_string_call, NULL },
+        { "url", &(status->url), _mstdnt_val_string_call, NULL },
+        { "text", &(status->text), _mstdnt_val_string_call, NULL },
+        { "in_reply_to_account_id", &(status->in_reply_to_account_id), _mstdnt_val_string_call, NULL },
+        { "sensitive", &(status->sensitive), _mstdnt_val_bool_call, NULL },
+        { "favourited", &(status->favourited), _mstdnt_val_bool_call, NULL },
+        { "reblogged", &(status->reblogged), _mstdnt_val_bool_call, NULL },
+        { "muted", &(status->muted), _mstdnt_val_bool_call, NULL },
+        { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call, NULL },
+        { "pinned", &(status->pinned), _mstdnt_val_bool_call, NULL },
     };
     
     for (v = js; v; v = v->next)
-    {
-        if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
-                                 bools, _mstdnt_arr_len(bools)) == 1)
-        {
+        if (_mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals)) == 1)
             if (cJSON_IsObject(v))
-            {
                 if (strcmp("account", v->string) == 0)
                     mstdnt_load_account_from_json(&(status->account), v->child);
-            }
-        }
-    }
     return 0;
 }
 

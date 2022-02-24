@@ -27,6 +27,33 @@ int _mstdnt_json_init(cJSON** root,
     return 0;
 }
 
+int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
+                        size_t refs_len)
+{
+    size_t i;
+    for (i = 0; i < refs_len; ++i)
+    {
+        if (strcmp(refs[i].key, v->string) == 0)
+        {
+            refs[i].handle(v, refs[i].val);
+            return 0;
+        }
+    }
+    return 1;
+}
+
+void _mstdnt_val_string_call(cJSON* v, void* _type)
+{
+    char** type = _type;
+    *type = v->valuestring;
+}
+
+void _mstdnt_val_bool_call(cJSON* v, void* _type)
+{
+    mstdnt_bool* type = _type;
+    *type = cJSON_IsTrue(v);
+}
+
 int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_str_val* str,
                          size_t str_len,

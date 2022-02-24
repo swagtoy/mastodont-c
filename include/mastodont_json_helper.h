@@ -18,22 +18,38 @@
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 
-struct _mstdnt_str_val
+struct _mstdnt_val_ref
 {
     const char* key;
-    char** key_ptr;
-};
-
-struct _mstdnt_bool_val
-{
-    const char* key;
-    mstdnt_bool* bool_ptr;
+    void* val;
+    void (*handle)(cJSON*, void*);
 };
 
 int _mstdnt_json_init(cJSON** root,
                       struct mstdnt_fetch_results* results,
                       struct mstdnt_storage* storage);
 
+int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
+                        size_t refs_len);
+
+void _mstdnt_val_string_call(cJSON* v, void* _type);
+void _mstdnt_val_bool_call(cJSON* v, void* _type);
+
+/* DEPRECATED */
+struct _mstdnt_str_val
+{
+    const char* key;
+    char** key_ptr;
+};
+
+/* DEPRECATED */
+struct _mstdnt_bool_val
+{
+    const char* key;
+    mstdnt_bool* bool_ptr;
+};
+
+/* DEPRECATED */
 int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_str_val* str,
                          size_t str_len,
