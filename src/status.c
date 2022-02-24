@@ -57,6 +57,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
             }
         }
     }
+    return 0;
 }
 
 int mstdnt_load_status_from_result(struct mstdnt_status* status,
@@ -194,6 +195,7 @@ int mastodont_create_status(mastodont_t* data,
     u_visibility.s = args->visibility;
 
     struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "in_reply_to_id", u_in_reply_to_id },
         { _MSTDNT_QUERY_STRING, "content_type", u_content_type },
         { _MSTDNT_QUERY_STRING, "status", u_status },
         { _MSTDNT_QUERY_STRING, "visibility", u_visibility },

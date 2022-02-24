@@ -31,6 +31,7 @@ int mstdnt_load_list_from_json(struct mstdnt_list* list, cJSON* js)
         if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
                                  NULL, 0) == 1)
             return 1;
+    return 0;
 }
 
 
@@ -79,7 +80,8 @@ int mastodont_get_lists(mastodont_t* data,
         return 1;
     }
 
-    // TODO
-cleanup:
+    res = mstdnt_load_lists_from_result(lists, storage, &results, size);
+
+    mastodont_fetch_results_cleanup(&results);
     return res;
 }
