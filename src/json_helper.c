@@ -64,6 +64,17 @@ void _mstdnt_val_bool_call(cJSON* v, void* _type)
     *type = cJSON_IsTrue(v);
 }
 
+void _mstdnt_val_uint_call(cJSON* v, void* _type)
+{
+    unsigned* type = _type;
+    if (!cJSON_IsNumber(v))
+    {
+        *type = 0;
+        return;
+    }
+    *type = v->valueint;
+}
+
 int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_str_val* str,
                          size_t str_len,

@@ -61,30 +61,29 @@ cleanup:
 int mstdnt_load_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {
     cJSON* v;
-    struct _mstdnt_str_val strings[] = {
-        { "id", &(acct->id) },
-        { "username", &(acct->username) },
-        { "acct", &(acct->acct) },
-        { "display_name", &(acct->display_name) },
-        { "created_at", &(acct->created_at) },
-        { "note", &(acct->note) },
-        { "url", &(acct->url) },
-        { "avatar", &(acct->avatar) },
-        { "avatar_static", &(acct->avatar_static) },
-        { "header", &(acct->header) },
-        { "header_static", &(acct->header_static) },
-        { "last_status_at", &(acct->last_status_at) },
-        { "mute_expires_at", &(acct->mute_expires_at) }
-    };
-
-    struct _mstdnt_bool_val bools[] = {
-        { "locked", &(acct->locked) },
-        { "bot", &(acct->bot) }
+    struct _mstdnt_val_ref refs[] = {
+        { "id", &(acct->id), _mstdnt_val_string_call },
+        { "username", &(acct->username), _mstdnt_val_string_call },
+        { "acct", &(acct->acct), _mstdnt_val_string_call },
+        { "display_name", &(acct->display_name), _mstdnt_val_string_call },
+        { "created_at", &(acct->created_at), _mstdnt_val_string_call },
+        { "note", &(acct->note), _mstdnt_val_string_call },
+        { "url", &(acct->url), _mstdnt_val_string_call },
+        { "avatar", &(acct->avatar), _mstdnt_val_string_call },
+        { "avatar_static", &(acct->avatar_static), _mstdnt_val_string_call },
+        { "header", &(acct->header), _mstdnt_val_string_call },
+        { "header_static", &(acct->header_static), _mstdnt_val_string_call },
+        { "last_status_at", &(acct->last_status_at), _mstdnt_val_string_call },
+        { "mute_expires_at", &(acct->mute_expires_at), _mstdnt_val_string_call },
+        { "locked", &(acct->locked), _mstdnt_val_bool_call },
+        { "bot", &(acct->bot), _mstdnt_val_bool_call },
+        { "statuses_count", &(acct->statuses_count), _mstdnt_val_uint_call },
+        { "followers_count", &(acct->followers_count), _mstdnt_val_uint_call },
+        { "following_count", &(acct->following_count), _mstdnt_val_uint_call },
     };
     
     for (v = js; v; v = v->next)
     {
-        _mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
-                             bools, _mstdnt_arr_len(bools));
+        _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
     }
 }

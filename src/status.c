@@ -40,6 +40,9 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "muted", &(status->muted), _mstdnt_val_bool_call, NULL },
         { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call, NULL },
         { "pinned", &(status->pinned), _mstdnt_val_bool_call, NULL },
+        { "reblogs_count", &(status->reblogs_count), _mstdnt_val_uint_call, NULL },
+        { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call, NULL },
+        { "replies_count", &(status->replies_count), _mstdnt_val_uint_call, NULL },
     };
     
     for (v = js; v; v = v->next)
