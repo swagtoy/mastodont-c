@@ -45,12 +45,22 @@ int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
 void _mstdnt_val_string_call(cJSON* v, void* _type)
 {
     char** type = _type;
+    if (!cJSON_IsString(v))
+    {
+        *type = NULL;
+        return;
+    }
     *type = v->valuestring;
 }
 
 void _mstdnt_val_bool_call(cJSON* v, void* _type)
 {
     mstdnt_bool* type = _type;
+    if (!cJSON_IsBool(v))
+    {
+        *type = -1;
+        return;
+    }
     *type = cJSON_IsTrue(v);
 }
 

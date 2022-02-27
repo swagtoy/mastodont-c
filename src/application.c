@@ -26,20 +26,19 @@ static int mstdnt_read_app_result(struct mstdnt_storage* storage,
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 
-    struct _mstdnt_str_val strings[] = {
-        { "id", &(app->id) },
-        { "name", &(app->name) },
-        { "website", &(app->website) },
-        { "redirect_uri", &(app->redirect_uri) },
-        { "client_id", &(app->client_id) },
-        { "client_secret", &(app->client_secret) },
-        { "vapid_key", &(app->vapid_key) },
+    struct _mstdnt_val_ref refs[] = {
+        { "id", &(app->id), _mstdnt_val_string_call },
+        { "name", &(app->name), _mstdnt_val_string_call },
+        { "website", &(app->website), _mstdnt_val_string_call },
+        { "redirect_uri", &(app->redirect_uri), _mstdnt_val_string_call },
+        { "client_id", &(app->client_id), _mstdnt_val_string_call },
+        { "client_secret", &(app->client_secret), _mstdnt_val_string_call },
+        { "vapid_key", &(app->vapid_key), _mstdnt_val_string_call },
     };
 
     for (v = root->child; v; v = v->next)
     {
-        if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
-                                 NULL, 0) == 1)
+        if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)))
         {
             return 1;
         }
@@ -55,18 +54,17 @@ static int mstdnt_read_token_result(struct mstdnt_storage* storage,
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 
-    struct _mstdnt_str_val strings[] = {
-        { "access_token", &(app->access_token) },
-        { "token_type", &(app->token_type) },
-        { "scope", &(app->scope) },
-        { "id", &(app->id) },
-        { "me", &(app->me) },
+    struct _mstdnt_val_ref refs[] = {
+        { "access_token", &(app->access_token), _mstdnt_val_string_call },
+        { "token_type", &(app->token_type), _mstdnt_val_string_call },
+        { "scope", &(app->scope), _mstdnt_val_string_call },
+        { "id", &(app->id), _mstdnt_val_string_call },
+        { "me", &(app->me), _mstdnt_val_string_call },
     };
 
-    for (v = root->child; v; v = v->next)
+    for (v = root; v; v = v->next)
     {
-        if (_mstdnt_key_val_iter(v, strings, _mstdnt_arr_len(strings),
-                                 NULL, 0) == 1)
+        if (_mstdnt_key_val_ref(v->child, refs, _mstdnt_arr_len(refs)) == 1)
         {
             return 1;
         }
@@ -120,11 +118,18 @@ int mastodont_register_app(mastodont_t* data,
         res = 1;
         goto cleanup;
     }
+/*
+    if (mstdnt_check_error(&results, storage))
+    {
+        res = 1;
+        goto cleanup_fetch;
+    }
+*/
 
     res = mstdnt_read_app_result(storage, &results, app);
 
+cleanup_fetch:
     mastodont_fetch_results_cleanup(&results);
-
 cleanup:
     free(post);
     return res;
@@ -167,7 +172,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
     u_username.s = args->username;
     u_password.s = args->password;
 
-
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_STRING, "grant_type", u_grant_type },
         { _MSTDNT_QUERY_STRING, "client_id", u_client_id },
@@ -180,7 +184,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
     };
 
     char* post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
-
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
 
     if (mastodont_fetch_curl(data, "oauth/token", &results, CURLOPT_POST) != CURLE_OK)
@@ -189,8 +192,15 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         goto cleanup;
     }
 
+    if (mstdnt_check_error(&results, storage))
+    {
+        res = 1;
+        goto cleanup_fetch;
+    }
+
     res = mstdnt_read_token_result(storage, &results, token);
 
+cleanup_fetch:
     mastodont_fetch_results_cleanup(&results);
 
 cleanup:

@@ -13,30 +13,24 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_TYPES_H
-#define MASTODONT_TYPES_H
-#include <curl/curl.h>
-#include <cjson/cJSON.h>
+#include <mastodont_query.h>
+#include <mastodont_json_helper.h>
 
-#define _mstdnt_arr_len(arr) (sizeof(arr)/sizeof(arr[0]))
-#define MSTDNT_URLSIZE 2048
-#define MSTDNT_URISIZE 512
-typedef unsigned char mstdnt_bool;
-
-typedef struct mastodont
+int mstdnt_check_error(struct mstdnt_fetch_results* results,
+                       struct mstdnt_storage* storage)
 {
-    char* url;
-    CURL* curl;
-    char* token;
-    mstdnt_bool token_heap;
-} mastodont_t;
+    int res = 0;
+    cJSON* root, *v;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
 
-struct mstdnt_storage
-{
-    int needs_cleanup; /* Double free safe */
-    cJSON* root;
-    char* error;
-    char* error_description;
-};
-
-#endif /* MASTODONT_TYPES_H */
+    struct _mstdnt_val_ref refs[] = {
+        { "error", &(storage->error), _mstdnt_val_string_call },
+        { "error_description", &(storage->error_description), _mstdnt_val_string_call },
+    };
+    
+    for (v = root->child; v; v = v->next)
+        if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)) == 0)
+            res = 1;
+    return res;
+}
