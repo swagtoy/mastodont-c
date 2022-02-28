@@ -19,6 +19,7 @@
 #include <mastodont_status.h>
 #include <mastodont_account.h>
 #include <mastodont_query.h>
+#include <mastodont_pleroma.h>
 
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
@@ -28,7 +29,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
         &(status->media_attachments),
         &(status->media_attachments_len),
     };
-    
+
     struct _mstdnt_val_ref vals[] = {
         { "id", &(status->id), _mstdnt_val_string_call },
         { "uri", &(status->uri), _mstdnt_val_string_call },
@@ -50,6 +51,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call },
         { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
         { "media_attachments", &att_args, _mstdnt_val_attachments_call },
+        { "pleroma", &(status->pleroma), _mstdnt_val_pleroma_call }
     };
     
     for (v = js; v; v = v->next)

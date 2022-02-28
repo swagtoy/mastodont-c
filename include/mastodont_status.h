@@ -16,6 +16,7 @@
 #ifndef MASTODONT_STATUS
 #define MASTODONT_STATUS
 #include <cjson/cJSON.h>
+#include "mastodont_pleroma.h"
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 #include "mastodont_attachment.h"
@@ -25,7 +26,7 @@
 #include "mastodont_emoji.h"
 #include "mastodont_tag.h"
 #include "mastodont_account.h"
-
+#include "mastodont_pleroma.h"
 /* Status: Complete, not implemented */
 
 enum mstdnt_status_visibility
@@ -51,6 +52,7 @@ struct mstdnt_status
     struct mstdnt_attachment* media_attachments;
     size_t media_attachments_len;
     struct mstdnt_application application;
+    struct mstdnt_pleroma pleroma;
 
     /* Rendering attributes */
     struct mstdnt_mention* mentions;
