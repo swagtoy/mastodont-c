@@ -49,6 +49,7 @@ struct mstdnt_status
     mstdnt_bool sensitive;
     char* spoiler_text;
     struct mstdnt_attachment* media_attachments;
+    size_t media_attachments_len;
     struct mstdnt_application application;
 
     /* Rendering attributes */

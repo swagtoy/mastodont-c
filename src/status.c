@@ -23,26 +23,33 @@
 int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
+    
+    struct _mstdnt_attachment_args att_args = {
+        &(status->media_attachments),
+        &(status->media_attachments_len),
+    };
+    
     struct _mstdnt_val_ref vals[] = {
-        { "id", &(status->id), _mstdnt_val_string_call, NULL },
-        { "uri", &(status->uri), _mstdnt_val_string_call, NULL },
-        { "created_at", &(status->created_at), _mstdnt_val_string_call, NULL },
-        { "content", &(status->content), _mstdnt_val_string_call, NULL },
-        { "spoiler_text", &(status->spoiler_text), _mstdnt_val_string_call, NULL },
-        { "in_reply_to_id", &(status->in_reply_to_id), _mstdnt_val_string_call, NULL },
-        { "language", &(status->language), _mstdnt_val_string_call, NULL },
-        { "url", &(status->url), _mstdnt_val_string_call, NULL },
-        { "text", &(status->text), _mstdnt_val_string_call, NULL },
-        { "in_reply_to_account_id", &(status->in_reply_to_account_id), _mstdnt_val_string_call, NULL },
-        { "sensitive", &(status->sensitive), _mstdnt_val_bool_call, NULL },
-        { "favourited", &(status->favourited), _mstdnt_val_bool_call, NULL },
-        { "reblogged", &(status->reblogged), _mstdnt_val_bool_call, NULL },
-        { "muted", &(status->muted), _mstdnt_val_bool_call, NULL },
-        { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call, NULL },
-        { "pinned", &(status->pinned), _mstdnt_val_bool_call, NULL },
-        { "reblogs_count", &(status->reblogs_count), _mstdnt_val_uint_call, NULL },
-        { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call, NULL },
-        { "replies_count", &(status->replies_count), _mstdnt_val_uint_call, NULL },
+        { "id", &(status->id), _mstdnt_val_string_call },
+        { "uri", &(status->uri), _mstdnt_val_string_call },
+        { "created_at", &(status->created_at), _mstdnt_val_string_call },
+        { "content", &(status->content), _mstdnt_val_string_call },
+        { "spoiler_text", &(status->spoiler_text), _mstdnt_val_string_call },
+        { "in_reply_to_id", &(status->in_reply_to_id), _mstdnt_val_string_call },
+        { "language", &(status->language), _mstdnt_val_string_call },
+        { "url", &(status->url), _mstdnt_val_string_call },
+        { "text", &(status->text), _mstdnt_val_string_call },
+        { "in_reply_to_account_id", &(status->in_reply_to_account_id), _mstdnt_val_string_call },
+        { "sensitive", &(status->sensitive), _mstdnt_val_bool_call },
+        { "favourited", &(status->favourited), _mstdnt_val_bool_call },
+        { "reblogged", &(status->reblogged), _mstdnt_val_bool_call },
+        { "muted", &(status->muted), _mstdnt_val_bool_call },
+        { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call },
+        { "pinned", &(status->pinned), _mstdnt_val_bool_call },
+        { "reblogs_count", &(status->reblogs_count), _mstdnt_val_uint_call },
+        { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call },
+        { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
+        { "media_attachments", &att_args, _mstdnt_val_attachments_call },
     };
     
     for (v = js; v; v = v->next)

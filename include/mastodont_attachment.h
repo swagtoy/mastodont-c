@@ -15,8 +15,14 @@
 
 #ifndef MASTODONT_ATTACHMENT
 #define MASTODONT_ATTACHMENT
-
+#include "mastodont_types.h"
 /* Status: Complete, not implemented */
+
+struct _mstdnt_attachment_args
+{
+    struct mstdnt_attachment** attachments;
+    size_t* size;
+};
 
 enum mstdnt_attachment_type
 {
@@ -38,5 +44,7 @@ struct mstdnt_attachment
     char* description;
     char* blurhash;
 };
+
+void _mstdnt_val_attachments_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_ATTACHMENT */

@@ -22,7 +22,7 @@ struct _mstdnt_val_ref
 {
     const char* key;
     void* val;
-    void (*handle)(cJSON*, void*);
+    void (*handle)(cJSON*, void*;)
 };
 
 int _mstdnt_json_init(cJSON** root,
