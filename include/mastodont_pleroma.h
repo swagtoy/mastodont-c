@@ -13,28 +13,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_EMOJI
-#define MASTODONT_EMOJI
-#include "mastodont_types.h"
+#ifdef MASTODONT_PLEROMA
+#define MASTODONT_PLEROMA
+#include <mastodont_types.h>
+#include <mastodont_emojis.h>
 
-struct mstdnt_emoji
+struct mstdnt_pleroma
 {
-    /* Required */
-    char* shortcode;
-    char* url;
-    char* static_url;
-    mstdnt_bool visible_in_picker;
-
-    /* Optional */
-    char* category;
+    /* content */
+    int conversation_id;
+    int direct_conversation_id;
 };
 
-struct mstdnt_emoji_react
-{
-    char* name;
-    size_t count;
-    mstdnt_bool me;
-    /* TODO Accounts */
-};
-
-#endif /* MASTODONT_EMOJI */
+#endif /* MASTODONT_PLEROMA */

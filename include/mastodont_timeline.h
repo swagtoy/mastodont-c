@@ -28,6 +28,20 @@ struct mstdnt_timeline_public_args {
     int limit;
 };
 
+struct mstdnt_timeline_list_args {
+    char* max_id;
+    char* since_id;
+    char* min_id;
+    int limit;
+};
+
+int mastodont_timeline_list(mastodont_t* data,
+                            char* list_id,
+                            struct mstdnt_timeline_list_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size);
+
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
                               struct mstdnt_storage* storage,

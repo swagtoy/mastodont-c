@@ -44,8 +44,8 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     cJSON* v_array = v->child;
     cJSON* att = NULL;
 
-    size_t size = cJSON_GetArraySize(v_array);
-    args->size = size;
+    size_t size = cJSON_GetArraySize(v);
+    *(args->size) = size;
     /* No attachments, ignore */
     if (size == 0)
     {

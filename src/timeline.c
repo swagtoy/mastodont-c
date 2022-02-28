@@ -19,6 +19,61 @@
 #include "mastodont_timeline.h"
 #include "mastodont_query.h"
 
+int mastodont_timeline_list(mastodont_t* data,
+                            char* list_id,
+                            struct mstdnt_timeline_list_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size)
+{
+    char url[MSTDNT_URLSIZE];
+    int res;
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
+    
+    /* Default args */
+    struct mstdnt_timeline_list_args _args;
+    if (args == NULL)
+    {
+        _args.max_id = NULL;
+        _args.since_id = NULL;
+        _args.min_id = NULL;
+        _args.limit = 20;
+        args = &_args;
+    }
+    storage->needs_cleanup = 0;
+
+    union param_value u_local, u_remote, u_only_media,
+        u_max_id, u_since_id, u_min_id, u_limit;
+    u_max_id.s = args->max_id;
+    u_since_id.s = args->since_id;
+    u_min_id.s = args->min_id;
+    u_limit.i = args->limit;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
+    };
+    
+    char* url_query = _mstdnt_query_string(url, params, _mstdnt_arr_len(params));
+
+    if (mastodont_fetch_curl(data, url_query, &results, CURLOPT_HTTPGET) != CURLE_OK)
+    {
+        res = 1;
+        goto cleanup;
+    }
+
+    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
+
+    mastodont_fetch_results_cleanup(&results);
+    
+cleanup:
+    free(url_query);
+    return res;
+}
+
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_public_args* args,
                               struct mstdnt_storage* storage,
