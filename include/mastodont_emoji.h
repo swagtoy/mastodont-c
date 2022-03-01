@@ -29,12 +29,14 @@ struct mstdnt_emoji
     char* category;
 };
 
-struct mstdnt_emoji_react
+struct mstdnt_emoji_reaction
 {
     char* name;
     size_t count;
     mstdnt_bool me;
     /* TODO Accounts */
 };
+
+void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_EMOJI */

@@ -16,14 +16,21 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_pleroma.h>
 
-int mstdnt_load_pleroma_from_json(struct mstdnt_pleroma* pleroma, cJSON* js)
+int mstdnt_load_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js)
 {
     cJSON* v;
+
+    struct _mstdnt_generic_args emo_args = {
+        &(pleroma->emoji_reactions),
+        &(pleroma->emoji_reactions_len),
+    };
+
     struct _mstdnt_val_ref refs[] = {
         { "conversation_id", &(pleroma->conversation_id), _mstdnt_val_sint_call },
         { "direct_conversation_id", &(pleroma->direct_conversation_id), _mstdnt_val_sint_call },
         { "expires_at", &(pleroma->expires_at), _mstdnt_val_string_call },
         { "in_reply_to_account_acct", &(pleroma->in_reply_to_account_acct), _mstdnt_val_string_call },
+        { "emoji_reactions", &emo_args, _mstdnt_val_emoji_reactions_call },
         { "pinned_at", &(pleroma->pinned_at), _mstdnt_val_string_call },
         { "thread_muted", &(pleroma->thread_muted), _mstdnt_val_sint_call },
     };
@@ -34,9 +41,9 @@ int mstdnt_load_pleroma_from_json(struct mstdnt_pleroma* pleroma, cJSON* js)
     }
 }
 
-void _mstdnt_val_pleroma_call(cJSON* v, void* _type)
+void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type)
 {
-    struct mstdnt_pleroma* type = _type;
+    struct mstdnt_status_pleroma* type = _type;
 
-    mstdnt_load_pleroma_from_json(type, v->child);
+    mstdnt_load_status_pleroma_from_json(type, v->child);
 }

@@ -14,33 +14,28 @@
  */
 
 #include <stdlib.h>
-#include <mastodont_attachment.h>
 #include <mastodont_json_helper.h>
+#include <mastodont_emoji.h>
 
-static void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json)
+static void load_emoji_reacts_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
 {
     cJSON* it;
     struct _mstdnt_val_ref refs[] = {
-        { "id", &(att->id), _mstdnt_val_string_call },
-        /* TODO type */
-        { "url", &(att->url), _mstdnt_val_string_call },
-        { "preview_url", &(att->preview_url), _mstdnt_val_string_call },
-        { "remote_url", &(att->remote_url), _mstdnt_val_string_call },
-        { "hash", &(att->hash), _mstdnt_val_string_call },
-        { "description", &(att->description), _mstdnt_val_string_call },
-        { "blurhash", &(att->blurhash), _mstdnt_val_string_call },        
+        { "name", &(emo->name), _mstdnt_val_string_call },
+        { "count", &(emo->count), _mstdnt_val_uint_call },
+        { "me", &(emo->me), _mstdnt_val_bool_call },
     };
 
-    for (it = att_json; it; it = it->next)
+    for (it = emo_json; it; it = it->next)
     {
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
     }
 }
 
-void _mstdnt_val_attachments_call(cJSON* v, void* _type)
+void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
 {
     struct _mstdnt_generic_args* args = _type;
-    struct mstdnt_attachment** attachments = args->arg;
+    struct mstdnt_emoji_reaction** emos = args->arg;
     cJSON* v_array = v->child;
     cJSON* att = NULL;
 
@@ -49,18 +44,19 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     /* No attachments, ignore */
     if (size == 0)
     {
-        *attachments = NULL;
+        *emos = NULL;
         return;
     }
 
-    *attachments = malloc(sizeof(struct mstdnt_attachment) * size);
-    if (*attachments == NULL)
+    *emos = malloc(sizeof(struct mstdnt_emoji_reaction) * size);
+    if (*emos == NULL)
         return;
 
     cJSON* it;
     int i;
     for (it = v_array, i = 0; it; (++i, it = it->next))
     {
-        load_attachment_from_json((*attachments) + i, it->child);
+        load_emoji_reacts_from_json((*emos) + i, it->child);
     }
 }
+

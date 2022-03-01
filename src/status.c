@@ -25,7 +25,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
     
-    struct _mstdnt_attachment_args att_args = {
+    struct _mstdnt_generic_args att_args = {
         &(status->media_attachments),
         &(status->media_attachments_len),
     };
@@ -51,7 +51,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call },
         { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
         { "media_attachments", &att_args, _mstdnt_val_attachments_call },
-        { "pleroma", &(status->pleroma), _mstdnt_val_pleroma_call }
+        { "pleroma", &(status->pleroma), _mstdnt_val_status_pleroma_call }
     };
     
     for (v = js; v; v = v->next)

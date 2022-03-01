@@ -18,12 +18,6 @@
 #include "mastodont_types.h"
 /* Status: Complete, not implemented */
 
-struct _mstdnt_attachment_args
-{
-    struct mstdnt_attachment** attachments;
-    size_t* size;
-};
-
 enum mstdnt_attachment_type
 {
     MSTDNT_ATTACHMENT_UNKNOWN,

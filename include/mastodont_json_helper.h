@@ -18,6 +18,12 @@
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 
+struct _mstdnt_generic_args
+{
+    void* arg;
+    size_t* size;
+};
+
 struct _mstdnt_val_ref
 {
     const char* key;

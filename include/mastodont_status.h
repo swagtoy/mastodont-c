@@ -52,7 +52,7 @@ struct mstdnt_status
     struct mstdnt_attachment* media_attachments;
     size_t media_attachments_len;
     struct mstdnt_application application;
-    struct mstdnt_pleroma pleroma;
+    struct mstdnt_status_pleroma pleroma;
 
     /* Rendering attributes */
     struct mstdnt_mention* mentions;
