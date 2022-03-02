@@ -39,6 +39,7 @@ struct mstdnt_attachment
     char* blurhash;
 };
 
+void cleanup_attachments(struct mstdnt_attachment* attachment);
 void _mstdnt_val_attachments_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_ATTACHMENT */

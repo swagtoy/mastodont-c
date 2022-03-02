@@ -37,6 +37,8 @@ struct mstdnt_emoji_reaction
     /* TODO Accounts */
 };
 
+void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions);
+void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions);
 void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_EMOJI */

@@ -60,3 +60,13 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
     }
 }
 
+void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions)
+{
+    /* NOP for compatibility purposes */
+    return;
+}
+
+void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions)
+{
+    if (reactions) free(reactions);
+}

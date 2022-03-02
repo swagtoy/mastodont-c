@@ -16,6 +16,7 @@
 #ifndef MASTODONT_NOTIFICATION
 #define MASTODONT_NOTIFICATION
 #include "mastodont_types.h"
+#include <cjson/cJSON.h>
 
 enum mstdnt_notification_type
 {
@@ -39,10 +40,10 @@ struct mstdnt_notification
 
 int mastodont_notifications(mastodont_t* data,
                             struct mstdnt_notification** notifs,
-                            stuct mstdnt_storage* storage,
+                            struct mstdnt_storage* storage,
                             size_t* size);
 
 int mstdnt_load_account_from_json(struct mstdnt_notification* notif, cJSON* js);
 void _mstdnt_val_notifications_call(cJSON* v, void* _type);
 
-#endif // MASTODONT_NOTIFICATION
+#endif /* MASTODONT_NOTIFICATION */

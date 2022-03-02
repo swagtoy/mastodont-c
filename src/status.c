@@ -339,3 +339,9 @@ cleanup:
 
     return res;
 }
+
+void cleanup_status(struct mstdnt_status* status)
+{
+    cleanup_attachments(status->media_attachments);
+    cleanup_status_pleroma(&(status->pleroma));
+}

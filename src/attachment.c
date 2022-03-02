@@ -64,3 +64,8 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
         load_attachment_from_json((*attachments) + i, it->child);
     }
 }
+
+void cleanup_attachments(struct mstdnt_attachment* attachment)
+{
+    if (attachment) free(attachment);
+}

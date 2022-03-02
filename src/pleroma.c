@@ -47,3 +47,9 @@ void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type)
 
     mstdnt_load_status_pleroma_from_json(type, v->child);
 }
+
+void cleanup_status_pleroma(struct mstdnt_status_pleroma* pleroma)
+{
+    cleanup_emoji_reactions(pleroma->emoji_reactions);
+}
+
