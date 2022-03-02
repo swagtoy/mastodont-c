@@ -345,3 +345,14 @@ void cleanup_status(struct mstdnt_status* status)
     cleanup_attachments(status->media_attachments);
     cleanup_status_pleroma(&(status->pleroma));
 }
+
+void cleanup_statuses(struct mstdnt_status* statuses, size_t s)
+{
+    size_t i;
+    if (!statuses) return;
+    for (i = 0; i < s; ++i)
+    {
+        cleanup_status(statuses + i);
+    }
+    free(statuses);
+}

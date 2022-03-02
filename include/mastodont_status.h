@@ -114,6 +114,7 @@ struct mstdnt_create_status_args
     char* visibility;
 };
 
+void cleanup_statuses(struct mstdnt_status* statuses, size_t s);
 void cleanup_status(struct mstdnt_status* status);
 
 int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],

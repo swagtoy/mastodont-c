@@ -60,13 +60,17 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
     }
 }
 
-void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions)
+void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reaction)
 {
-    /* NOP for compatibility purposes */
+    /* NOP, this will be implemented soon*/
     return;
 }
 
-void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions)
+void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s)
 {
-    if (reactions) free(reactions);
+    size_t i;
+    if (!reactions) return;
+    for (i = 0; i < s; ++i)
+        cleanup_emoji_reaction(reactions + s);
+    free(reactions);
 }

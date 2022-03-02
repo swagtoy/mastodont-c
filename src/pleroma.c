@@ -50,6 +50,7 @@ void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type)
 
 void cleanup_status_pleroma(struct mstdnt_status_pleroma* pleroma)
 {
-    cleanup_emoji_reactions(pleroma->emoji_reactions);
+    if (!pleroma) return;
+    cleanup_emoji_reactions(pleroma->emoji_reactions, pleroma->emoji_reactions_len);
 }
 
