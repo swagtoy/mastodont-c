@@ -152,4 +152,8 @@ int mastodont_favourite_status(mastodont_t* data,
                                char* id,
                                struct mstdnt_storage* storage);
 
+int mastodont_reblog_status(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_storage* storage);
+
 #endif /* MASTODONT_STATUS */

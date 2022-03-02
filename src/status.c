@@ -232,6 +232,25 @@ int mastodont_favourite_status(mastodont_t* data,
     return 0;
 }
 
+
+int mastodont_reblog_status(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_storage* storage)
+{
+    char url[MSTDNT_URLSIZE];
+    struct mstdnt_fetch_results results = { 0 };
+    snprintf(url, MSTDNT_URLSIZE,
+             "api/v1/statuses/%s/reblog", id);
+
+    storage->needs_cleanup = 0;
+
+    if (mastodont_fetch_curl(data, url, &results, CURLOPT_POST) != CURLE_OK)
+        return 1;
+
+    mastodont_fetch_results_cleanup(&results);
+    return 0;
+}
+
 int mastodont_view_status(mastodont_t* data,
                           char* id,
                           struct mstdnt_storage* storage,
