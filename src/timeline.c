@@ -21,7 +21,7 @@
 
 int mastodont_timeline_list(mastodont_t* data,
                             char* list_id,
-                            struct mstdnt_timeline_list_args* args,
+                            struct mstdnt_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size)
@@ -32,15 +32,6 @@ int mastodont_timeline_list(mastodont_t* data,
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
     
     /* Default args */
-    struct mstdnt_timeline_list_args _args;
-    if (args == NULL)
-    {
-        _args.max_id = NULL;
-        _args.since_id = NULL;
-        _args.min_id = NULL;
-        _args.limit = 20;
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     union param_value u_local, u_remote, u_only_media,
@@ -75,7 +66,7 @@ cleanup:
 }
 
 int mastodont_timeline_public(mastodont_t* data,
-                              struct mstdnt_timeline_public_args* args,
+                              struct mstdnt_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* size)
@@ -84,18 +75,6 @@ int mastodont_timeline_public(mastodont_t* data,
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
-    struct mstdnt_timeline_public_args _args;
-    if (args == NULL)
-    {
-        _args.local = 0; /* Defaults to false */
-        _args.remote = 0;
-        _args.only_media = 0;
-        _args.max_id = NULL;
-        _args.since_id = NULL;
-        _args.min_id = NULL;
-        _args.limit = 20;
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     union param_value u_local, u_remote, u_only_media,
