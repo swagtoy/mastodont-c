@@ -110,7 +110,7 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
 
 int mastodont_account_statuses(mastodont_t* data,
                                char* id,
-                               struct mstdnt_account_statuses_args* args,
+                               struct mstdnt_args* args,
                                struct mstdnt_storage* storage,
                                struct mstdnt_status* statuses[],
                                size_t* size)
@@ -121,22 +121,6 @@ int mastodont_account_statuses(mastodont_t* data,
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
     
     /* Default args */
-    struct mstdnt_account_statuses_args _args;
-    if (args == NULL)
-    {
-        _args.pinned = 0;
-        _args.tagged = NULL;
-        _args.with_muted = 1;
-        _args.offset = 0;
-        _args.exclude_reblogs = 0;
-        _args.exclude_replies = 0;
-        _args.only_media = 0;
-        _args.max_id = NULL;
-        _args.since_id = NULL;
-        _args.min_id = NULL;
-        _args.limit = 20;
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
@@ -150,7 +134,7 @@ int mastodont_account_statuses(mastodont_t* data,
 }
 
 int mastodont_create_status(mastodont_t* data,
-                            struct mstdnt_create_status_args* args,
+                            struct mstdnt_args* args,
                             struct mstdnt_storage* storage)
 {
     int res = 0;
@@ -158,24 +142,6 @@ int mastodont_create_status(mastodont_t* data,
     struct mstdnt_fetch_results results = { 0 };
 
     /* Default args */
-    struct mstdnt_create_status_args _args;
-    if (args == NULL)
-    {
-        _args.content_type = "html"; /* TODO */
-        _args.expires_in = 0;
-        _args.in_reply_to_conversation_id = NULL;
-        _args.in_reply_to_id = NULL;
-        _args.language = NULL;
-        _args.media_ids = NULL;
-        _args.poll = NULL;
-        _args.preview = 0;
-        _args.scheduled_at = NULL;
-        _args.sensitive = 0;
-        _args.spoiler_text = NULL;
-        _args.status = NULL;
-        _args.visibility = "public";
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     union param_value u_content_type, u_expires_in,

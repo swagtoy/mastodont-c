@@ -15,7 +15,7 @@
 
 #ifndef MASTODONT_ARGUMENTS_H
 #define MASTODONT_ARGUMENTS_H
-
+#include "mastodont_notif_types.h"
 /*
  * Originally, when the arguments were being designed for each function,
  * I found that many REST operations tended to result similar variable names
@@ -65,6 +65,12 @@ struct mstdnt_args
     char* visibility;
     int remote;
     int local;
+    char** exclude_types;
+    size_t exclude_types_len;
+    char* account_id;
+    char** exclude_visibilities;
+    size_t exclude_visibilities_len;
+    enum mstdnt_notification_type* include_types;
 };
 
 #endif /* MASTODONT_ARGUMENTS_H */

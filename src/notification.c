@@ -13,7 +13,11 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdlib.h>
 #include <mastodont_notification.h>
+#include <mastodont_fetch.h>
+#include <mastodont_json_helper.h>
+#include <mastodont_query.h>
 
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_get_notifications_args* args,
@@ -27,20 +31,24 @@ int mastodont_get_notifications(mastodont_t* data,
     /* Default args */
     storage->needs_cleanup = 0;
 
-    union param_value
-        u_account_id = args->account_id,
-        u_with_muted = args->with_muted,
-        u_max_id = args->max_id,
-        u_min_id = args->min_id,
-        u_since_id = args->since_id,
-        u_offset = args->offset,
-        u_limit = args->limit;
+    union param_value u_account_id, u_with_muted, u_max_id,
+        u_min_id, u_since_id, u_offset, u_limit;
+    u_account_id.s = args->account_id;
+    u_with_muted.i = args->with_muted;
+    u_max_id.s = args->max_id;
+    u_min_id.s = args->min_id;
+    u_since_id.s = args->since_id;
+    u_offset.i = args->offset;
+    u_limit.i = args->limit;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "client_name", u_client_name },
-        { _MSTDNT_QUERY_STRING, "redirect_uris", u_redirect_uris },
-        { _MSTDNT_QUERY_STRING, "scopes", u_scopes },
-        { _MSTDNT_QUERY_STRING, "website", u_website },
+        { _MSTDNT_QUERY_STRING, "account_id", u_account_id },
+        { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_INT, "offset", u_offset },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
 
     char* post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
@@ -60,7 +68,7 @@ int mastodont_get_notifications(mastodont_t* data,
     }
 */
 
-    res = mstdnt_read_app_result(storage, &results, app);
+/*    res = mstdnt_read_app_result(storage, &results, app);*/
 
 cleanup_fetch:
     mastodont_fetch_results_cleanup(&results);
@@ -69,7 +77,7 @@ cleanup:
     return res;    
 }
 
-int mstdnt_load_account_from_json(struct mstdnt_notification* notif, cJSON* js)
+int mstdnt_load_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
 {
     
 }

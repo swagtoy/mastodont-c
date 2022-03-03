@@ -76,7 +76,7 @@ static int mstdnt_read_token_result(struct mstdnt_storage* storage,
 
 
 int mastodont_register_app(mastodont_t* data,
-                           struct mstdnt_app_register_args* args,
+                           struct mstdnt_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
 {
@@ -84,15 +84,6 @@ int mastodont_register_app(mastodont_t* data,
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
-    struct mstdnt_app_register_args _args;
-    if (args == NULL)
-    {
-        _args.client_name = "mastodont-c"; /* Defaults to false */
-        _args.redirect_uris = NULL;
-        _args.scopes = NULL;
-        _args.website = NULL;
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     union param_value u_client_name, u_redirect_uris,
@@ -137,7 +128,7 @@ cleanup:
 
 
 int mastodont_obtain_oauth_token(mastodont_t* data,
-                                 struct mstdnt_oauth_token_args* args,
+                                 struct mstdnt_args* args,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)
 {
@@ -145,19 +136,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
     struct mstdnt_fetch_results results = { 0 };
     
     /* Default args */
-    struct mstdnt_oauth_token_args _args;
-    if (args == NULL)
-    {
-        _args.grant_type = NULL;
-        _args.client_id = NULL;
-        _args.client_secret = NULL;
-        _args.redirect_uri = NULL;
-        _args.scope = NULL;
-        _args.code = NULL;
-        _args.username = NULL;
-        _args.password = NULL;
-        args = &_args;
-    }
     storage->needs_cleanup = 0;
 
     union param_value u_grant_type, u_client_id,

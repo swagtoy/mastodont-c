@@ -20,20 +20,6 @@
 #include "mastodont_status.h"
 #include <cjson/cJSON.h>
 
-enum mstdnt_notification_type
-{
-    MSTDNT_NOTIFICATION_FOLLOW,
-    MSTDNT_NOTIFICATION_FOLLOW_REQUEST,
-    MSTDNT_NOTIFICATION_MENTION,
-    MSTDNT_NOTIFICATION_REBLOG,
-    MSTDNT_NOTIFICATION_FAVOURITE,
-    MSTDNT_NOTIFICATION_POLL,
-    MSTDNT_NOTIFICATION_STATUS,
-    MSTDNT_NOTIFICATION_EMOJI_REACT,
-    MSTDNT_NOTIFICATION_CHAT_MENTION,
-    MSTDNT_NOTIFICATION_REPORT
-};
-
 struct mstdnt_notification
 {
     char* id;
@@ -65,7 +51,7 @@ int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_notification** notifs,
                                 size_t* size);
 
-int mstdnt_load_account_from_json(struct mstdnt_notification* notif, cJSON* js);
+int mstdnt_load_notification_from_json(struct mstdnt_notification* notif, cJSON* js);
 void mstdnt_cleanup_notifications(struct mstdnt_notification* notif, size_t notif_len);
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif);
 
