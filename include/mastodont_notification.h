@@ -16,6 +16,8 @@
 #ifndef MASTODONT_NOTIFICATION
 #define MASTODONT_NOTIFICATION
 #include "mastodont_types.h"
+#include "mastodont_account.h"
+#include "mastodont_status.h"
 #include <cjson/cJSON.h>
 
 enum mstdnt_notification_type
@@ -35,15 +37,36 @@ enum mstdnt_notification_type
 struct mstdnt_notification
 {
     char* id;
+    char* created_at;
+    struct mstdnt_account* account;
+    struct mstdnt_status* status;
     enum mstdnt_notification_type type;
 };
 
-int mastodont_notifications(mastodont_t* data,
-                            struct mstdnt_notification** notifs,
-                            struct mstdnt_storage* storage,
-                            size_t* size);
+struct mstdnt_get_notifications_args
+{
+    char** exclude_types;
+    size_t exclude_types_len;
+    char* account_id;
+    char** exclude_visibilities;
+    size_t exclude_visibilities_len;
+    enum mstdnt_notification_type* include_types;
+    mstdnt_bool with_muted;
+    char* max_id;
+    char* min_id;
+    char* since_id;
+    int offset;
+    int limit;
+};
+
+int mastodont_get_notifications(mastodont_t* data,
+                                struct mstdnt_get_notifications_args* args,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_notification** notifs,
+                                size_t* size);
 
 int mstdnt_load_account_from_json(struct mstdnt_notification* notif, cJSON* js);
-void _mstdnt_val_notifications_call(cJSON* v, void* _type);
+void mstdnt_cleanup_notifications(struct mstdnt_notification* notif, size_t notif_len);
+void mstdnt_cleanup_notification(struct mstdnt_notification* notif);
 
 #endif /* MASTODONT_NOTIFICATION */

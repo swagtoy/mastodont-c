@@ -18,6 +18,7 @@
 #include <cjson/cJSON.h>
 #include "mastodont_pleroma.h"
 #include "mastodont_types.h"
+#include "mastodont_args.h"
 #include "mastodont_fetch.h"
 #include "mastodont_attachment.h"
 #include "mastodont_application.h"
@@ -82,38 +83,6 @@ struct mstdnt_status
     mstdnt_bool pinned;
 };
 
-
-struct mstdnt_account_statuses_args {
-    int pinned;
-    char* tagged;
-    int with_muted;
-    int exclude_reblogs;
-    int exclude_replies;
-    int offset;
-    int only_media;
-    char* max_id;
-    char* since_id;
-    char* min_id;
-    int limit;
-};
-
-struct mstdnt_create_status_args
-{
-    char* content_type;
-    int expires_in;
-    char* in_reply_to_conversation_id;
-    char* in_reply_to_id;
-    char* language;
-    char** media_ids;
-    void* poll; /* TODO */
-    int preview;
-    char* scheduled_at;
-    int sensitive;
-    char* spoiler_text;
-    char* status;
-    char* visibility;
-};
-
 void cleanup_statuses(struct mstdnt_status* statuses, size_t s);
 void cleanup_status(struct mstdnt_status* status);
 
@@ -129,7 +98,7 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js);
 
 int mastodont_account_statuses(mastodont_t* data,
                                char* id,
-                               struct mstdnt_account_statuses_args* args,
+                               struct mstdnt_args* args,
                                struct mstdnt_storage* storage,
                                struct mstdnt_status* statuses[],
                                size_t* size);
@@ -148,7 +117,7 @@ int mastodont_status_context(mastodont_t* data,
                              size_t* size_after);
                              
 int mastodont_create_status(mastodont_t* data,
-                            struct mstdnt_create_status_args* args,
+                            struct mstdnt_args* args,
                             struct mstdnt_storage* storage);
 
 int mastodont_favourite_status(mastodont_t* data,
