@@ -20,12 +20,14 @@
 #define CONV_SIZE 64
 
 /* TODO audit this function for overflows */
-char* _mstdnt_query_string(char* src,
+char* _mstdnt_query_string(mastodont_t* data,
+                           char* src,
                            struct _mstdnt_query_param* params,
                            size_t param_len)
 {
     size_t i;
     int res_prev;
+    char* escape_str;
     /* If value type is an int, convert it with int->str */
     char* val_ptr = NULL;
     char conv_val[CONV_SIZE];
@@ -54,10 +56,12 @@ char* _mstdnt_query_string(char* src,
 
     for (i = 0; i < param_len; ++i)
     {
+        escape_str = NULL;
         if (params[i].key &&
             !(params[i].type == _MSTDNT_QUERY_STRING &&
               params[i].value.s == NULL))
         {
+
             if (res_count++ == 0 && src_l)
                 /* Replaces Null terminator */
                 result[res_len-1] = '?';
@@ -68,8 +72,12 @@ char* _mstdnt_query_string(char* src,
                 snprintf(conv_val, CONV_SIZE, "%d", params[i].value.i);
                 val_ptr = conv_val;
             }
-            else /* Point to it */
-                val_ptr = params[i].value.s;
+            else /* Point to it, it's a string */
+            {
+                /* First, let's encode it */
+                escape_str = curl_easy_escape(data->curl, params[i].value.s, 0);
+                val_ptr = escape_str;
+            }
 
             /* Get lengths */
             key_len = strlen(params[i].key);

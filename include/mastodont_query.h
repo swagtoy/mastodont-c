@@ -34,7 +34,8 @@ struct _mstdnt_query_param
     } value;
 };
 
-char* _mstdnt_query_string(char* src,
+char* _mstdnt_query_string(mastodont_t* data,
+                           char* src,
                            struct _mstdnt_query_param* params,
                            size_t param_len);
 

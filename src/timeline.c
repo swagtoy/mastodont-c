@@ -48,7 +48,7 @@ int mastodont_timeline_list(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
     
-    char* url_query = _mstdnt_query_string(url, params, _mstdnt_arr_len(params));
+    char* url_query = _mstdnt_query_string(data, url, params, _mstdnt_arr_len(params));
 
     if (mastodont_fetch_curl(data, url_query, &results, CURLOPT_HTTPGET) != CURLE_OK)
     {
@@ -97,7 +97,7 @@ int mastodont_timeline_public(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
     
-    char* url = _mstdnt_query_string("api/v1/timelines/public", params, _mstdnt_arr_len(params));
+    char* url = _mstdnt_query_string(data, "api/v1/timelines/public", params, _mstdnt_arr_len(params));
 
     if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
     {

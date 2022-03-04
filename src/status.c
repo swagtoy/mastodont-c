@@ -169,7 +169,7 @@ int mastodont_create_status(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "visibility", u_visibility },
     };
 
-    post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
+    post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
             
