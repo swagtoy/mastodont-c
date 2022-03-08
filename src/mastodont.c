@@ -13,11 +13,12 @@ void mastodont_global_curl_cleanup()
     curl_global_cleanup();
 }
 
-int mastodont_init(mastodont_t* data)
+int mastodont_init(mastodont_t* data, uint16_t flags)
 {
     data->curl = curl_easy_init();
     data->token = NULL;
     data->token_heap = 0;
+    data->flags = flags;
     return data->curl == NULL;
 }
 

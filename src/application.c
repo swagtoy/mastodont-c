@@ -100,7 +100,7 @@ int mastodont_register_app(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "website", u_website },
     };
 
-    char* post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
+    char* post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
 
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
 
@@ -161,7 +161,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "password", u_password },        
     };
 
-    char* post = _mstdnt_query_string(NULL, params, _mstdnt_arr_len(params));
+    char* post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
     curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
 
     if (mastodont_fetch_curl(data, "oauth/token", &results, CURLOPT_POST) != CURLE_OK)

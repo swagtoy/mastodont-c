@@ -17,11 +17,20 @@
 #define MASTODONT_TYPES_H
 #include <curl/curl.h>
 #include <cjson/cJSON.h>
+#include <stdint.h>
 
 #define _mstdnt_arr_len(arr) (sizeof(arr)/sizeof(arr[0]))
 #define MSTDNT_URLSIZE 2048
 #define MSTDNT_URISIZE 512
 typedef unsigned char mstdnt_bool;
+
+#define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
+#define MSTDNT_FLAG_SSL_NONE (1<<1)
+#define MSTDNT_FLAG_SSL_UNVERIFIED (1<<2)
+#define MSTDNT_FLAG_SSL_EXPIRED (1<<3)
+#define MSTDNT_FLAG_SSL_SELFSIGNED (1<<4)
+#define MSTDN_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
+#define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
 typedef struct mastodont
 {
@@ -29,6 +38,7 @@ typedef struct mastodont
     CURL* curl;
     char* token;
     mstdnt_bool token_heap;
+    uint16_t flags;
 } mastodont_t;
 
 struct mstdnt_storage

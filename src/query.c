@@ -75,7 +75,8 @@ char* _mstdnt_query_string(mastodont_t* data,
             else /* Point to it, it's a string */
             {
                 /* First, let's encode it */
-                escape_str = curl_easy_escape(data->curl, params[i].value.s, 0);
+                escape_str = MSTDNT_T_FLAG_ISSET(data, MSTDNT_FLAG_NO_URI_SANITIZE) ?
+                    params[i].value.s : curl_easy_escape(data->curl, params[i].value.s, 0);
                 val_ptr = escape_str;
             }
 
@@ -101,6 +102,9 @@ char* _mstdnt_query_string(mastodont_t* data,
             strcpy(result + res_prev, params[i].key);
             result[res_prev + key_len] = '=';
             strcpy(result + res_prev + 1 + key_len, val_ptr);
+            /* Only free if flag is set, meaning it needs to be free'd */
+            if (!MSTDNT_T_FLAG_ISSET(data, MSTDNT_FLAG_NO_URI_SANITIZE))
+                curl_free(escape_str);
         }
     }
     
