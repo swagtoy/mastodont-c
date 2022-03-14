@@ -15,8 +15,38 @@
 
 #include <stdlib.h>
 #include <mastodont_account.h>
+#include <mastodont_request.h>
 #include <mastodont_json_helper.h>
 #include "mastodont_fetch.h"
+
+struct mastodont_account_args
+{
+    struct mstdnt_account* acct;
+    size_t* size;
+};
+
+static int mastodont_account_callback(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      void* _args)
+{
+    struct mastodont_account_args* args = _args;
+    struct mstdnt_account* acct = args->acct;
+    size_t* size = args->size;
+    
+    cJSON* root;
+    /* TODO cleanup this */
+    root = cJSON_ParseWithLength(results->response, results->size);
+
+    if (root == NULL)
+    {
+        return 1;
+    }
+    storage->root = root;
+    storage->needs_cleanup = 1;
+
+    mstdnt_load_account_from_json(acct, root->child);
+    return 0;
+}
 
 int mastodont_account(mastodont_t* data,
                       int lookup, /* TODO move into separate function for consistancy */
@@ -25,36 +55,26 @@ int mastodont_account(mastodont_t* data,
                       struct mstdnt_storage* storage,
                       size_t* size)
 {
-    int res = 0;
-    cJSON* root;
+    struct mastodont_account_args acct_args = { acct, size };
+    /* Url */
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
              lookup ? "api/v1/accounts/%s" : "api/v1/accounts/lookup?acct=%s",
              id);
-    storage->needs_cleanup = 0;
-
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
-    {
-        return 1;
-    }
-
-    /* TODO cleanup this */
-    root = cJSON_ParseWithLength(results.response, results.size);
-
-    if (root == NULL)
-    {
-        res = 1;
-        goto cleanup;
-    }
-    storage->root = root;
-    storage->needs_cleanup = 1;
-
-    mstdnt_load_account_from_json(acct, root->child);
-cleanup:
-    mastodont_fetch_results_cleanup(&results);
-
-    return res;
+    
+    struct mastodont_request_args args = {
+        storage,
+        url,
+        NULL,
+        0,
+        NULL,
+        0,
+        CURLOPT_HTTPGET,
+        &acct_args, /* args */
+        mastodont_account_callback, /* callback */
+    };
+    
+    return mastodont_request(data, &args);
 }
 
 

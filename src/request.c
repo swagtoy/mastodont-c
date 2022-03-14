@@ -13,27 +13,26 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_REQUEST_H
-#define MASTODONT_REQUEST_H
-#include "mastodont.h"
-#include "mastodont_types.h"
-#include "mastodont_fetch.h"
+#include <assert.h>
+#include <mastodont_request.h>
 
-struct mastodont_request_args
+int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
 {
-    struct mstdnt_storage* storage;
-    char* url;
-    struct _mstdnt_query_param* params_query;
-    size_t params_query_len;
-    struct _mstdnt_query_param* params_post;
-    size_t params_post_len;
-    CURLoption request_type;
-    void* args;
-    int (*callback)(struct mstdnt_fetch_results* results,
-                    struct mstdnt_storage* storage,
-                    void*);
-};
+    int res = 0;
+    struct mstdnt_storage* storage = args->storage;
+    struct mstdnt_fetch_results results = { 0 };
 
-int mastodont_request(mastodont_t* data, struct mastodont_request_args* args);
+    if (mastodont_fetch_curl(data, args->url, &results, CURLOPT_HTTPGET) != CURLE_OK)
+    {
+        return 1;
+    }
 
-#endif /* MASTODONT_REQUEST_H */
+    /* TODO Check if error json */
+
+    args->callback(&results, storage, args->args);
+
+cleanup:
+    mastodont_fetch_results_cleanup(&results);
+    return res;
+}
+
