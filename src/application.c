@@ -138,7 +138,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "scope", u_scope },
         { _MSTDNT_QUERY_STRING, "code", u_code },
         { _MSTDNT_QUERY_STRING, "username", u_username },
-        { _MSTDNT_QUERY_STRING, "password", u_password },        
+        { _MSTDNT_QUERY_STRING, "password", u_password },
     };
 
     struct mastodont_request_args req_args = {
