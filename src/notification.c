@@ -60,13 +60,6 @@ int mastodont_get_notifications(mastodont_t* data,
         res = 1;
         goto cleanup;
     }
-/*
-    if (mstdnt_check_error(&results, storage))
-    {
-        res = 1;
-        goto cleanup_fetch;
-    }
-*/
 
 /*    res = mstdnt_read_app_result(storage, &results, app);*/
 

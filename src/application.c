@@ -17,11 +17,13 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_application.h>
 #include <mastodont_query.h>
+#include <mastodont_request.h>
 
-static int mstdnt_read_app_result(struct mstdnt_storage* storage,
-                                  struct mstdnt_fetch_results* results,
-                                  struct mstdnt_app* app)
+static int mstdnt_read_app_result_callback(struct mstdnt_fetch_results* results,
+                                           struct mstdnt_storage* storage,
+                                           void* args)
 {
+    struct mstdnt_app* app = args;
     cJSON* root, *v;
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
@@ -46,10 +48,11 @@ static int mstdnt_read_app_result(struct mstdnt_storage* storage,
     return 0;
 }
 
-static int mstdnt_read_token_result(struct mstdnt_storage* storage,
-                                    struct mstdnt_fetch_results* results,
-                                    struct mstdnt_oauth_token* app)
+static int mstdnt_read_token_result_callback(struct mstdnt_fetch_results* results,
+                                             struct mstdnt_storage* storage,
+                                             void* args)
 {
+    struct mstdnt_oauth_token* app = args;
     cJSON* root, *v;
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
@@ -80,12 +83,6 @@ int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
 {
-    int res = 0;
-    struct mstdnt_fetch_results results = { 0 };
-    
-    /* Default args */
-    storage->needs_cleanup = 0;
-
     union param_value u_client_name, u_redirect_uris,
         u_scopes, u_website;
     u_client_name.s = args->client_name;
@@ -99,31 +96,20 @@ int mastodont_register_app(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "scopes", u_scopes },
         { _MSTDNT_QUERY_STRING, "website", u_website },
     };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/apps",
+        NULL,
+        0,
+        params,
+        _mstdnt_arr_len(params),
+        CURLOPT_POST,
+        app,
+        mstdnt_read_app_result_callback
+    };
 
-    char* post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
-
-    curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
-
-    if (mastodont_fetch_curl(data, "api/v1/apps", &results, CURLOPT_POST) != CURLE_OK)
-    {
-        res = 1;
-        goto cleanup;
-    }
-/*
-    if (mstdnt_check_error(&results, storage))
-    {
-        res = 1;
-        goto cleanup_fetch;
-    }
-*/
-
-    res = mstdnt_read_app_result(storage, &results, app);
-
-cleanup_fetch:
-    mastodont_fetch_results_cleanup(&results);
-cleanup:
-    free(post);
-    return res;
+    return mastodont_request(data, &req_args);
 }
 
 
@@ -132,12 +118,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)
 {
-    int res = 0;
-    struct mstdnt_fetch_results results = { 0 };
-    
-    /* Default args */
-    storage->needs_cleanup = 0;
-
     union param_value u_grant_type, u_client_id,
         u_client_secret, u_redirect_uri,
         u_scope, u_code, u_username, u_password;
@@ -161,27 +141,17 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "password", u_password },        
     };
 
-    char* post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
-    curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
+    struct mastodont_request_args req_args = {
+        storage,
+        "oauth/token",
+        NULL,
+        0,
+        params,
+        _mstdnt_arr_len(params),
+        CURLOPT_POST,
+        token,
+        mstdnt_read_token_result_callback
+    };
 
-    if (mastodont_fetch_curl(data, "oauth/token", &results, CURLOPT_POST) != CURLE_OK)
-    {
-        res = 1;
-        goto cleanup;
-    }
-
-    if (mstdnt_check_error(&results, storage))
-    {
-        res = 1;
-        goto cleanup_fetch;
-    }
-
-    res = mstdnt_read_token_result(storage, &results, token);
-
-cleanup_fetch:
-    mastodont_fetch_results_cleanup(&results);
-
-cleanup:
-    free(post);
-    return res;    
+    return mastodont_request(data, &req_args);
 }
