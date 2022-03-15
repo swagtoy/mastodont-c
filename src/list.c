@@ -17,8 +17,14 @@
 #include <mastodont_list.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_fetch.h>
+#include <mastodont_request.h>
 
-int mstdnt_load_list_from_json(struct mstdnt_list* list, cJSON* js)
+struct mstdnt_get_lists_args {
+    struct mstdnt_list** lists;
+    size_t* size;
+};
+
+int mstdnt_list_from_json(struct mstdnt_list* list, cJSON* js)
 {
     cJSON* v;
     struct _mstdnt_str_val strings[] = {
@@ -34,11 +40,10 @@ int mstdnt_load_list_from_json(struct mstdnt_list* list, cJSON* js)
     return 0;
 }
 
-
-int mstdnt_load_lists_from_result(struct mstdnt_list* lists[],
-                                  struct mstdnt_storage* storage,
-                                  struct mstdnt_fetch_results* results,
-                                  size_t* size)
+int mstdnt_lists_from_result(struct mstdnt_storage* storage,
+                             struct mstdnt_fetch_results* results,
+                             struct mstdnt_list* lists[],
+                             size_t* size)
 {
     size_t i = 0;
     cJSON* root, *list_j_list;
@@ -58,10 +63,18 @@ int mstdnt_load_lists_from_result(struct mstdnt_list* lists[],
     
     cJSON_ArrayForEach(list_j_list, root)
     {
-        mstdnt_load_list_from_json((*lists) + i++, list_j_list->child);
+        mstdnt_list_from_json((*lists) + i++, list_j_list->child);
     }
     storage->needs_cleanup = 1;
     return 0;
+}
+
+static int mstdnt_lists_from_result_callback(struct mstdnt_fetch_results* results,
+                                             struct mstdnt_storage* storage,
+                                             void* _args)
+{
+    struct mstdnt_get_lists_args* args = _args;
+    return mstdnt_lists_from_result(storage, results, args->lists, args->size);
 }
 
 int mastodont_get_lists(mastodont_t* data,
@@ -69,19 +82,20 @@ int mastodont_get_lists(mastodont_t* data,
                         struct mstdnt_storage* storage,
                         size_t* size)
 {
-    int res = 0;
-    cJSON* root;
-    struct mstdnt_fetch_results results = { 0 };
-    storage->needs_cleanup = 0;
+    struct mstdnt_get_lists_args args = {
+        lists,
+        size
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/lists",
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &args,
+        mstdnt_lists_from_result_callback
+    };
 
-    if (mastodont_fetch_curl(data, "api/v1/lists",
-                             &results, CURLOPT_HTTPGET) != CURLE_OK)
-    {
-        return 1;
-    }
-
-    res = mstdnt_load_lists_from_result(lists, storage, &results, size);
-
-    mastodont_fetch_results_cleanup(&results);
-    return res;
+    return mastodont_request(data, &req_args);
 }

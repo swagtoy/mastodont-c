@@ -16,6 +16,7 @@
 #ifndef MASTODONT_ARGUMENTS_H
 #define MASTODONT_ARGUMENTS_H
 #include "mastodont_notif_types.h"
+
 /*
  * Originally, when the arguments were being designed for each function,
  * I found that many REST operations tended to result similar variable names
@@ -23,6 +24,10 @@
  * allow argument reusing between multiple functions, all the args are put
  * into one struct, this makes it quite a large struct, but any machine will
  * handle it fine.
+ *
+ * It's ugly, I do not care. The other method caused me to write extreme duplicate
+ * amounts of code. If it's too memory hungry, reusing this struct in a static/global
+ * is an option.
  */
 
 struct mstdnt_args

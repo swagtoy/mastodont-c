@@ -17,24 +17,19 @@
 #include <mastodont_account.h>
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
-#include "mastodont_fetch.h"
 
-struct mastodont_account_args
+struct mstdnt_account_args
 {
     struct mstdnt_account* acct;
     size_t* size;
 };
 
-static int mastodont_account_callback(struct mstdnt_fetch_results* results,
-                                      struct mstdnt_storage* storage,
-                                      void* _args)
+int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_account* acct,
+                               size_t* size)
 {
-    struct mastodont_account_args* args = _args;
-    struct mstdnt_account* acct = args->acct;
-    size_t* size = args->size;
-    
     cJSON* root;
-    /* TODO cleanup this */
     root = cJSON_ParseWithLength(results->response, results->size);
 
     if (root == NULL)
@@ -44,18 +39,27 @@ static int mastodont_account_callback(struct mstdnt_fetch_results* results,
     storage->root = root;
     storage->needs_cleanup = 1;
 
-    mstdnt_load_account_from_json(acct, root->child);
+    mstdnt_account_from_json(acct, root->child);
     return 0;
 }
 
-int mastodont_account(mastodont_t* data,
-                      int lookup, /* TODO move into separate function for consistancy */
-                      char* id,
-                      struct mstdnt_account* acct,
-                      struct mstdnt_storage* storage,
-                      size_t* size)
+static int mstdnt_account_callback(struct mstdnt_fetch_results* results,
+                                   struct mstdnt_storage* storage,
+                                   void* _args)
 {
-    struct mastodont_account_args acct_args = { acct, size };
+    struct mstdnt_account_args* args = _args;
+    return mstdnt_account_from_result(results, storage, args->acct, args->size);
+}
+
+
+int mastodont_get_account(mastodont_t* data,
+                          int lookup, /* TODO move into separate function for consistancy */
+                          char* id,
+                          struct mstdnt_account* acct,
+                          struct mstdnt_storage* storage,
+                          size_t* size)
+{
+    struct mstdnt_account_args acct_args = { acct, size };
     /* Url */
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE,
@@ -71,14 +75,14 @@ int mastodont_account(mastodont_t* data,
         0,
         CURLOPT_HTTPGET,
         &acct_args, /* args */
-        mastodont_account_callback, /* callback */
+        mstdnt_account_callback, /* callback */
     };
     
     return mastodont_request(data, &args);
 }
 
 
-int mstdnt_load_account_from_json(struct mstdnt_account* acct, cJSON* js)
+int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {
     cJSON* v;
     struct _mstdnt_val_ref refs[] = {

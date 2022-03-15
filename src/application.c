@@ -19,11 +19,10 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-static int mstdnt_read_app_result_callback(struct mstdnt_fetch_results* results,
-                                           struct mstdnt_storage* storage,
-                                           void* args)
+int mstdnt_app_result(struct mstdnt_fetch_results* results,
+                      struct mstdnt_storage* storage,
+                      struct mstdnt_app* app)
 {
-    struct mstdnt_app* app = args;
     cJSON* root, *v;
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
@@ -48,11 +47,17 @@ static int mstdnt_read_app_result_callback(struct mstdnt_fetch_results* results,
     return 0;
 }
 
-static int mstdnt_read_token_result_callback(struct mstdnt_fetch_results* results,
-                                             struct mstdnt_storage* storage,
-                                             void* args)
+static int mstdnt_app_result_callback(struct mstdnt_fetch_results* results,
+                                   struct mstdnt_storage* storage,
+                                   void* args)
 {
-    struct mstdnt_oauth_token* app = args;
+    return mstdnt_app_result(results, storage, args);
+}
+
+int mstdnt_token_result(struct mstdnt_fetch_results* results,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_oauth_token* app)
+{
     cJSON* root, *v;
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
@@ -76,7 +81,12 @@ static int mstdnt_read_token_result_callback(struct mstdnt_fetch_results* result
     return 0;
 }
 
-
+static int mstdnt_token_result_callback(struct mstdnt_fetch_results* results,
+                                        struct mstdnt_storage* storage,
+                                        void* args)
+{
+    mstdnt_token_result(results, storage, args);
+}
 
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_args* args,
@@ -100,13 +110,11 @@ int mastodont_register_app(mastodont_t* data,
     struct mastodont_request_args req_args = {
         storage,
         "api/v1/apps",
-        NULL,
-        0,
-        params,
-        _mstdnt_arr_len(params),
+        NULL, 0,
+        params, _mstdnt_arr_len(params),
         CURLOPT_POST,
         app,
-        mstdnt_read_app_result_callback
+        mstdnt_app_result_callback
     };
 
     return mastodont_request(data, &req_args);
@@ -150,7 +158,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         _mstdnt_arr_len(params),
         CURLOPT_POST,
         token,
-        mstdnt_read_token_result_callback
+        mstdnt_token_result_callback
     };
 
     return mastodont_request(data, &req_args);

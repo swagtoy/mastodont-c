@@ -21,7 +21,7 @@
 #include <mastodont_query.h>
 #include <mastodont_pleroma.h>
 
-int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
+int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
     
@@ -58,13 +58,13 @@ int mstdnt_load_status_from_json(struct mstdnt_status* status, cJSON* js)
         if (_mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals)) == 1)
             if (cJSON_IsObject(v))
                 if (strcmp("account", v->string) == 0)
-                    mstdnt_load_account_from_json(&(status->account), v->child);
+                    mstdnt_account_from_json(&(status->account), v->child);
     return 0;
 }
 
-int mstdnt_load_status_from_result(struct mstdnt_status* status,
-                                   struct mstdnt_storage* storage,
-                                   struct mstdnt_fetch_results* results)
+int mstdnt_status_from_result(struct mstdnt_status* status,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_fetch_results* results)
 {
     cJSON* root;
     if (_mstdnt_json_init(&root, results, storage))
@@ -73,13 +73,13 @@ int mstdnt_load_status_from_result(struct mstdnt_status* status,
     if (!cJSON_IsObject(root))
         return 1;
 
-    if (!mstdnt_load_status_from_json(status, root->child))
+    if (!mstdnt_status_from_json(status, root->child))
         storage->needs_cleanup = 1;
 
     return 1;
 }
 
-int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
+int mstdnt_statuses_from_result(struct mstdnt_status* statuses[],
                                      struct mstdnt_storage* storage,
                                      struct mstdnt_fetch_results* results,
                                      size_t* size)
@@ -102,13 +102,14 @@ int mstdnt_load_statuses_from_result(struct mstdnt_status* statuses[],
     
     cJSON_ArrayForEach(status_j_list, root)
     {
-        mstdnt_load_status_from_json((*statuses) + i++, status_j_list->child);
+        mstdnt_status_from_json((*statuses) + i++, status_j_list->child);
     }
+    
     storage->needs_cleanup = 1;
     return 0;
 }
 
-int mastodont_account_statuses(mastodont_t* data,
+int mastodont_get_account_statuses(mastodont_t* data,
                                char* id,
                                struct mstdnt_args* args,
                                struct mstdnt_storage* storage,
@@ -126,7 +127,7 @@ int mastodont_account_statuses(mastodont_t* data,
     if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
         return 1;
 
-    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
+    res = mstdnt_statuses_from_result(statuses, storage, &results, size);
 
     mastodont_fetch_results_cleanup(&results);
     
@@ -231,7 +232,7 @@ int mastodont_view_status(mastodont_t* data,
     if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
         return 1;
 
-    res = mstdnt_load_status_from_result(status, storage, &results);
+    res = mstdnt_status_from_result(status, storage, &results);
 
     mastodont_fetch_results_cleanup(&results);
     
@@ -296,7 +297,7 @@ int mastodont_status_context(mastodont_t* data,
                 return 1;
             
             cJSON_ArrayForEach(status_item, v)
-                mstdnt_load_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
+                mstdnt_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
         }
     }
     storage->needs_cleanup = 1;

@@ -16,6 +16,7 @@
 #ifndef MASTODONT_ACCOUNT
 #define MASTODONT_ACCOUNT
 #include "mastodont_types.h"
+#include "mastodont_fetch.h"
 #include <cjson/cJSON.h>
 
 #define MSTDNT_LOOKUP_ACCT 0
@@ -54,14 +55,19 @@ struct mstdnt_account
     char* mute_expires_at;
 };
 
-int mastodont_account(mastodont_t* data,
-                      int lookup_type,
-                      char* id,
-                      struct mstdnt_account* acct,
-                      struct mstdnt_storage* storage,
-                      size_t* size);
+int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_account* acct,
+                               size_t* size);
 
-int mstdnt_load_account_from_json(struct mstdnt_account* status, cJSON* js);
+int mastodont_get_account(mastodont_t* data,
+                          int lookup_type,
+                          char* id,
+                          struct mstdnt_account* acct,
+                          struct mstdnt_storage* storage,
+                          size_t* size);
+
+int mstdnt_account_from_json(struct mstdnt_account* status, cJSON* js);
 
 
 #endif /* MASTODONT_ACCOUNT */
