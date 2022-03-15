@@ -43,8 +43,9 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         res = 1;
         goto cleanup;
     }
-    
-    args->callback(&results, storage, args->args);
+
+    /* Optional */
+    if (args->callback) args->callback(&results, storage, args->args);
 
 cleanup:
     mastodont_fetch_results_cleanup(&results);
