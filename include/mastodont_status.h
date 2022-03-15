@@ -86,10 +86,10 @@ struct mstdnt_status
 void cleanup_statuses(struct mstdnt_status* statuses, size_t s);
 void cleanup_status(struct mstdnt_status* status);
 
-int mstdnt_load_statuses_from_result(struct mstdnt_status* status[],
-                                     struct mstdnt_storage* storage,
-                                     struct mstdnt_fetch_results* results,
-                                     size_t* size);
+int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
+                                struct mstdnt_fetch_results* results,
+                                struct mstdnt_status* status[],
+                                size_t* size);
 
 int mstdnt_status_from_result(struct mstdnt_status* status,
                               struct mstdnt_storage* storage,

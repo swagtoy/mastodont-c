@@ -66,19 +66,17 @@ int mastodont_get_account(mastodont_t* data,
              lookup ? "api/v1/accounts/%s" : "api/v1/accounts/lookup?acct=%s",
              id);
     
-    struct mastodont_request_args args = {
+    struct mastodont_request_args req_args = {
         storage,
         url,
-        NULL,
-        0,
-        NULL,
-        0,
+        NULL, 0,
+        NULL, 0,
         CURLOPT_HTTPGET,
         &acct_args, /* args */
         mstdnt_account_callback, /* callback */
     };
     
-    return mastodont_request(data, &args);
+    return mastodont_request(data, &req_args);
 }
 
 
