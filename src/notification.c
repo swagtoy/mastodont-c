@@ -18,7 +18,7 @@
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
-
+#if 0
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,
@@ -69,7 +69,7 @@ cleanup:
     free(post);
     return res;    
 }
-
+#endif
 int mstdnt_load_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
 {
     

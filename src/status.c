@@ -20,6 +20,7 @@
 #include <mastodont_account.h>
 #include <mastodont_query.h>
 #include <mastodont_pleroma.h>
+#include <mastodont_request.h>
 
 struct mstdnt_statuses_args
 {
@@ -68,9 +69,9 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
     return 0;
 }
 
-int mstdnt_status_from_result(struct mstdnt_status* status,
+int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_storage* storage,
-                              struct mstdnt_fetch_results* results)
+                              struct mstdnt_status* status)
 {
     cJSON* root;
     if (_mstdnt_json_init(&root, results, storage))
@@ -83,6 +84,13 @@ int mstdnt_status_from_result(struct mstdnt_status* status,
         storage->needs_cleanup = 1;
 
     return 1;
+}
+
+static int mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
+                                              struct mstdnt_storage* storage,
+                                              void* status)
+{
+    return mstdnt_status_from_result(results, storage, (struct mstdnt_status*)status);
 }
 
 int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
@@ -115,8 +123,8 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
     return 0;
 }
 
-static int mstdnt_statuses_result_callback(struct mstdnt_storage* storage,
-                                           struct mstdnt_fetch_results* results,
+static int mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
+                                           struct mstdnt_storage* storage,
                                            void* _args)
 {
     struct mstdnt_statuses_args* args = _args;
@@ -132,7 +140,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
                                    size_t* size)
 {
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_statuses_args args = { statuses, size };
+    struct mstdnt_statuses_args cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
     struct mastodont_request_args req_args = {
@@ -141,7 +149,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
         NULL, 0,
         NULL, 0, /* TODO */
         CURLOPT_HTTPGET,
-        &args,
+        &cb_args,
         mstdnt_statuses_result_callback
     };
     
@@ -197,17 +205,21 @@ int mastodont_favourite_status(mastodont_t* data,
                                struct mstdnt_storage* storage)
 {
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
              "api/v1/statuses/%s/favourite", id);
 
-    storage->needs_cleanup = 0;
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_POST,
+        NULL,
+        NULL, /* TODO populate the status back?
+               * (not sure if the api returns it or not) */
+    };
 
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_POST) != CURLE_OK)
-        return 1;
-
-    mastodont_fetch_results_cleanup(&results);
-    return 0;
+    return mastodont_request(data, &req_args);
 }
 
 
@@ -216,17 +228,21 @@ int mastodont_reblog_status(mastodont_t* data,
                             struct mstdnt_storage* storage)
 {
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
              "api/v1/statuses/%s/reblog", id);
 
-    storage->needs_cleanup = 0;
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_POST,
+        NULL,
+        NULL, /* TODO populate the status back?
+               * (not sure if the api returns it or not) */
+    };
 
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_POST) != CURLE_OK)
-        return 1;
-
-    mastodont_fetch_results_cleanup(&results);
-    return 0;
+    return mastodont_request(data, &req_args);
 }
 
 int mastodont_view_status(mastodont_t* data,
@@ -234,20 +250,21 @@ int mastodont_view_status(mastodont_t* data,
                           struct mstdnt_storage* storage,
                           struct mstdnt_status* status)
 {
-    int res;
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
-    storage->needs_cleanup = 0;
-
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
-        return 1;
-
-    res = mstdnt_status_from_result(status, storage, &results);
-
-    mastodont_fetch_results_cleanup(&results);
     
-    return res;    
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        status, /* is casted to void* */
+        mstdnt_status_from_result_callback, /* TODO populate the status back?
+                                             * (not sure if the api returns it or not) */
+    };
+
+    return mastodont_request(data, &req_args);
 }
 
 int mastodont_status_context(mastodont_t* data,

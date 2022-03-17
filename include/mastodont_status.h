@@ -91,9 +91,9 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
                                 struct mstdnt_status* status[],
                                 size_t* size);
 
-int mstdnt_status_from_result(struct mstdnt_status* status,
+int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_storage* storage,
-                              struct mstdnt_fetch_results* results);
+                              struct mstdnt_status* status);
 
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
 
