@@ -237,10 +237,10 @@ int mastodont_reblog_status(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-int mastodont_view_status(mastodont_t* data,
-                          char* id,
-                          struct mstdnt_storage* storage,
-                          struct mstdnt_status* status)
+int mastodont_get_status(mastodont_t* data,
+                         char* id,
+                         struct mstdnt_storage* storage,
+                         struct mstdnt_status* status)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
@@ -340,13 +340,13 @@ int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* res
                                              args->size_after);
 }
 
-int mastodont_status_context(mastodont_t* data,
-                             char* id,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_status* statuses_before[],
-                             struct mstdnt_status* statuses_after[],
-                             size_t* size_before,
-                             size_t* size_after)
+int mastodont_get_status_context(mastodont_t* data,
+                                 char* id,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_status* statuses_before[],
+                                 struct mstdnt_status* statuses_after[],
+                                 size_t* size_before,
+                                 size_t* size_after)
 {
     struct _mstdnt_status_context_result_cb_args args = {
         statuses_before,
