@@ -28,8 +28,17 @@ struct mstdnt_statuses_args
     size_t* size;
 };
 
+struct mstdnt_status_context_result_args
+{
+    struct mstdnt_status** statuses_before;
+    struct mstdnt_status** statuses_after;
+    size_t* size_before;
+    size_t* size_after;
+};
+
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
+    js = js->child; /* Get in */
     cJSON* v;
     
     struct _mstdnt_generic_args att_args = {
@@ -74,14 +83,11 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_status* status)
 {
     cJSON* root;
-    if (_mstdnt_json_init(&root, results, storage))
+    if (_mstdnt_json_init(&root, results, storage) ||
+        !cJSON_IsObject(root))
         return 1;
 
-    if (!cJSON_IsObject(root))
-        return 1;
-
-    if (!mstdnt_status_from_json(status, root->child))
-        storage->needs_cleanup = 1;
+    mstdnt_status_from_json(status, root);
 
     return 1;
 }
@@ -259,48 +265,53 @@ int mastodont_view_status(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
-        status, /* is casted to void* */
-        mstdnt_status_from_result_callback, /* TODO populate the status back?
-                                             * (not sure if the api returns it or not) */
+        status,
+        mstdnt_status_from_result_callback,
     };
 
     return mastodont_request(data, &req_args);
 }
 
-int mastodont_status_context(mastodont_t* data,
-                             char* id,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_status* statuses_before[],
-                             struct mstdnt_status* statuses_after[],
-                             size_t* size_before,
-                             size_t* size_after)
-{
-    int res = 0;
-    cJSON* root, *v, *status_item;
-    size_t* size_ptr;
-    struct mstdnt_status** stat_ptr = NULL;
-    char url[MSTDNT_URLSIZE];
-    struct mstdnt_fetch_results results = { 0 };
-    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
-    storage->needs_cleanup = 0;
 
+int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      struct mstdnt_status* statuses_before[],
+                                      struct mstdnt_status* statuses_after[],
+                                      size_t* size_before,
+                                      size_t* size_after)
+{
+    cJSON* root;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
+
+    mstdnt_status_context_from_json(results,
+                                    storage,
+                                    statuses_before,
+                                    statuses_after,
+                                    size_before,
+                                    size_after,
+                                    root);
+    return 0;
+}
+
+int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
+                                    struct mstdnt_storage* storage,
+                                    struct mstdnt_status* statuses_before[],
+                                    struct mstdnt_status* statuses_after[],
+                                    size_t* size_before,
+                                    size_t* size_after,
+                                    cJSON* root)
+{
+    cJSON* v, *status_item;
+    size_t* size_ptr = NULL;
+    struct mstdnt_status** stat_ptr = NULL;
+    
+    /* Empty data */
     *size_before = 0;
     *size_after = 0;
     *statuses_before = NULL;
     *statuses_after = NULL;
-
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
-    {
-        return 1;
-    }
-
-    if (_mstdnt_json_init(&root, &results, storage))
-    {
-        res = 1;
-        goto cleanup;
-    }
-    storage->root = root;
-
+    
     for (v = root->child; v; v = v->next)
     {
         if (cJSON_IsObject(v->child))
@@ -325,14 +336,52 @@ int mastodont_status_context(mastodont_t* data,
                 return 1;
             
             cJSON_ArrayForEach(status_item, v)
-                mstdnt_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
+                mstdnt_status_from_json((*stat_ptr) + (*size_ptr)++, status_item);
         }
     }
-    storage->needs_cleanup = 1;
-cleanup:
-    mastodont_fetch_results_cleanup(&results);
+}
 
-    return res;
+static int mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
+                                                      struct mstdnt_storage* storage,
+                                                      void* _args)
+{
+    struct mstdnt_status_context_result_args* args = _args;
+    return mstdnt_status_context_from_result(results,
+                                             storage,
+                                             args->statuses_before,
+                                             args->statuses_after,
+                                             args->size_before,
+                                             args->size_after);
+}
+
+int mastodont_status_context(mastodont_t* data,
+                             char* id,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_status* statuses_before[],
+                             struct mstdnt_status* statuses_after[],
+                             size_t* size_before,
+                             size_t* size_after)
+{
+    struct mstdnt_status_context_result_args args = {
+        statuses_before,
+        statuses_after,
+        size_before,
+        size_after,
+    };
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &args,
+        mstdnt_status_context_from_result_callback,
+    };
+
+    return mastodont_request(data, &req_args);
 }
 
 void cleanup_status(struct mstdnt_status* status)

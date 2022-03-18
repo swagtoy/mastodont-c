@@ -97,6 +97,21 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
 
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
 
+int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      struct mstdnt_status* statuses_before[],
+                                      struct mstdnt_status* statuses_after[],
+                                      size_t* size_before,
+                                      size_t* size_after);
+
+int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
+                                    struct mstdnt_storage* storage,
+                                    struct mstdnt_status* statuses_before[],
+                                    struct mstdnt_status* statuses_after[],
+                                    size_t* size_before,
+                                    size_t* size_after,
+                                    cJSON* js);
+
 int mastodont_get_account_statuses(mastodont_t* data,
                                    char* id,
                                    struct mstdnt_args* args,

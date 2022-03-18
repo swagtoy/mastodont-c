@@ -27,6 +27,11 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
 
     storage->needs_cleanup = 0;
 
+    if (args->params_query)
+    {
+        
+    }
+
     if (args->params_post)
     {
         post = _mstdnt_query_string(data, NULL, args->params_post, args->params_post_len);
