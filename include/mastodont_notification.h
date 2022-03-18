@@ -19,6 +19,8 @@
 #include "mastodont_account.h"
 #include "mastodont_status.h"
 #include "mastodont_args.h"
+#include "mastodont_notif_types.h"
+#include "mastodont_visibility_types.h"
 #include <cjson/cJSON.h>
 
 struct mstdnt_notification
@@ -27,11 +29,28 @@ struct mstdnt_notification
     char* created_at;
     struct mstdnt_account* account;
     struct mstdnt_status* status;
-    enum mstdnt_notification_type type;
+    mstdnt_notification_t type;
+};
+
+struct mstdnt_get_notifications_args
+{
+    /* Bitmask */
+    mstdnt_notification_t exclude_types;
+    char* account_id;
+    /* Bitmask */
+    mstdnt_visibility_t exclude_visibilities;
+    /* Bitmask */
+    mstdnt_visibility_t include_types;
+    mstdnt_bool with_muted;
+    char* max_id;
+    char* min_id;
+    char* since_id;
+    int offset;
+    int limit;
 };
 
 int mastodont_get_notifications(mastodont_t* data,
-                                struct mstdnt_args* args,
+                                struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
                                 size_t* size);

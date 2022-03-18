@@ -18,26 +18,31 @@
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
-#if 0
+
+int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
+{
+    
+}
+
+
+
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
                                 size_t* size)
 {
-    int res = 0;
-    struct mstdnt_fetch_results results = { 0 };
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     
-    /* Default args */
-    storage->needs_cleanup = 0;
-
-    union param_value u_account_id, u_with_muted, u_max_id,
-        u_min_id, u_since_id, u_offset, u_limit;
+    union param_value u_exclude_types, u_account_id, u_exclude_visibilities,
+        u_include_types, u_with_muted, u_max_id, u_min_id,
+        u_since_id, u_offset, u_limit;
+    /* TODO Arrays of excludes, includes */
     u_account_id.s = args->account_id;
     u_with_muted.i = args->with_muted;
     u_max_id.s = args->max_id;
-    u_min_id.s = args->min_id;
     u_since_id.s = args->since_id;
+    u_min_id.s = args->min_id;
     u_offset.i = args->offset;
     u_limit.i = args->limit;
 
@@ -45,32 +50,21 @@ int mastodont_get_notifications(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "account_id", u_account_id },
         { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
         { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
         { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
         { _MSTDNT_QUERY_INT, "offset", u_offset },
         { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
-
-    char* post = _mstdnt_query_string(data, NULL, params, _mstdnt_arr_len(params));
-
-    curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
-
-    if (mastodont_fetch_curl(data, "api/v1/apps", &results, CURLOPT_POST) != CURLE_OK)
-    {
-        res = 1;
-        goto cleanup;
-    }
-
-/*    res = mstdnt_read_app_result(storage, &results, app);*/
-
-cleanup_fetch:
-    mastodont_fetch_results_cleanup(&results);
-cleanup:
-    free(post);
-    return res;    
-}
-#endif
-int mstdnt_load_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
-{
     
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/notifications",
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
+    
+    return mastodont_request(data, &req_args);
 }

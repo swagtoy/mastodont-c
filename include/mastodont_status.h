@@ -28,17 +28,8 @@
 #include "mastodont_tag.h"
 #include "mastodont_account.h"
 #include "mastodont_pleroma.h"
+#include "mastodont_visibility_types.h"
 /* Status: Complete, not implemented */
-
-enum mstdnt_status_visibility
-{
-    MSTDNT_VISIBILITY_PUBLIC,
-    MSTDNT_VISIBILITY_UNLISTED,
-    MSTDNT_VISIBILITY_PRIVATE,
-    MSTDNT_VISIBILITY_DIRECT,
-    MSTDNT_VISIBILITY_LIST,
-    MSTDNT_VISIBILITY_LOCAL
-};
 
 struct mstdnt_status
 {
@@ -47,7 +38,7 @@ struct mstdnt_status
     char* created_at;
     struct mstdnt_account account;
     char* content;
-    enum mstdnt_status_visibility visibility;
+    mstdnt_visibility_t visibility;
     mstdnt_bool sensitive;
     char* spoiler_text;
     struct mstdnt_attachment* media_attachments;
