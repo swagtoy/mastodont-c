@@ -42,11 +42,13 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         goto cleanup;
     }
 
+    /*
     if (mstdnt_check_error(&results, storage))
     {
         res = 1;
         goto cleanup_res;
     }
+    */
 
     /* Optional */
     if (args->callback) args->callback(&results, storage, args->args);
