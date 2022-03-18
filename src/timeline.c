@@ -15,9 +15,10 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "mastodont_fetch.h"
-#include "mastodont_timeline.h"
-#include "mastodont_query.h"
+#include <mastodont_fetch.h>
+#include <mastodont_timeline.h>
+#include <mastodont_query.h>
+#include <mastodont_request.h>
 
 int mastodont_timeline_list(mastodont_t* data,
                             char* list_id,
@@ -26,13 +27,9 @@ int mastodont_timeline_list(mastodont_t* data,
                             struct mstdnt_status* statuses[],
                             size_t* size)
 {
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     char url[MSTDNT_URLSIZE];
-    int res;
-    struct mstdnt_fetch_results results = { 0 };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
-    
-    /* Default args */
-    storage->needs_cleanup = 0;
 
     union param_value u_local, u_remote, u_only_media,
         u_max_id, u_since_id, u_min_id, u_limit;
@@ -47,22 +44,18 @@ int mastodont_timeline_list(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
         { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
-    
-    char* url_query = _mstdnt_query_string(data, url, params, _mstdnt_arr_len(params));
 
-    if (mastodont_fetch_curl(data, url_query, &results, CURLOPT_HTTPGET) != CURLE_OK)
-    {
-        res = 1;
-        goto cleanup;
-    }
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
 
-    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
-
-    mastodont_fetch_results_cleanup(&results);
-    
-cleanup:
-    free(url_query);
-    return res;
+    return mastodont_request(data, &req_args);
 }
 
 int mastodont_timeline_public(mastodont_t* data,
@@ -71,12 +64,8 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_status* statuses[],
                               size_t* size)
 {
-    int res;
-    struct mstdnt_fetch_results results = { 0 };
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     
-    /* Default args */
-    storage->needs_cleanup = 0;
-
     union param_value u_local, u_remote, u_only_media,
         u_max_id, u_since_id, u_min_id, u_limit;
     u_local.i = args->local;
@@ -97,19 +86,15 @@ int mastodont_timeline_public(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "limit", u_limit },
     };
     
-    char* url = _mstdnt_query_string(data, "api/v1/timelines/public", params, _mstdnt_arr_len(params));
-
-    if (mastodont_fetch_curl(data, url, &results, CURLOPT_HTTPGET) != CURLE_OK)
-    {
-        res = 1;
-        goto cleanup;
-    }
-
-    res = mstdnt_load_statuses_from_result(statuses, storage, &results, size);
-
-    mastodont_fetch_results_cleanup(&results);
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/timelines/public",
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
     
-cleanup:
-    free(url);
-    return res;
+    return mastodont_request(data, &req_args);
 }
