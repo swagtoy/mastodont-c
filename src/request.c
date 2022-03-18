@@ -24,14 +24,11 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     struct mstdnt_storage* storage = args->storage;
     struct mstdnt_fetch_results results = { 0 };
     char* post;
-    char*
+    char* url_query = args->params_query ?
+        _mstdnt_query_string(data, args->url, args->params_query, args->params_query_len) :
+        args->url;
 
     storage->needs_cleanup = 0;
-
-    if (args->params_query)
-    {
-        
-    }
 
     if (args->params_post)
     {
@@ -39,23 +36,27 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
     }
 
-    if (mastodont_fetch_curl(data, args->url, &results, args->request_type) != CURLE_OK)
-    {
-        return 1;
-    }
-
-    if (mstdnt_check_error(&results, storage))
+    if (mastodont_fetch_curl(data, url_query, &results, args->request_type) != CURLE_OK)
     {
         res = 1;
         goto cleanup;
     }
 
+    if (mstdnt_check_error(&results, storage))
+    {
+        res = 1;
+        goto cleanup_res;
+    }
+
     /* Optional */
     if (args->callback) args->callback(&results, storage, args->args);
 
-cleanup:
+cleanup_res:
     mastodont_fetch_results_cleanup(&results);
+cleanup:
     if (args->params_post) free(post);
+    /* Only free if params_query set */
+    if (args->params_query) free(url_query);
     return res;
 }
 
