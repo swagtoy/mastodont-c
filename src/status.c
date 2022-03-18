@@ -22,20 +22,6 @@
 #include <mastodont_pleroma.h>
 #include <mastodont_request.h>
 
-struct mstdnt_statuses_args
-{
-    struct mstdnt_status** statuses;
-    size_t* size;
-};
-
-struct mstdnt_status_context_result_args
-{
-    struct mstdnt_status** statuses_before;
-    struct mstdnt_status** statuses_after;
-    size_t* size_before;
-    size_t* size_after;
-};
-
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     js = js->child; /* Get in */
@@ -92,9 +78,9 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
     return 1;
 }
 
-static int mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
-                                              struct mstdnt_storage* storage,
-                                              void* status)
+int _mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
+                                        struct mstdnt_storage* storage,
+                                        void* status)
 {
     return mstdnt_status_from_result(results, storage, (struct mstdnt_status*)status);
 }
@@ -129,11 +115,11 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
     return 0;
 }
 
-static int mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
-                                           struct mstdnt_storage* storage,
-                                           void* _args)
+int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
+                                     struct mstdnt_storage* storage,
+                                     void* _args)
 {
-    struct mstdnt_statuses_args* args = _args;
+    struct _mstdnt_statuses_cb_args* args = _args;
     return mstdnt_statuses_from_result(storage, results, args->statuses, args->size);
 }
 
@@ -146,7 +132,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
                                    size_t* size)
 {
     char url[MSTDNT_URLSIZE];
-    struct mstdnt_statuses_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
     struct mastodont_request_args req_args = {
@@ -156,7 +142,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
         NULL, 0, /* TODO */
         CURLOPT_HTTPGET,
         &cb_args,
-        mstdnt_statuses_result_callback
+        _mstdnt_statuses_result_callback
     };
     
     return mastodont_request(data, &req_args);
@@ -266,7 +252,7 @@ int mastodont_view_status(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         status,
-        mstdnt_status_from_result_callback,
+        _mstdnt_status_from_result_callback,
     };
 
     return mastodont_request(data, &req_args);
@@ -341,11 +327,11 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
     }
 }
 
-static int mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
-                                                      struct mstdnt_storage* storage,
-                                                      void* _args)
+int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
+                                                struct mstdnt_storage* storage,
+                                                void* _args)
 {
-    struct mstdnt_status_context_result_args* args = _args;
+    struct _mstdnt_status_context_result_cb_args* args = _args;
     return mstdnt_status_context_from_result(results,
                                              storage,
                                              args->statuses_before,
@@ -362,7 +348,7 @@ int mastodont_status_context(mastodont_t* data,
                              size_t* size_before,
                              size_t* size_after)
 {
-    struct mstdnt_status_context_result_args args = {
+    struct _mstdnt_status_context_result_cb_args args = {
         statuses_before,
         statuses_after,
         size_before,
@@ -378,7 +364,7 @@ int mastodont_status_context(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        mstdnt_status_context_from_result_callback,
+        _mstdnt_status_context_from_result_callback,
     };
 
     return mastodont_request(data, &req_args);
