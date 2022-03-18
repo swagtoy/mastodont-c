@@ -144,4 +144,31 @@ int mastodont_reblog_status(mastodont_t* data,
                             char* id,
                             struct mstdnt_storage* storage);
 
+/* Callbacks */
+struct _mstdnt_statuses_cb_args
+{
+    struct mstdnt_status** statuses;
+    size_t* size;
+};
+
+struct _mstdnt_status_context_result_cb_args
+{
+    struct mstdnt_status** statuses_before;
+    struct mstdnt_status** statuses_after;
+    size_t* size_before;
+    size_t* size_after;
+};
+
+int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
+                                     struct mstdnt_storage* storage,
+                                     void* _args);
+
+int _mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
+                                        struct mstdnt_storage* storage,
+                                        void* status);
+
+int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
+                                                struct mstdnt_storage* storage,
+                                                void* _args);
+
 #endif /* MASTODONT_STATUS */
