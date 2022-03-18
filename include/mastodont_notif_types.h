@@ -30,6 +30,6 @@
 #define MSTDNT_NOTIFICATION_CHAT_MENTION (1<<8)
 #define MSTDNT_NOTIFICATION_REPORT (1<<9)
 
-typedef mstdnt_notification_t uint16_t;
+typedef uint16_t mstdnt_notification_t;
 
 #endif /* MASTODONT_NOTIF_TYPES */

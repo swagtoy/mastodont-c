@@ -25,6 +25,6 @@
 #define MSTDNT_VISIBILITY_LIST (1<<4)
 #define MSTDNT_VISIBILITY_LOCAL (1<<5)
 
-typedef mstdnt_visibility_t uint8_t;
+typedef uint8_t mstdnt_visibility_t;
 
 #endif /* MASTODONT_VISIBILITY_TYPES_H */

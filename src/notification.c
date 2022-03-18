@@ -19,6 +19,7 @@
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
+#include <mastodont_request.h>
 
 static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
 {
@@ -82,7 +83,7 @@ int mstdnt_notifications_from_result(struct mstdnt_fetch_results* results,
     
     cJSON_ArrayForEach(notif_j_list, root)
     {
-        mstdnt_status_from_json((*notif) + i++, notif_j_list->child);
+        mstdnt_notification_from_json((*notif) + i++, notif_j_list->child);
     }
 
     return 0;
@@ -103,7 +104,7 @@ int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_notification** notifs,
                                 size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_notifications_result_cb_args cb_args = { notifs, size };
     
     union param_value u_exclude_types, u_account_id, u_exclude_visibilities,
         u_include_types, u_with_muted, u_max_id, u_min_id,
