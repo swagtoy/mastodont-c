@@ -110,7 +110,6 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
         mstdnt_status_from_json((*statuses) + i++, status_j_list->child);
     }
     
-    storage->needs_cleanup = 1;
     return 0;
 }
 

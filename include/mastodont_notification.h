@@ -49,6 +49,16 @@ struct mstdnt_get_notifications_args
     int limit;
 };
 
+struct _mstdnt_notifications_result_cb_args
+{
+    struct mstdnt_notification** notif;
+    size_t* size;
+};
+
+int _mstdnt_notifications_result_callback(struct mstdnt_fetch_results* results,
+                                          struct mstdnt_storage* storage,
+                                          void* _args);
+
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,

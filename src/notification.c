@@ -14,16 +14,87 @@
  */
 
 #include <stdlib.h>
+#include <string.h>
 #include <mastodont_notification.h>
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
 
-int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
+static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
 {
-    
+    mstdnt_notification_t* type = _type;
+
+
+    if (strcmp(v->string, "type") != 0)
+    {
+        *type = 0;
+        return;
+    }
+
+    if (strcmp(v->valuestring, "follow") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
+    else if (strcmp(v->valuestring, "follow_request") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
+    else if (strcmp(v->valuestring, "mention") == 0) *type = MSTDNT_NOTIFICATION_MENTION;
+    else if (strcmp(v->valuestring, "reblog") == 0) *type = MSTDNT_NOTIFICATION_REBLOG;
+    else if (strcmp(v->valuestring, "favourite") == 0) *type = MSTDNT_NOTIFICATION_FAVOURITE;
+    else if (strcmp(v->valuestring, "poll") == 0) *type = MSTDNT_NOTIFICATION_POLL;
+    else if (strcmp(v->valuestring, "status") == 0) *type = MSTDNT_NOTIFICATION_STATUS;
+    else if (strcmp(v->valuestring, "pleroma:emoji_reaction") == 0) *type = MSTDNT_NOTIFICATION_EMOJI_REACT;
+    else if (strcmp(v->valuestring, "pleroma:chat_mention") == 0) *type = MSTDNT_NOTIFICATION_CHAT_MENTION;
+    else if (strcmp(v->valuestring, "pleroma:report") == 0) *type = MSTDNT_NOTIFICATION_REPORT;
 }
 
+int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
+{
+    cJSON* v;
+
+    struct _mstdnt_val_ref vals[] = {
+        /* { "account", &(notif->account), _mstdnt_val_account_call }, */
+        { "created_at", &(notif->created_at), _mstdnt_val_string_call },
+        { "id", &(notif->id), _mstdnt_val_string_call },
+        /* { "status", &(notif->status), _mstdnt_val_status_call }, */
+        /* { "pleroma", &(notif->pleroma), _mstdnt_val_notif_pleroma_call }, */
+        { "type", &(notif->type), _mstdnt_val_notif_type_call },
+    };
+    
+    for (v = js; v; v = v->next)
+        _mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals));
+    
+    return 0;
+}
+
+int mstdnt_notifications_from_result(struct mstdnt_fetch_results* results,
+                                     struct mstdnt_storage* storage,
+                                     struct mstdnt_notification* notif[],
+                                     size_t* size)
+{
+    size_t i = 0;
+    cJSON* root, *notif_j_list;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
+
+    if (size) *size = cJSON_GetArraySize(root);
+
+    /* malloc array - cJSON does a loop to count, let's do it once preferably */
+    *notif = malloc((size ? *size : cJSON_GetArraySize(root))
+                    * sizeof(struct mstdnt_notification));
+    if (*notif == NULL)
+        return 1;
+    
+    cJSON_ArrayForEach(notif_j_list, root)
+    {
+        mstdnt_status_from_json((*notif) + i++, notif_j_list->child);
+    }
+
+    return 0;
+}
+
+int _mstdnt_notifications_result_callback(struct mstdnt_fetch_results* results,
+                                          struct mstdnt_storage* storage,
+                                          void* _args)
+{
+    struct _mstdnt_notifications_result_cb_args* args = _args;
+    return mstdnt_notifications_from_result(results, storage, args->notif, args->size);
+}
 
 
 int mastodont_get_notifications(mastodont_t* data,
