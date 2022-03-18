@@ -24,6 +24,7 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     struct mstdnt_storage* storage = args->storage;
     struct mstdnt_fetch_results results = { 0 };
     char* post;
+    char*
 
     storage->needs_cleanup = 0;
 
