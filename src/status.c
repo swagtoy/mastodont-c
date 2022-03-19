@@ -22,6 +22,13 @@
 #include <mastodont_pleroma.h>
 #include <mastodont_request.h>
 
+void _mstdnt_val_status_call(cJSON* v, void* _type)
+{
+    struct mstdnt_status* type = _type;
+
+    mstdnt_status_from_json(type, v->child);
+}
+
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;

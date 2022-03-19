@@ -69,5 +69,6 @@ int mastodont_get_account(mastodont_t* data,
 
 int mstdnt_account_from_json(struct mstdnt_account* status, cJSON* js);
 
+void _mstdnt_val_account_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_ACCOUNT */

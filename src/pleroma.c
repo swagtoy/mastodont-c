@@ -16,7 +16,7 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_pleroma.h>
 
-int mstdnt_load_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js)
+int mstdnt_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js)
 {
     cJSON* v;
 
@@ -45,7 +45,7 @@ void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type)
 {
     struct mstdnt_status_pleroma* type = _type;
 
-    mstdnt_load_status_pleroma_from_json(type, v->child);
+    mstdnt_status_pleroma_from_json(type, v->child);
 }
 
 void cleanup_status_pleroma(struct mstdnt_status_pleroma* pleroma)

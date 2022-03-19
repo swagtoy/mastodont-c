@@ -35,7 +35,7 @@ struct mstdnt_status_pleroma
 };
 
 void cleanup_status_pleroma(struct mstdnt_status_pleroma* pleroma);
-int mstdnt_load_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js);
+int mstdnt_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js);
 void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_PLEROMA */

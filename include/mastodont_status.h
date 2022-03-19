@@ -88,6 +88,8 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
 
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
 
+void _mstdnt_val_status_call(cJSON* v, void* _type);
+
 int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
                                       struct mstdnt_storage* storage,
                                       struct mstdnt_status* statuses_before[],

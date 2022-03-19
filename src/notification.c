@@ -32,14 +32,15 @@ static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
         return;
     }
 
-    if (strcmp(v->valuestring, "follow") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
-    else if (strcmp(v->valuestring, "follow_request") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
+    /* Sorted by most common notification type :^) */
+    if (strcmp(v->valuestring, "favourite") == 0) *type = MSTDNT_NOTIFICATION_FAVOURITE;
     else if (strcmp(v->valuestring, "mention") == 0) *type = MSTDNT_NOTIFICATION_MENTION;
     else if (strcmp(v->valuestring, "reblog") == 0) *type = MSTDNT_NOTIFICATION_REBLOG;
-    else if (strcmp(v->valuestring, "favourite") == 0) *type = MSTDNT_NOTIFICATION_FAVOURITE;
+    else if (strcmp(v->valuestring, "pleroma:emoji_reaction") == 0) *type = MSTDNT_NOTIFICATION_EMOJI_REACT;
+    else if (strcmp(v->valuestring, "follow") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
+    else if (strcmp(v->valuestring, "follow_request") == 0) *type = MSTDNT_NOTIFICATION_FOLLOW;
     else if (strcmp(v->valuestring, "poll") == 0) *type = MSTDNT_NOTIFICATION_POLL;
     else if (strcmp(v->valuestring, "status") == 0) *type = MSTDNT_NOTIFICATION_STATUS;
-    else if (strcmp(v->valuestring, "pleroma:emoji_reaction") == 0) *type = MSTDNT_NOTIFICATION_EMOJI_REACT;
     else if (strcmp(v->valuestring, "pleroma:chat_mention") == 0) *type = MSTDNT_NOTIFICATION_CHAT_MENTION;
     else if (strcmp(v->valuestring, "pleroma:report") == 0) *type = MSTDNT_NOTIFICATION_REPORT;
 }
@@ -49,10 +50,10 @@ int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
     cJSON* v;
 
     struct _mstdnt_val_ref vals[] = {
-        /* { "account", &(notif->account), _mstdnt_val_account_call }, */
+        { "account", &(notif->account), _mstdnt_val_account_call },
         { "created_at", &(notif->created_at), _mstdnt_val_string_call },
         { "id", &(notif->id), _mstdnt_val_string_call },
-        /* { "status", &(notif->status), _mstdnt_val_status_call }, */
+        { "status", &(notif->status), _mstdnt_val_status_call },
         /* { "pleroma", &(notif->pleroma), _mstdnt_val_notif_pleroma_call }, */
         { "type", &(notif->type), _mstdnt_val_notif_type_call },
     };
