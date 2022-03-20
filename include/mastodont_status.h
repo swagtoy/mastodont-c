@@ -74,8 +74,8 @@ struct mstdnt_status
     mstdnt_bool pinned;
 };
 
-void cleanup_statuses(struct mstdnt_status* statuses, size_t s);
-void cleanup_status(struct mstdnt_status* status);
+void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
+void mstdnt_cleanup_status(struct mstdnt_status* status);
 
 int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
                                 struct mstdnt_fetch_results* results,
@@ -89,6 +89,7 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
 
 void _mstdnt_val_status_call(cJSON* v, void* _type);
+void _mstdnt_val_malloc_status_call(cJSON* v, void* _type);
 
 int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
                                       struct mstdnt_storage* storage,

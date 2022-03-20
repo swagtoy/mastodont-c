@@ -25,7 +25,6 @@ static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
 {
     mstdnt_notification_t* type = _type;
 
-
     if (strcmp(v->string, "type") != 0)
     {
         *type = 0;
@@ -49,11 +48,13 @@ int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
+    /* Allocate optional params */
+
     struct _mstdnt_val_ref vals[] = {
-        { "account", &(notif->account), _mstdnt_val_account_call },
+        { "account", &(notif->account), _mstdnt_val_malloc_account_call },
         { "created_at", &(notif->created_at), _mstdnt_val_string_call },
         { "id", &(notif->id), _mstdnt_val_string_call },
-        { "status", &(notif->status), _mstdnt_val_status_call },
+        { "status", &(notif->status), _mstdnt_val_malloc_status_call },
         /* { "pleroma", &(notif->pleroma), _mstdnt_val_notif_pleroma_call }, */
         { "type", &(notif->type), _mstdnt_val_notif_type_call },
     };
@@ -141,3 +142,21 @@ int mastodont_get_notifications(mastodont_t* data,
     
     return mastodont_request(data, &req_args);
 }
+
+void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t notifs_len)
+{
+    size_t i;
+    if (!notifs) return;
+    for (i = 0; i < notifs_len; ++i)
+        mstdnt_cleanup_notification(notifs + i);
+
+    free(notifs);
+}
+
+void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
+{
+    free(notif->account);
+    mstdnt_cleanup_status(notif->status);
+    free(notif->status);
+}
+

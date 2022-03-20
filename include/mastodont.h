@@ -19,6 +19,8 @@
 #include <mastodont_timeline.h>
 #include <mastodont_account.h>
 #include <mastodont_list.h>
+#include <mastodont_notification.h>
+#include <mastodont_status.h>
 
 /* Functions required form curl */
 void mastodont_global_curl_init();

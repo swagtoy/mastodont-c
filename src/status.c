@@ -29,6 +29,17 @@ void _mstdnt_val_status_call(cJSON* v, void* _type)
     mstdnt_status_from_json(type, v->child);
 }
 
+
+void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
+{
+    struct mstdnt_status** type = _type;
+
+    *type = malloc(sizeof(struct mstdnt_status*));
+    
+    if (*type)
+        mstdnt_status_from_json(*type, v->child);
+}
+
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
@@ -375,19 +386,19 @@ int mastodont_get_status_context(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-void cleanup_status(struct mstdnt_status* status)
+void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     cleanup_attachments(status->media_attachments);
     cleanup_status_pleroma(&(status->pleroma));
 }
 
-void cleanup_statuses(struct mstdnt_status* statuses, size_t s)
+void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
 {
     size_t i;
     if (!statuses) return;
     for (i = 0; i < s; ++i)
     {
-        cleanup_status(statuses + i);
+        mstdnt_cleanup_status(statuses + i);
     }
     free(statuses);
 }
