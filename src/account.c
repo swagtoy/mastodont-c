@@ -28,7 +28,7 @@ void _mstdnt_val_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account* type = _type;
 
-    mstdnt_account_from_json(type, v->child);
+    mstdnt_account_from_json(type, v);
 }
 
 void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
@@ -38,7 +38,7 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
     *type = malloc(sizeof(struct mstdnt_account*));
 
     if (*type)
-        mstdnt_account_from_json(*type, v->child);
+        mstdnt_account_from_json(*type, v);
 }
 
 int mstdnt_account_from_result(struct mstdnt_fetch_results* results,

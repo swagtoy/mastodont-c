@@ -48,8 +48,6 @@ int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
-    /* Allocate optional params */
-
     struct _mstdnt_val_ref vals[] = {
         { "account", &(notif->account), _mstdnt_val_malloc_account_call },
         { "created_at", &(notif->created_at), _mstdnt_val_string_call },
@@ -85,6 +83,11 @@ int mstdnt_notifications_from_result(struct mstdnt_fetch_results* results,
     
     cJSON_ArrayForEach(notif_j_list, root)
     {
+        /* Null out values incase no match */
+        (*notif)[i].account = NULL;
+        (*notif)[i].status = NULL;
+        /* notif[i]->pleroma = NULL; */
+        
         mstdnt_notification_from_json((*notif) + i++, notif_j_list->child);
     }
 
@@ -137,7 +140,7 @@ int mastodont_get_notifications(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        _mstdnt_notifications_result_callback,
     };
     
     return mastodont_request(data, &req_args);
@@ -155,8 +158,11 @@ void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t not
 
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
 {
-    free(notif->account);
-    mstdnt_cleanup_status(notif->status);
-    free(notif->status);
+    if (notif->account) free(notif->account);
+    if (notif->status)
+    {
+        mstdnt_cleanup_status(notif->status);
+        free(notif->status);
+    }
 }
 
