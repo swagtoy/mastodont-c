@@ -34,7 +34,7 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
 {
     struct mstdnt_status** type = _type;
 
-    *type = malloc(sizeof(struct mstdnt_status));
+    *type = calloc(1, sizeof(struct mstdnt_status));
     
     if (*type)
         mstdnt_status_from_json(*type, v->child);
@@ -118,7 +118,7 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
     if (size) *size = cJSON_GetArraySize(root);
 
     /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *statuses = malloc((size ? *size : cJSON_GetArraySize(root))
+    *statuses = calloc(1, (size ? *size : cJSON_GetArraySize(root))
                        * sizeof(struct mstdnt_status));
     if (*statuses == NULL)
         return 1;

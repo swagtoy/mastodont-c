@@ -53,7 +53,7 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
         return;
     }
 
-    *attachments = malloc(sizeof(struct mstdnt_attachment) * size);
+    *attachments = calloc(1, sizeof(struct mstdnt_attachment) * size);
     if (*attachments == NULL)
         return;
 

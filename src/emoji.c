@@ -48,7 +48,7 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
         return;
     }
 
-    *emos = malloc(sizeof(struct mstdnt_emoji_reaction) * size);
+    *emos = calloc(1, sizeof(struct mstdnt_emoji_reaction) * size);
     if (*emos == NULL)
         return;
 

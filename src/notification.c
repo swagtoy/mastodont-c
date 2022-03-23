@@ -76,7 +76,7 @@ int mstdnt_notifications_from_result(struct mstdnt_fetch_results* results,
     if (size) *size = cJSON_GetArraySize(root);
 
     /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *notif = malloc((size ? *size : cJSON_GetArraySize(root))
+    *notif = calloc(1, (size ? *size : cJSON_GetArraySize(root))
                     * sizeof(struct mstdnt_notification));
     if (*notif == NULL)
         return 1;
