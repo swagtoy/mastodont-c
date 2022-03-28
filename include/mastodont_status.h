@@ -132,11 +132,23 @@ int mastodont_create_status(mastodont_t* data,
 
 int mastodont_favourite_status(mastodont_t* data,
                                char* id,
-                               struct mstdnt_storage* storage);
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_status* status);
+
+int mastodont_unfavourite_status(mastodont_t* data,
+                                 char* id,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_status* status);
 
 int mastodont_reblog_status(mastodont_t* data,
                             char* id,
-                            struct mstdnt_storage* storage);
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* status);
+
+int mastodont_unreblog_status(mastodont_t* data,
+                              char* id,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* status);
 
 /* Callbacks */
 struct _mstdnt_statuses_cb_args

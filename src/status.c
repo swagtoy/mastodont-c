@@ -208,13 +208,14 @@ int mastodont_create_status(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-int mastodont_favourite_status(mastodont_t* data,
-                               char* id,
-                               struct mstdnt_storage* storage)
+static int mstdnt_status_action(mastodont_t* data,
+                                char* id,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_status* status,
+                                char* url_str)
 {
     char url[MSTDNT_URLSIZE];
-    snprintf(url, MSTDNT_URLSIZE,
-             "api/v1/statuses/%s/favourite", id);
+    snprintf(url, MSTDNT_URLSIZE, url_str, id);
 
     struct mastodont_request_args req_args = {
         storage,
@@ -222,35 +223,45 @@ int mastodont_favourite_status(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_POST,
-        NULL,
-        NULL, /* TODO populate the status back?
-               * (not sure if the api returns it or not) */
+        status,
+        _mstdnt_status_from_result_callback
     };
 
     return mastodont_request(data, &req_args);
 }
 
+int mastodont_favourite_status(mastodont_t* data,
+                               char* id,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_status* status)
+{
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/favourite");
+}
+
+
+int mastodont_unfavourite_status(mastodont_t* data,
+                                 char* id,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_status* status)
+{
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/unfavourite");
+}
+
 
 int mastodont_reblog_status(mastodont_t* data,
                             char* id,
-                            struct mstdnt_storage* storage)
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* status)
 {
-    char url[MSTDNT_URLSIZE];
-    snprintf(url, MSTDNT_URLSIZE,
-             "api/v1/statuses/%s/reblog", id);
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/reblog");
+}
 
-    struct mastodont_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_POST,
-        NULL,
-        NULL, /* TODO populate the status back?
-               * (not sure if the api returns it or not) */
-    };
-
-    return mastodont_request(data, &req_args);
+int mastodont_unreblog_status(mastodont_t* data,
+                              char* id,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* status)
+{
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/unreblog");
 }
 
 int mastodont_get_status(mastodont_t* data,
