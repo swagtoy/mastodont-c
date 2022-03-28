@@ -25,11 +25,8 @@
 typedef unsigned char mstdnt_bool;
 
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
-#define MSTDNT_FLAG_SSL_NONE (1<<1)
 #define MSTDNT_FLAG_SSL_UNVERIFIED (1<<2)
-#define MSTDNT_FLAG_SSL_EXPIRED (1<<3)
-#define MSTDNT_FLAG_SSL_SELFSIGNED (1<<4)
-#define MSTDN_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
+#define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
 typedef struct mastodont

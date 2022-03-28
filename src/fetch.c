@@ -43,7 +43,6 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
     free(res->response);
 }
 
-#include <stdio.h>
 #define TOKEN_STR_SIZE 512
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* _url,
@@ -72,6 +71,11 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_URL, url);
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEFUNCTION, write_callback);
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
+    /* Should we verify the peer's SSL cert? */
+    curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYPEER,
+                     !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
+    curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYHOST,
+                     !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
     /* PUT, POST, GET */
     curl_easy_setopt(mstdnt->curl, request_t, 1);
 
