@@ -85,6 +85,9 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* status)
 {
+    /* Can be null sometimes */
+    if (!status) return 0;
+    
     cJSON* root;
     if (_mstdnt_json_init(&root, results, storage) ||
         !cJSON_IsObject(root))

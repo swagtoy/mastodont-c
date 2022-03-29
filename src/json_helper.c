@@ -33,7 +33,7 @@ int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
     size_t i;
     for (i = 0; i < refs_len; ++i)
     {
-        if (strcmp(refs[i].key, v->string) == 0)
+        if (v->string && strcmp(refs[i].key, v->string) == 0)
         {
             refs[i].handle(v, refs[i].val);
             return 0;
