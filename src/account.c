@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <mastodont_account.h>
 #include <mastodont_request.h>
@@ -100,6 +101,10 @@ int mastodont_get_account(mastodont_t* data,
 int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
 {
     cJSON* v;
+    
+    /* Zero out */
+    memset(acct, 0, sizeof(struct mstdnt_account));
+
     struct _mstdnt_val_ref refs[] = {
         { "id", &(acct->id), _mstdnt_val_string_call },
         { "username", &(acct->username), _mstdnt_val_string_call },

@@ -48,6 +48,9 @@ int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
+    /* Zero out */
+    memset(notif, 0, sizeof(struct mstdnt_notification));
+
     struct _mstdnt_val_ref vals[] = {
         { "account", &(notif->account), _mstdnt_val_malloc_account_call },
         { "created_at", &(notif->created_at), _mstdnt_val_string_call },

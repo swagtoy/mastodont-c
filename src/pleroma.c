@@ -13,12 +13,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_pleroma.h>
 
 int mstdnt_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js)
 {
     cJSON* v;
+
+    /* Zero out */
+    memset(pleroma, 0, sizeof(struct mstdnt_status_pleroma));
 
     struct _mstdnt_generic_args emo_args = {
         &(pleroma->emoji_reactions),

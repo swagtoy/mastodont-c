@@ -43,7 +43,10 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
-    
+
+    /* Zero out */
+    memset(status, 0, sizeof(struct mstdnt_status));
+
     struct _mstdnt_generic_args att_args = {
         &(status->media_attachments),
         &(status->media_attachments_len),
@@ -297,6 +300,13 @@ int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
                                       size_t* size_after)
 {
     cJSON* root;
+
+    /* Empty data */
+    *size_before = 0;
+    *size_after = 0;
+    *statuses_before = NULL;
+    *statuses_after = NULL;
+    
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 
@@ -321,7 +331,7 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
     cJSON* v, *status_item;
     size_t* size_ptr = NULL;
     struct mstdnt_status** stat_ptr = NULL;
-    
+
     /* Empty data */
     *size_before = 0;
     *size_after = 0;
@@ -347,7 +357,7 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
             if (cJSON_GetArraySize(v) <= 0)
                 continue;
 
-            *stat_ptr = malloc(cJSON_GetArraySize(v) * sizeof(struct mstdnt_status));
+            *stat_ptr = calloc(1, cJSON_GetArraySize(v) * sizeof(struct mstdnt_status));
             if (*stat_ptr == NULL)
                 return 1;
             

@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_application.h>
@@ -24,6 +25,10 @@ int mstdnt_app_result(struct mstdnt_fetch_results* results,
                       struct mstdnt_app* app)
 {
     cJSON* root, *v;
+
+    /* Zero out */
+    memset(storage, 0, sizeof(struct mstdnt_app));
+    
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 

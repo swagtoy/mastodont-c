@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_emoji.h>
@@ -20,6 +21,10 @@
 static void load_emoji_reacts_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
 {
     cJSON* it;
+    
+    /* Zero out */
+    memset(emo, 0, sizeof(struct mstdnt_emoji_reaction));
+    
     struct _mstdnt_val_ref refs[] = {
         { "name", &(emo->name), _mstdnt_val_string_call },
         { "count", &(emo->count), _mstdnt_val_uint_call },

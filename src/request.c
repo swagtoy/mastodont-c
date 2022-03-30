@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <assert.h>
 #include <mastodont_request.h>
@@ -28,6 +29,8 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         _mstdnt_query_string(data, args->url, args->params_query, args->params_query_len) :
         args->url;
 
+    /* Zero out */
+    memset(storage, 0, sizeof(struct mstdnt_storage));
     storage->needs_cleanup = 0;
 
     if (args->params_post)

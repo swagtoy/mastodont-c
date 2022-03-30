@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <stdlib.h>
 #include <mastodont_list.h>
 #include <mastodont_json_helper.h>
@@ -27,6 +28,10 @@ struct mstdnt_get_lists_args {
 int mstdnt_list_from_json(struct mstdnt_list* list, cJSON* js)
 {
     cJSON* v;
+    
+    /* Zero out */
+    memset(list, 0, sizeof(struct mstdnt_list));
+    
     struct _mstdnt_str_val strings[] = {
         { "id", &(list->id) },
         { "title", &(list->title) },

@@ -24,6 +24,10 @@ int mstdnt_check_error(struct mstdnt_fetch_results* results,
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 
+    /* Make sure empty */
+    storage->error = NULL;
+    storage->error_description = NULL;
+
     struct _mstdnt_val_ref refs[] = {
         { "error", &(storage->error), _mstdnt_val_string_call },
         { "error_description", &(storage->error_description), _mstdnt_val_string_call },
