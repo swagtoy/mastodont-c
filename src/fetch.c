@@ -49,7 +49,7 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
                          struct mstdnt_fetch_results* results,
                          CURLoption request_t)
 {
-    int res;
+    int res = 3;
     char token[TOKEN_STR_SIZE] = { 0 };
     struct curl_slist* list = NULL;
 

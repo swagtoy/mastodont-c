@@ -21,7 +21,7 @@
 
 int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
 {
-    int res = 0;
+    int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
     struct mstdnt_fetch_results results = { 0 };
     char* post;
@@ -39,9 +39,11 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
     }
 
-    if (mastodont_fetch_curl(data, url_query, &results, args->request_type) != CURLE_OK)
+    curlerror = mastodont_fetch_curl(data, url_query, &results, args->request_type);
+    if (curlerror != CURLE_OK)
     {
         res = 1;
+        storage->error = (char*)curl_easy_strerror(curlerror);
         goto cleanup;
     }
 
