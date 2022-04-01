@@ -236,38 +236,46 @@ static int mstdnt_status_action(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-int mastodont_favourite_status(mastodont_t* data,
-                               char* id,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_status* status)
+/* These are all the same */
+MSTDNT_STATUS_ACTION_DECL(favourite)
+MSTDNT_STATUS_ACTION_FUNC_URL("favourite")
+
+MSTDNT_STATUS_ACTION_DECL(unfavourite)
+MSTDNT_STATUS_ACTION_FUNC_URL("unfavourite")
+
+MSTDNT_STATUS_ACTION_DECL(reblog)
+MSTDNT_STATUS_ACTION_FUNC_URL("reblog")
+
+MSTDNT_STATUS_ACTION_DECL(unreblog)
+MSTDNT_STATUS_ACTION_FUNC_URL("unreblog")
+    
+MSTDNT_STATUS_ACTION_DECL(pin)
+MSTDNT_STATUS_ACTION_FUNC_URL("pin")
+
+MSTDNT_STATUS_ACTION_DECL(unpin)
+MSTDNT_STATUS_ACTION_FUNC_URL("unpin")
+
+MSTDNT_STATUS_ACTION_DECL(bookmark)
+MSTDNT_STATUS_ACTION_FUNC_URL("bookmark")
+
+MSTDNT_STATUS_ACTION_DECL(unbookmark)
+MSTDNT_STATUS_ACTION_FUNC_URL("unbookmark")
+
+/* TODO Mutes can be timed */
+int mastodont_mute_conversation(mastodont_t* data,
+                                char* id,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_status* status)
 {
-    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/favourite");
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/mute");
 }
 
-
-int mastodont_unfavourite_status(mastodont_t* data,
-                                 char* id,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_status* status)
+int mastodont_unmute_conversation(mastodont_t* data,
+                                  char* id,
+                                  struct mstdnt_storage* storage,
+                                  struct mstdnt_status* status)
 {
-    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/unfavourite");
-}
-
-
-int mastodont_reblog_status(mastodont_t* data,
-                            char* id,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* status)
-{
-    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/reblog");
-}
-
-int mastodont_unreblog_status(mastodont_t* data,
-                              char* id,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* status)
-{
-    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/unreblog");
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/unmute");
 }
 
 int mastodont_get_status(mastodont_t* data,

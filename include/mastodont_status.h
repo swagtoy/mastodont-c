@@ -130,25 +130,30 @@ int mastodont_create_status(mastodont_t* data,
                             struct mstdnt_args* args,
                             struct mstdnt_storage* storage);
 
-int mastodont_favourite_status(mastodont_t* data,
-                               char* id,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_status* status);
+/* Generates do and undo functions */
+#define MSTDNT_STATUS_ACTION_DECL(type) int mastodont_##type##_status(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_status* status)
+#define MSTDNT_STATUS_ACTION_FUNC_URL(action) { \
+    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/" action);\
+    }
 
-int mastodont_unfavourite_status(mastodont_t* data,
-                                 char* id,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_status* status);
+MSTDNT_STATUS_ACTION_DECL(favourite);
+MSTDNT_STATUS_ACTION_DECL(unfavourite);
+MSTDNT_STATUS_ACTION_DECL(reblog);
+MSTDNT_STATUS_ACTION_DECL(unreblog);
+MSTDNT_STATUS_ACTION_DECL(pin);
+MSTDNT_STATUS_ACTION_DECL(unpin);
+MSTDNT_STATUS_ACTION_DECL(bookmark);
+MSTDNT_STATUS_ACTION_DECL(unbookmark);
 
-int mastodont_reblog_status(mastodont_t* data,
-                            char* id,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* status);
+int mastodont_mute_conversation(mastodont_t* data,
+                                char* id,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_status* status);
 
-int mastodont_unreblog_status(mastodont_t* data,
-                              char* id,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* status);
+int mastodont_unmute_conversation(mastodont_t* data,
+                                  char* id,
+                                  struct mstdnt_storage* storage,
+                                  struct mstdnt_status* status);
 
 /* Callbacks */
 struct _mstdnt_statuses_cb_args
