@@ -54,7 +54,7 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     struct curl_slist* list = NULL;
 
     /* Setup URL */
-    char url[MSTDNT_URLSIZE];
+    char url[MSTDNT_URLSIZE] = { 0 };
     strncpy(url, mstdnt->url, MSTDNT_URLSIZE-1);
     strncat(url, _url, MSTDNT_URLSIZE-1);
 

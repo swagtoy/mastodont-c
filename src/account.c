@@ -50,6 +50,8 @@ int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
     cJSON* root;
     root = cJSON_ParseWithLength(results->response, results->size);
 
+    memset(acct, 0, sizeof(struct mstdnt_account));
+
     if (root == NULL)
     {
         return 1;
@@ -79,7 +81,7 @@ int mastodont_get_account(mastodont_t* data,
 {
     struct mstdnt_account_args acct_args = { acct, size };
     /* Url */
-    char url[MSTDNT_URLSIZE];
+    char url[MSTDNT_URLSIZE] = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
              lookup ? "api/v1/accounts/%s" : "api/v1/accounts/lookup?acct=%s",
              id);
