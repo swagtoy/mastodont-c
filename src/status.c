@@ -34,6 +34,10 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
 {
     struct mstdnt_status** type = _type;
 
+    /* Status value may be NULL */
+    if (!(v->child))
+        return;
+
     *type = calloc(1, sizeof(struct mstdnt_status));
     
     if (*type)
@@ -73,7 +77,8 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call },
         { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
         { "media_attachments", &att_args, _mstdnt_val_attachments_call },
-        { "pleroma", &(status->pleroma), _mstdnt_val_status_pleroma_call }
+        { "pleroma", &(status->pleroma), _mstdnt_val_status_pleroma_call },
+        { "reblog", &(status->reblog), _mstdnt_val_malloc_status_call }
     };
     
     for (v = js; v; v = v->next)
@@ -422,6 +427,8 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     cleanup_attachments(status->media_attachments);
     cleanup_status_pleroma(&(status->pleroma));
+    if (status->reblog)
+        free(status->reblog);
 }
 
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)

@@ -60,7 +60,7 @@ struct mstdnt_status
     char* url;
     char* in_reply_to_id;
     char* in_reply_to_account_id;
-    struct mstdnt_status* status;
+    struct mstdnt_status* reblog;
     struct mstdnt_poll* poll;
     struct mstdnt_card* card;
     char* language;
