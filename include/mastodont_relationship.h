@@ -16,6 +16,7 @@
 #ifndef MASTODONT_RELATIONSHIP_H
 #define MASTODONT_RELATIONSHIP_H
 #include <mastodont_types.h>
+#include <mastodont_request.h>
 
 struct mstdnt_relationship
 {

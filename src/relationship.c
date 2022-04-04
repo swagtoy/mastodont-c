@@ -14,11 +14,10 @@
  */
 
 #include <mastodont_relationship.h>
-#include <mastodont_request.h>
 
 struct _mstdnt_relationships_cb_args
 {
-    struct mstdnt_relationship* relationships;
+    struct mstdnt_relationship** relationships;
     size_t* size;
 };
 
@@ -34,8 +33,7 @@ int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
                                           void* _args)
 {
     struct _mstdnt_relationships_cb_args* args = _args;
-    return mstdnt_relationships_result(storage, results, args->relationships, args->size);
-    // TODO here
+    return mstdnt_relationships_result(results, storage, args->relationships, args->size);
 }
 
 int mastodont_get_relationships(mastodont_t* data,
@@ -54,7 +52,7 @@ int mastodont_get_relationships(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         /* params, _mstdnt_arr_len(params), */
-        CURLOPT_GET,
+        CURLOPT_HTTPGET,
         &cb_args,
         _mstdnt_relationships_result_callback, /* TODO populate the status back?
                * (not sure if the api returns it or not) */
