@@ -26,8 +26,8 @@
 #include "mastodont_account.h"
 #include "mastodont_emoji.h"
 #include "mastodont_tag.h"
-#include "mastodont_account.h"
 #include "mastodont_pleroma.h"
+#include "mastodont_account.h"
 #include "mastodont_visibility_types.h"
 /* Status: Complete, not implemented */
 

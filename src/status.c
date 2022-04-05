@@ -101,9 +101,7 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
         !cJSON_IsObject(root))
         return 1;
 
-    mstdnt_status_from_json(status, root->child);
-
-    return 1;
+    return mstdnt_status_from_json(status, root->child);
 }
 
 int _mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
@@ -375,7 +373,9 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
                 return 1;
             
             cJSON_ArrayForEach(status_item, v)
+            {
                 mstdnt_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
+            }
         }
     }
 }

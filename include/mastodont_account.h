@@ -17,6 +17,7 @@
 #define MASTODONT_ACCOUNT
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
+#include "mastodont_relationship.h"
 #include <cjson/cJSON.h>
 
 #define MSTDNT_LOOKUP_ACCT 0
@@ -55,9 +56,15 @@ struct mstdnt_account
     char* mute_expires_at;
 };
 
-#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_account* acct)
+int mstdnt_account_action(mastodont_t* data,
+                          char* id,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_relationship* rel,
+                          char* url_str);
+
+#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
 #define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) { \
-    return mstdnt_account_action(data, id, storage, acct, "api/v1/accounts/%s/" action);\
+    return mstdnt_account_action(data, id, storage, relationship, "api/v1/accounts/%s/" action); \
     }
 
 MSTDNT_ACCOUNT_ACTION_DECL(follow);

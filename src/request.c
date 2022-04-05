@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -38,8 +39,13 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         post = _mstdnt_query_string(data, NULL, args->params_post, args->params_post_len);
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
     }
+    /* Make it empty, no post data provided */
+    /* I'm not sure why the pleroma api does this */
+    else if (args->request_type == CURLOPT_POST)
+        curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, "");
 
     curlerror = mastodont_fetch_curl(data, url_query, &results, args->request_type);
+
     if (curlerror != CURLE_OK)
     {
         res = 1;
@@ -47,11 +53,14 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         goto cleanup;
     }
 
+
     if (mstdnt_check_error(&results, storage))
     {
         res = 1;
         goto cleanup_res;
     }
+
+    storage->needs_cleanup = 1;
 
     /* Optional */
     if (args->callback) args->callback(&results, storage, args->args);

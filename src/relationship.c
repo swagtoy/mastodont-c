@@ -105,6 +105,26 @@ int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
     }
 }
 
+int mstdnt_relationship_result(struct mstdnt_fetch_results* results,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_relationship* relationship)
+{
+    if (!relationship) return 0;
+
+    cJSON* root;
+    if (_mstdnt_json_init(&root, results, storage))
+        return 1;
+
+    return mstdnt_relationship_json(relationship, root->child);
+}
+
+int _mstdnt_relationship_result_callback(struct mstdnt_fetch_results* results,
+                                          struct mstdnt_storage* storage,
+                                          void* _args)
+{
+    return mstdnt_relationship_result(results, storage, (struct mstdnt_relationship*)_args);
+}
+
 int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
                                           struct mstdnt_storage* storage,
                                           void* _args)

@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <mastodont_account.h>
@@ -135,11 +136,11 @@ int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
 }
 
 
-static int mstdnt_account_action(mastodont_t* data,
-                                 char* id,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_account* acct,
-                                 char* url_str)
+int mstdnt_account_action(mastodont_t* data,
+                          char* id,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_relationship* rel,
+                          char* url_str)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, url_str, id);
@@ -150,8 +151,8 @@ static int mstdnt_account_action(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_POST,
-        acct,
-        mstdnt_account_callback
+        rel,
+        _mstdnt_relationship_result_callback
     };
 
     return mastodont_request(data, &req_args);
