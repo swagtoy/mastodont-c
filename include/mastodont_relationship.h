@@ -15,29 +15,37 @@
 
 #ifndef MASTODONT_RELATIONSHIP_H
 #define MASTODONT_RELATIONSHIP_H
+#include <stdint.h>
 #include <mastodont_types.h>
 #include <mastodont_request.h>
+
+typedef uint16_t mstdnt_relationship_flag_t;
+
+#define MSTDNT_RELATIONSHIP_NOOP 0
+#define MSTDNT_RELATIONSHIP_FOLLOWING (1<<0)
+#define MSTDNT_RELATIONSHIP_REQUESTED (1<<1)
+#define MSTDNT_RELATIONSHIP_ENDORSED (1<<2)
+#define MSTDNT_RELATIONSHIP_FOLLOWED_BY (1<<3)
+#define MSTDNT_RELATIONSHIP_MUTING (1<<4)
+#define MSTDNT_RELATIONSHIP_MUTING_NOTIFS (1<<5)
+#define MSTDNT_RELATIONSHIP_SHOWING_REBLOGS (1<<6)
+#define MSTDNT_RELATIONSHIP_NOTIFYING (1<<7)
+#define MSTDNT_RELATIONSHIP_BLOCKING (1<<8)
+#define MSTDNT_RELATIONSHIP_DOMAIN_BLOCKING (1<<9)
+#define MSTDNT_RELATIONSHIP_BLOCKED_BY (1<<10)
 
 struct mstdnt_relationship
 {
     char* id;
-    mstdnt_bool following;
-    mstdnt_bool requested;
-    mstdnt_bool endorsed;
-    mstdnt_bool followed_by;
-    mstdnt_bool muting;
-    mstdnt_bool muting_notifications;
-    mstdnt_bool showing_reblogs;
-    mstdnt_bool notifying;
-    mstdnt_bool blocking;
-    mstdnt_bool domain_blocking;
-    mstdnt_bool blocked_by;
+    mstdnt_relationship_flag_t flags;
     char* note;
 };
 
+int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js);
+
 int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
                                 struct mstdnt_storage* storage,
-                                struct mstdnt_relationship* relationships,
+                                struct mstdnt_relationship* relationships[],
                                 size_t* size);
 
 int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
