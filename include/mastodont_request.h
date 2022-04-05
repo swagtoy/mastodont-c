@@ -18,6 +18,7 @@
 #include "mastodont.h"
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
+#include "mastodont_query.h"
 
 struct mastodont_request_args
 {

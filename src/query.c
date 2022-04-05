@@ -49,7 +49,7 @@ char* _mstdnt_query_string(mastodont_t* data,
         res_len = 0;
     char* result = malloc(res_len);
     if (src_l)
-        strncpy(result, src, res_len);
+        strcpy(result, src);
 
     /* We'll call them res to represent the query parameters */
     int res_count = 0;
@@ -71,7 +71,9 @@ char* _mstdnt_query_string(mastodont_t* data,
         }
 
         if (params[i].type != _MSTDNT_QUERY_ARRAY)
+        {
             key_ptr = params[i].key;
+        }
 
         if (key_ptr &&
             !(params[i].type == _MSTDNT_QUERY_STRING &&
@@ -127,18 +129,20 @@ char* _mstdnt_query_string(mastodont_t* data,
                 curl_free(escape_str);
         }
 
-        ++arr_ind;
         /* Finish array stuff */
         if (params[i].type == _MSTDNT_QUERY_ARRAY)
+        {
+            ++arr_ind;
+
             if (arr_ind >= params[i].value.a.arr_len)
             {
                 arr_ind = 0;
                 free(key_ptr);
             }
             else {
-                ++arr_ind;
                 --i; /* Flip flop i */
             }
+        }
     }
 
     return result;
