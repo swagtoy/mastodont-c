@@ -143,3 +143,9 @@ int mastodont_get_relationships(mastodont_t* data,
 
     return mastodont_request(data, &req_args);
 }
+
+void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels)
+{
+    if (!rels) return;
+    free(rels);
+}

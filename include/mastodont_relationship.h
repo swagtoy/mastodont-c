@@ -60,4 +60,6 @@ int mastodont_get_relationships(mastodont_t* data,
                                 struct mstdnt_relationship* relationships[],
                                 size_t* size);
 
+void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels);
+
 #endif /* MASTODONT_RELATIONSHIP_H */
