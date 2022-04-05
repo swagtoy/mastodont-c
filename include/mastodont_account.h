@@ -55,6 +55,20 @@ struct mstdnt_account
     char* mute_expires_at;
 };
 
+#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_account* acct)
+#define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) { \
+    return mstdnt_account_action(data, id, storage, acct, "api/v1/accounts/%s/" action);\
+    }
+
+MSTDNT_ACCOUNT_ACTION_DECL(follow);
+MSTDNT_ACCOUNT_ACTION_DECL(unfollow);
+MSTDNT_ACCOUNT_ACTION_DECL(mute);
+MSTDNT_ACCOUNT_ACTION_DECL(unmute);
+MSTDNT_ACCOUNT_ACTION_DECL(block);
+MSTDNT_ACCOUNT_ACTION_DECL(unblock);
+MSTDNT_ACCOUNT_ACTION_DECL(subscribe);
+MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe);
+
 int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
                                struct mstdnt_storage* storage,
                                struct mstdnt_account* acct,

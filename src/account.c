@@ -133,3 +133,52 @@ int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
         _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
     }
 }
+
+
+static int mstdnt_account_action(mastodont_t* data,
+                                 char* id,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_account* acct,
+                                 char* url_str)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, url_str, id);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_POST,
+        acct,
+        mstdnt_account_callback
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
+
+/* These are all the same */
+MSTDNT_ACCOUNT_ACTION_DECL(follow)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("follow")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(unfollow)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("unfollow")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(mute)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("mute")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(unmute)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("unmute")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(block)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("block")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(unblock)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("unblock")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(subscribe)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("subscribe")
+    
+MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe)
+MSTDNT_ACCOUNT_ACTION_FUNC_URL("unsubscribe")
