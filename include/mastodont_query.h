@@ -21,7 +21,14 @@
 enum _mstdnt_query_type
 {
     _MSTDNT_QUERY_STRING,
-    _MSTDNT_QUERY_INT
+    _MSTDNT_QUERY_INT,
+    _MSTDNT_QUERY_ARRAY
+};
+
+struct _mstdnt_query_array
+{
+    char** arr;
+    size_t arr_len;
 };
 
 struct _mstdnt_query_param
@@ -31,6 +38,7 @@ struct _mstdnt_query_param
     union param_value {
         char* s;
         int i;
+        struct _mstdnt_query_array a;
     } value;
 };
 

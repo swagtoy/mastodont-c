@@ -53,11 +53,27 @@ char* _mstdnt_query_string(mastodont_t* data,
 
     /* We'll call them res to represent the query parameters */
     int res_count = 0;
+    size_t arr_ind = 0;
+    char* key_ptr;
 
+    /* If it's an array, we treat it as a "fake" regular key and keep iterating through it */
     for (i = 0; i < param_len; ++i)
     {
         escape_str = NULL;
-        if (params[i].key &&
+
+        /* Start up array */
+        if (params[i].type == _MSTDNT_QUERY_ARRAY && arr_ind == 0)
+        {
+            size_t str_s = strlen(params[i].key);
+            key_ptr = malloc(str_s+3); /* 2 "[]" + 1 \0 */
+            strcpy(key_ptr, params[i].key);
+            strcpy(key_ptr+str_s, "[]");
+        }
+
+        if (params[i].type != _MSTDNT_QUERY_ARRAY)
+            key_ptr = params[i].key;
+
+        if (key_ptr &&
             !(params[i].type == _MSTDNT_QUERY_STRING &&
               params[i].value.s == NULL))
         {
@@ -72,6 +88,10 @@ char* _mstdnt_query_string(mastodont_t* data,
                 snprintf(conv_val, CONV_SIZE, "%d", params[i].value.i);
                 val_ptr = conv_val;
             }
+            else if (params[i].type == _MSTDNT_QUERY_ARRAY)
+            {
+                val_ptr = params[i].value.a.arr[arr_ind];
+            }
             else /* Point to it, it's a string */
             {
                 /* First, let's encode it */
@@ -81,7 +101,7 @@ char* _mstdnt_query_string(mastodont_t* data,
             }
 
             /* Get lengths */
-            key_len = strlen(params[i].key);
+            key_len = strlen(key_ptr);
             val_len = strlen(val_ptr);
 
             res_prev = res_len;
@@ -99,15 +119,27 @@ char* _mstdnt_query_string(mastodont_t* data,
             else result[res_len] = '\0';
 
             /* Copy over strings (skip & sign ;; +1) */
-            strcpy(result + res_prev, params[i].key);
+            strcpy(result + res_prev, key_ptr);
             result[res_prev + key_len] = '=';
             strcpy(result + res_prev + 1 + key_len, val_ptr);
             /* Only free if flag is set, meaning it needs to be free'd */
             if (!MSTDNT_T_FLAG_ISSET(data, MSTDNT_FLAG_NO_URI_SANITIZE))
                 curl_free(escape_str);
         }
+
+        ++arr_ind;
+        /* Finish array stuff */
+        if (params[i].type == _MSTDNT_QUERY_ARRAY)
+            if (arr_ind >= params[i].value.a.arr_len)
+            {
+                arr_ind = 0;
+                free(key_ptr);
+            }
+            else {
+                ++arr_ind;
+                --i; /* Flip flop i */
+            }
     }
-    
 
     return result;
 }

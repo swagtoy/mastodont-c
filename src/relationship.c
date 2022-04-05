@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <mastodont_relationship.h>
 #include <mastodont_json_helper.h>
+#include <mastodont_query.h>
 
 #define FLAG_ARG(flag) { &(relationship->flags), flag }
 
@@ -120,13 +121,20 @@ int mastodont_get_relationships(mastodont_t* data,
 {
     /* struct _mstdnt_query_param params[] = { 0 }; */
     struct _mstdnt_relationships_cb_args cb_args = { relationships, size };
+
+    union param_value u_ids;
+    u_ids.a.arr = ids;
+    u_ids.a.arr_len = ids_len;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_ARRAY, "id", u_ids }
+    };
     
     struct mastodont_request_args req_args = {
         storage,
         "api/v1/accounts/relationships",
+        params, _mstdnt_arr_len(params),
         NULL, 0,
-        NULL, 0,
-        /* params, _mstdnt_arr_len(params), */
         CURLOPT_HTTPGET,
         &cb_args,
         _mstdnt_relationships_result_callback

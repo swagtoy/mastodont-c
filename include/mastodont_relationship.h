@@ -50,6 +50,7 @@ int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
 
 int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
                                           struct mstdnt_storage* storage,
+
                                           void* _args);
 
 int mastodont_get_relationships(mastodont_t* data,
