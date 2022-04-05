@@ -35,7 +35,8 @@ struct _mstdnt_relationship_flags_args
 static void _mstdnt_val_relationship_flag_call(cJSON* v, void* _type)
 {
     struct _mstdnt_relationship_flags_args* arg = _type;
-    *(arg->flags) |= arg->flag;
+    if (cJSON_IsTrue(v))
+        *(arg->flags) |= arg->flag;
 }
 
 int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js)
