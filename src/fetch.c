@@ -77,7 +77,9 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYHOST,
                      !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
     /* PUT, POST, GET */
-    curl_easy_setopt(mstdnt->curl, request_t, 1);
+    /* Mimes are expected to be set beforehand manually */
+    if (request_t != CURLOPT_MIMEPOST)
+        curl_easy_setopt(mstdnt->curl, request_t, 1);
 
     res = curl_easy_perform(mstdnt->curl);
 

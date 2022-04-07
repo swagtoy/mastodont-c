@@ -17,8 +17,10 @@
 #include <stdlib.h>
 #include <mastodont_attachment.h>
 #include <mastodont_json_helper.h>
+#include <mastodont_request.h>
+#include <mastodont_query.h>
 
-static void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json)
+void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json)
 {
     cJSON* it;
 
@@ -40,6 +42,22 @@ static void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_
     {
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
     }
+}
+
+int mstdnt_attachment_result(struct mstdnt_fetch_results* results,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_attachment* att)
+{
+    /* Can be null sometimes */
+    if (!att) return 0;
+    
+    cJSON* root;
+    if (_mstdnt_json_init(&root, results, storage) ||
+        !cJSON_IsObject(root))
+        return 1;
+
+    load_attachment_from_json(att, root->child);
+    return 0;
 }
 
 void _mstdnt_val_attachments_call(cJSON* v, void* _type)
@@ -68,6 +86,42 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     {
         load_attachment_from_json((*attachments) + i, it->child);
     }
+}
+
+static int mstdnt_attachment_callback(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      void* _args)
+{
+    return mstdnt_attachment_result(results, storage, _args);
+}
+
+int mastodont_upload_media(mastodont_t* api,
+                           struct mstdnt_upload_media_args* args,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_attachment* attachment)
+{
+    union param_value u_file, u_thumbnail, u_description;
+    u_file.s = args->file;
+    u_thumbnail.s = args->thumbnail;
+    u_description.s = args->description;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "file", u_file },
+        { _MSTDNT_QUERY_STRING, "thumbnail", u_thumbnail },
+        { _MSTDNT_QUERY_STRING, "description", u_description },
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/media",
+        NULL, 0,
+        params, _mstdnt_arr_len(params),
+        CURLOPT_MIMEPOST,
+        attachment,
+        mstdnt_attachment_callback,
+    };
+
+    return mastodont_request(api, &req_args);
 }
 
 void cleanup_attachments(struct mstdnt_attachment* attachment)

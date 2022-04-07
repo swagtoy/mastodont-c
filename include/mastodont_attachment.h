@@ -16,7 +16,7 @@
 #ifndef MASTODONT_ATTACHMENT
 #define MASTODONT_ATTACHMENT
 #include "mastodont_types.h"
-/* Status: Complete, not implemented */
+#include "mastodont_fetch.h"
 
 enum mstdnt_attachment_type
 {
@@ -38,6 +38,26 @@ struct mstdnt_attachment
     char* description;
     char* blurhash;
 };
+
+struct mstdnt_upload_media_args
+{
+    char* file;
+    char* thumbnail;
+    char* description;
+    /* TODO focus */
+};
+
+int mstdnt_attachment_result(struct mstdnt_fetch_results* results,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_attachment* att);
+
+void _mstdnt_val_attachments_call(cJSON* v, void* _type);
+void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json);
+
+int mastodont_upload_media(mastodont_t* api,
+                           struct mstdnt_upload_media_args* args,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_attachment* attachment);
 
 void cleanup_attachments(struct mstdnt_attachment* attachment);
 void _mstdnt_val_attachments_call(cJSON* v, void* _type);
