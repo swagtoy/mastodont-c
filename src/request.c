@@ -31,10 +31,17 @@ static void mime_params_post(curl_mime* mime,
     char conv_val[CONV_SIZE];
     char* val_ptr;
     char* escape_str;
+    struct mstdnt_file* file = NULL;
 
     for (i = 0; i < size; ++i)
     {
         part = curl_mime_addpart(mime);
+
+        /* Skip if file is empty */
+        if (params[i].type == _MSTDNT_QUERY_FILE &&
+            params[i].value.f == NULL)
+            continue;
+        
         switch (params[i].type)
         {
         case _MSTDNT_QUERY_INT:
@@ -44,12 +51,18 @@ static void mime_params_post(curl_mime* mime,
         case _MSTDNT_QUERY_STRING:
             val_ptr = params[i].value.s;
             break;
+        case _MSTDNT_QUERY_FILE:
+            file = params[i].value.f;
+            val_ptr = file->file;
+            curl_mime_type(part, file->filetype);
+            curl_mime_filename(part, file->filename);
         default:
             /* Any other types are not supported! */
             break;
         }
-        
-        curl_mime_data(part, val_ptr, CURL_ZERO_TERMINATED);
+
+        curl_mime_data(part, val_ptr,
+                       file ? file->filesize : CURL_ZERO_TERMINATED);
         curl_mime_name(part, params[i].key);
     }
     

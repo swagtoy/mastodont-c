@@ -101,14 +101,13 @@ int mastodont_upload_media(mastodont_t* api,
                            struct mstdnt_attachment* attachment)
 {
     union param_value u_file, u_thumbnail, u_description;
-    u_file.s = args->file;
-    u_thumbnail.s = args->thumbnail;
+    u_file.f = &(args->file);
+    u_thumbnail.f = args->thumbnail;
     u_description.s = args->description;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "file", u_file },
-        { _MSTDNT_QUERY_STRING, "thumbnail", u_thumbnail },
-        { _MSTDNT_QUERY_STRING, "description", u_description },
+        { _MSTDNT_QUERY_FILE, "file", u_file },
+        { _MSTDNT_QUERY_FILE, "thumbnail", u_thumbnail }
     };
     
     struct mastodont_request_args req_args = {

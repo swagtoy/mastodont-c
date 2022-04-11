@@ -59,6 +59,7 @@ struct mstdnt_args
     char* spoiler_text;
     char* status;
     char* visibility;
+    int media_ids_len;
     int remote;
     int local;
     char** exclude_types;

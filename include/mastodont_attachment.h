@@ -41,8 +41,8 @@ struct mstdnt_attachment
 
 struct mstdnt_upload_media_args
 {
-    char* file;
-    char* thumbnail;
+    struct mstdnt_file file;
+    struct mstdnt_file* thumbnail;
     char* description;
     /* TODO focus */
 };

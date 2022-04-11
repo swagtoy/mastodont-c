@@ -46,4 +46,12 @@ struct mstdnt_storage
     char* error_description;
 };
 
+struct mstdnt_file
+{
+    char* file;
+    char* filename;
+    size_t filesize;
+    char* filetype;
+};
+
 #endif /* MASTODONT_TYPES_H */

@@ -187,7 +187,8 @@ int mastodont_create_status(mastodont_t* data,
     u_in_reply_to_conversation_id.s = args->in_reply_to_conversation_id;
     u_in_reply_to_id.s = args->in_reply_to_id;
     u_language.s = args->language;
-    /*u_media_ids.s = args->media_ids;*/
+    u_media_ids.a.arr = args->media_ids;
+    u_media_ids.a.arr_len = args->media_ids_len;
     /* poll */
     u_preview.i = args->preview;
     u_scheduled_at.s = args->scheduled_at;
@@ -201,6 +202,7 @@ int mastodont_create_status(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "content_type", u_content_type },
         { _MSTDNT_QUERY_STRING, "status", u_status },
         { _MSTDNT_QUERY_STRING, "visibility", u_visibility },
+        { _MSTDNT_QUERY_ARRAY, "media_ids", u_media_ids },
     };
 
     struct mastodont_request_args req_args = {
