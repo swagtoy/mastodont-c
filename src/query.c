@@ -61,6 +61,11 @@ char* _mstdnt_query_string(mastodont_t* data,
     {
         escape_str = NULL;
 
+        /* If array is NULL, skip */
+        if (params[i].type == _MSTDNT_QUERY_ARRAY &&
+            !(params[i].value.a.arr && params[i].value.a.arr_len))
+            continue;
+        
         /* Start up array */
         if (params[i].type == _MSTDNT_QUERY_ARRAY && arr_ind == 0)
         {
