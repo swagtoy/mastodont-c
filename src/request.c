@@ -123,7 +123,7 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     storage->needs_cleanup = 1;
 
     /* Optional */
-    if (args->callback) args->callback(&results, storage, args->args);
+    if (args->callback) res = args->callback(&results, storage, args->args);
 
 cleanup_res:
     mastodont_fetch_results_cleanup(&results);

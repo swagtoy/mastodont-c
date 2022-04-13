@@ -118,13 +118,15 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
 {
     size_t i = 0;
     cJSON* root, *status_j_list;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
-    if (!cJSON_IsArray(root))
+    if (_mstdnt_json_init(&root, results, storage) &&
+        !cJSON_IsArray(root))
         return 1;
 
     if (size) *size = cJSON_GetArraySize(root);
+
+    /* Statuses can be an empty array! */
+    if (!(size ? *size : cJSON_GetArraySize(root)))
+        return 0; /* Not an error, but we are done parsing */
 
     /* malloc array - cJSON does a loop to count, let's do it once preferably */
     *statuses = calloc(1, (size ? *size : cJSON_GetArraySize(root))
