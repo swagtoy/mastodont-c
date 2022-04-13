@@ -78,14 +78,13 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
         { "media_attachments", &att_args, _mstdnt_val_attachments_call },
         { "pleroma", &(status->pleroma), _mstdnt_val_status_pleroma_call },
-        { "reblog", &(status->reblog), _mstdnt_val_malloc_status_call }
+        { "reblog", &(status->reblog), _mstdnt_val_malloc_status_call },
+        { "account", &(status->account), _mstdnt_val_account_call }
     };
     
     for (v = js; v; v = v->next)
-        if (_mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals)) == 1)
-            if (cJSON_IsObject(v))
-                if (strcmp("account", v->string) == 0)
-                    mstdnt_account_from_json(&(status->account), v->child);
+        _mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals));
+    
     return 0;
 }
 
