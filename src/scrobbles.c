@@ -20,7 +20,7 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-int mstdnt_scrobble_from_json(struct mstdnt_scrobble* scrobble, cJSON* js)
+int mstdnt_scrobble_json(struct mstdnt_scrobble* scrobble, cJSON* js)
 {
     cJSON* v;
 
@@ -29,12 +29,12 @@ int mstdnt_scrobble_from_json(struct mstdnt_scrobble* scrobble, cJSON* js)
 
     struct _mstdnt_val_ref vals[] = {
         { "account", &(scrobble->account), _mstdnt_val_account_call },
-        { "album", &(scrobble->id), _mstdnt_val_string_call },
-        { "artist", &(scrobble->id), _mstdnt_val_string_call },
-        { "created_at", &(scrobble->id), _mstdnt_val_string_call },
+        { "album", &(scrobble->album), _mstdnt_val_string_call },
+        { "artist", &(scrobble->artist), _mstdnt_val_string_call },
+        { "created_at", &(scrobble->created_at), _mstdnt_val_string_call },
         { "id", &(scrobble->id), _mstdnt_val_string_call },
-        { "length", &(scrobble->id), _mstdnt_val_uint_call },
-        { "title", &(scrobble->id), _mstdnt_val_string_call }
+        { "length", &(scrobble->length), _mstdnt_val_uint_call },
+        { "title", &(scrobble->title), _mstdnt_val_string_call }
     };
     
     for (v = js; v; v = v->next)
@@ -75,12 +75,12 @@ int mstdnt_scrobbles_result(struct mstdnt_fetch_results* results,
 }
 
 
-int _mstdnt_scrobbles_from_result_callback(struct mstdnt_fetch_results* results,
-                                           struct mstdnt_storage* storage,
-                                           void* _args)
+int _mstdnt_scrobbles_result_callback(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      void* _args)
 {
     struct _mstdnt_scrobbles_cb_args* args = _args;
-    return mstdnt_scrobbles_from_result(results, storage, args->scrobbles, args->size);
+    return mstdnt_scrobbles_result(results, storage, args->scrobbles, args->size);
 }
 
 int mastodont_get_scrobbles(mastodont_t* data,
@@ -117,7 +117,7 @@ int mastodont_get_scrobbles(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_scrobbles_from_result_callback
+        _mstdnt_scrobbles_result_callback
     };
 
     return mastodont_request(data, &req_args);

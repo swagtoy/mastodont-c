@@ -23,6 +23,7 @@
 #include <mastodont_relationship.h>
 #include <mastodont_account.h>
 #include <mastodont_attachment.h>
+#include <mastodont_scrobbles.h>
 
 /* Functions required form curl */
 void mastodont_global_curl_init();

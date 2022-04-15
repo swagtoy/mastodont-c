@@ -58,8 +58,10 @@ int mstdnt_scrobbles_result(struct mstdnt_fetch_results* results,
                             struct mstdnt_scrobble* scrobbles[],
                             size_t* size);
 
-int _mstdnt_scrobbles_from_result_callback(struct mstdnt_fetch_results* results,
-                                           struct mstdnt_storage* storage,
-                                           void* arg);
+int _mstdnt_scrobbles_result_callback(struct mstdnt_fetch_results* results,
+                                      struct mstdnt_storage* storage,
+                                      void* arg);
+
+int mstdnt_scrobble_json(struct mstdnt_scrobble* scrobble, cJSON* js);
 
 #endif /* MASTODONT_SCROBBLES_H */
