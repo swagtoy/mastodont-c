@@ -26,7 +26,9 @@ struct mstdnt_timeline_args
     char* since_id;
     char* min_id;
     int limit;
+    int offset;
     int local;
+    int with_muted;
 };
 
 int mastodont_timeline_home(mastodont_t* data,
@@ -47,5 +49,12 @@ int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* statuses_size);
+
+int mastodont_timeline_direct(mastodont_t* data,
+                              struct mstdnt_timeline_args* args,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* statuses[],
+                              size_t* statuses_size);
+
 
 #endif /* MASTODONT_TIMELINE_H */
