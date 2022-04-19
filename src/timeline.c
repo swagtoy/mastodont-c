@@ -22,7 +22,7 @@
 
 int mastodont_timeline_list(mastodont_t* data,
                             char* list_id,
-                            struct mstdnt_args* args,
+                            struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size)
@@ -59,7 +59,7 @@ int mastodont_timeline_list(mastodont_t* data,
 }
 
 int mastodont_timeline_public(mastodont_t* data,
-                              struct mstdnt_args* args,
+                              struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* size)
@@ -89,6 +89,44 @@ int mastodont_timeline_public(mastodont_t* data,
     struct mastodont_request_args req_args = {
         storage,
         "api/v1/timelines/public",
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
+    
+    return mastodont_request(data, &req_args);
+}
+
+
+int mastodont_timeline_home(mastodont_t* data,
+                              struct mstdnt_timeline_args* args,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* statuses[],
+                              size_t* size)
+{
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    
+    union param_value u_max_id, u_since_id, u_min_id,
+        u_limit, u_local;
+    u_max_id.s = args->max_id;
+    u_since_id.s = args->since_id;
+    u_min_id.s = args->min_id;
+    u_limit.i = args->limit;
+    u_local.i = args->local;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_INT, "local", u_local },
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/timelines/home",
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,

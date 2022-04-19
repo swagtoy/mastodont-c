@@ -18,15 +18,32 @@
 #include <mastodont_types.h>
 #include <mastodont_status.h>
 
+struct mstdnt_timeline_args
+{
+    int only_media;
+    int remote;    
+    char* max_id;
+    char* since_id;
+    char* min_id;
+    int limit;
+    int local;
+};
+
+int mastodont_timeline_home(mastodont_t* data,
+                            struct mstdnt_timeline_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size);
+
 int mastodont_timeline_list(mastodont_t* data,
                             char* list_id,
-                            struct mstdnt_args* args,
+                            struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size);
 
 int mastodont_timeline_public(mastodont_t* data,
-                              struct mstdnt_args* args,
+                              struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* statuses_size);
