@@ -66,6 +66,7 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "language", &(status->language), _mstdnt_val_string_call },
         { "url", &(status->url), _mstdnt_val_string_call },
         { "text", &(status->text), _mstdnt_val_string_call },
+        { "visibility", &(status->visibility), _mstdnt_val_string_call },
         { "in_reply_to_account_id", &(status->in_reply_to_account_id), _mstdnt_val_string_call },
         { "sensitive", &(status->sensitive), _mstdnt_val_bool_call },
         { "favourited", &(status->favourited), _mstdnt_val_bool_call },

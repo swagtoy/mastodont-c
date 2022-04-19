@@ -38,9 +38,9 @@ struct mstdnt_get_notifications_args
     mstdnt_notification_t exclude_types;
     char* account_id;
     /* Bitmask */
-    mstdnt_visibility_t exclude_visibilities;
+    mstdnt_visibility_t* exclude_visibilities;
     /* Bitmask */
-    mstdnt_visibility_t include_types;
+    mstdnt_visibility_t* include_types;
     mstdnt_bool with_muted;
     char* max_id;
     char* min_id;

@@ -17,14 +17,14 @@
 #define MASTODONT_VISIBILITY_TYPES_H
 #include <stdint.h>
 
-#define MSTDNT_VISIBILITY_NOOP 0
-#define MSTDNT_VISIBILITY_PUBLIC (1<<0)
-#define MSTDNT_VISIBILITY_UNLISTED (1<<1)
-#define MSTDNT_VISIBILITY_PRIVATE (1<<2)
-#define MSTDNT_VISIBILITY_DIRECT (1<<3)
-#define MSTDNT_VISIBILITY_LIST (1<<4)
-#define MSTDNT_VISIBILITY_LOCAL (1<<5)
+/* These used to uint8_t's, but because lists are custom strings,
+   it was better to make these regular strings */
+#define MSTDNT_VISIBILITY_PUBLIC "public"
+#define MSTDNT_VISIBILITY_UNLISTED "unlisted"
+#define MSTDNT_VISIBILITY_PRIVATE "private"
+#define MSTDNT_VISIBILITY_DIRECT "direct"
+#define MSTDNT_VISIBILITY_LOCAL "local"
 
-typedef uint8_t mstdnt_visibility_t;
+typedef char* mstdnt_visibility_t;
 
 #endif /* MASTODONT_VISIBILITY_TYPES_H */
