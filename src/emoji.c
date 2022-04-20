@@ -18,7 +18,26 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_emoji.h>
 
-static void load_emoji_reacts_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
+void load_emoji_from_json(struct mstdnt_emoji* emo, cJSON* emo_json)
+{
+    cJSON* it;
+    
+    /* Zero out */
+    memset(emo, 0, sizeof(struct mstdnt_emoji));
+    
+    struct _mstdnt_val_ref refs[] = {
+        { "shortcode", &(emo->shortcode), _mstdnt_val_string_call },
+        { "url", &(emo->url), _mstdnt_val_string_call },
+        { "static_url", &(emo->static_url), _mstdnt_val_string_call },
+        { "visible_in_picker", &(emo->visible_in_picker), _mstdnt_val_bool_call },
+        { "category", &(emo->category), _mstdnt_val_string_call },
+    };
+
+    for (it = emo_json; it; it = it->next)
+        _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
+}
+
+void load_emoji_react_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
 {
     cJSON* it;
     
@@ -32,9 +51,7 @@ static void load_emoji_reacts_from_json(struct mstdnt_emoji_reaction* emo, cJSON
     };
 
     for (it = emo_json; it; it = it->next)
-    {
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
-    }
 }
 
 void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
@@ -61,8 +78,36 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
     int i;
     for (it = v_array, i = 0; it; (++i, it = it->next))
     {
-        load_emoji_reacts_from_json((*emos) + i, it->child);
+        load_emoji_react_from_json((*emos) + i, it->child);
     }
+}
+
+void _mstdnt_val_emojis_call(cJSON* v, void* _type)
+{
+    struct _mstdnt_generic_args* args = _type;
+    struct mstdnt_emoji** emos = args->arg;
+    cJSON* v_array = v->child;
+    cJSON* att = NULL;
+
+    size_t size = cJSON_GetArraySize(v);
+    *(args->size) = size;
+    /* No attachments, ignore */
+    if (size == 0)
+    {
+        *emos = NULL;
+        return;
+    }
+
+    *emos = calloc(1, sizeof(struct mstdnt_emoji) * size);
+    if (*emos == NULL)
+        return;
+
+    cJSON* it;
+    int i;
+    for (it = v_array, i = 0; it; (++i, it = it->next))
+    {
+        load_emoji_from_json((*emos) + i, it->child);
+    }    
 }
 
 void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reaction)
@@ -78,4 +123,10 @@ void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s)
     for (i = 0; i < s; ++i)
         cleanup_emoji_reaction(reactions + s);
     free(reactions);
+}
+
+void cleanup_emojis(struct mstdnt_emoji* emo)
+{
+    if (!emo) return;
+    free(emo);
 }

@@ -50,6 +50,7 @@ struct mstdnt_status
     struct mstdnt_mention* mentions;
     struct mstdnt_tag* tags;
     struct mstdnt_emoji* emojis;
+    size_t emojis_len;
 
     /* Information attributes */
     unsigned reblogs_count;

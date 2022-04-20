@@ -56,6 +56,11 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
         &(status->media_attachments_len),
     };
 
+    struct _mstdnt_generic_args emj_args = {
+        &(status->emojis),
+        &(status->emojis_len)
+    };
+
     struct _mstdnt_val_ref vals[] = {
         { "id", &(status->id), _mstdnt_val_string_call },
         { "uri", &(status->uri), _mstdnt_val_string_call },
@@ -72,6 +77,7 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
         { "favourited", &(status->favourited), _mstdnt_val_bool_call },
         { "reblogged", &(status->reblogged), _mstdnt_val_bool_call },
         { "muted", &(status->muted), _mstdnt_val_bool_call },
+        { "emojis", &emj_args, _mstdnt_val_emojis_call },
         { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call },
         { "pinned", &(status->pinned), _mstdnt_val_bool_call },
         { "reblogs_count", &(status->reblogs_count), _mstdnt_val_uint_call },
