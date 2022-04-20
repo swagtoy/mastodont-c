@@ -20,12 +20,6 @@
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
 
-struct mstdnt_account_args
-{
-    struct mstdnt_account* acct;
-    size_t* size;
-};
-
 void _mstdnt_val_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account* type = _type;
@@ -45,8 +39,7 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
 
 int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
                                struct mstdnt_storage* storage,
-                               struct mstdnt_account* acct,
-                               size_t* size)
+                               struct mstdnt_account* acct)
 {
     cJSON* root;
     root = cJSON_ParseWithLength(results->response, results->size);
@@ -64,23 +57,58 @@ int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
     return 0;
 }
 
-static int mstdnt_account_callback(struct mstdnt_fetch_results* results,
-                                   struct mstdnt_storage* storage,
-                                   void* _args)
+int mstdnt_accounts_result(struct mstdnt_fetch_results* results,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_account* accts[],
+                           size_t* size)
 {
-    struct mstdnt_account_args* args = _args;
-    return mstdnt_account_from_result(results, storage, args->acct, args->size);
+    size_t i = 0;
+    cJSON* root, *acct_j_list;
+    if (_mstdnt_json_init(&root, results, storage) &&
+        !cJSON_IsArray(root))
+        return 1;
+
+    if (size) *size = cJSON_GetArraySize(root);
+
+    /* accounts can be an empty array! */
+    if (!(size ? *size : cJSON_GetArraySize(root)))
+        return 0; /* Not an error, but we are done parsing */
+
+    /* malloc array - cJSON does a loop to count, let's do it once preferably */
+    *accts = calloc(1, (size ? *size : cJSON_GetArraySize(root))
+                       * sizeof(struct mstdnt_account));
+    if (*accts == NULL)
+        return 1;
+    
+    cJSON_ArrayForEach(acct_j_list, root)
+    {
+        mstdnt_account_from_json((*accts) + i++, acct_j_list->child);
+    }
+    
+    return 0;
 }
 
+int mstdnt_account_callback(struct mstdnt_fetch_results* results,
+                            struct mstdnt_storage* storage,
+                            void* args)
+{
+    return mstdnt_account_from_result(results, storage, args);
+}
+
+int mstdnt_accounts_callback(struct mstdnt_fetch_results* results,
+                             struct mstdnt_storage* storage,
+                             void* _args)
+{
+    struct mstdnt_account_args* args = _args;
+    return mstdnt_accounts_result(results, storage, args->acct, args->size);
+}
 
 int mastodont_get_account(mastodont_t* data,
                           int lookup, /* TODO move into separate function for consistancy */
                           char* id,
                           struct mstdnt_account* acct,
-                          struct mstdnt_storage* storage,
-                          size_t* size)
+                          struct mstdnt_storage* storage)
 {
-    struct mstdnt_account_args acct_args = { acct, size };
     /* Url */
     char url[MSTDNT_URLSIZE] = { 0 };
     snprintf(url, MSTDNT_URLSIZE,
@@ -93,7 +121,7 @@ int mastodont_get_account(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
-        &acct_args, /* args */
+        acct, /* args */
         mstdnt_account_callback, /* callback */
     };
     
