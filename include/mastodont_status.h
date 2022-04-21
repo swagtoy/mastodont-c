@@ -126,7 +126,19 @@ int mastodont_get_status_context(mastodont_t* data,
                                  struct mstdnt_status* statuses_after[],
                                  size_t* size_before,
                                  size_t* size_after);
-                             
+
+int mastodont_status_favourited_by(mastodont_t* data,
+                                   char* id,
+                                   struct mstdnt_storage* storage,
+                                   struct mstdnt_account* accounts[],
+                                   size_t* accts);
+
+int mastodont_status_reblogged_by(mastodont_t* data,
+                                  char* id,
+                                  struct mstdnt_storage* storage,
+                                  struct mstdnt_account* accounts[],
+                                  size_t* accts);
+
 int mastodont_create_status(mastodont_t* data,
                             struct mstdnt_args* args,
                             struct mstdnt_storage* storage);

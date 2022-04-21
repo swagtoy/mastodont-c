@@ -433,6 +433,32 @@ int mastodont_get_status_context(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+int mastodont_status_favourited_by(mastodont_t* data,
+                                   char* id,
+                                   struct mstdnt_storage* storage,
+                                   struct mstdnt_account* accounts[],
+                                   size_t* accts)
+{
+    struct mstdnt_account_args args = {
+        statuses_before,
+        size_after,
+    };
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &args,
+        _mstdnt_status_context_from_result_callback,
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
 void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     cleanup_attachments(status->media_attachments);
