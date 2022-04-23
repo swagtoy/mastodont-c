@@ -437,14 +437,14 @@ int mastodont_status_favourited_by(mastodont_t* data,
                                    char* id,
                                    struct mstdnt_storage* storage,
                                    struct mstdnt_account* accounts[],
-                                   size_t* accts)
+                                   size_t* accts_len)
 {
     struct mstdnt_account_args args = {
-        statuses_before,
-        size_after,
+        accounts,
+        accts_len,
     };
     char url[MSTDNT_URLSIZE];
-    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/favourited_by", id);
 
     struct mastodont_request_args req_args = {
         storage,
@@ -453,7 +453,33 @@ int mastodont_status_favourited_by(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        _mstdnt_status_context_from_result_callback,
+        mstdnt_accounts_callback,
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
+int mastodont_status_reblogged_by(mastodont_t* data,
+                                  char* id,
+                                  struct mstdnt_storage* storage,
+                                  struct mstdnt_account* accounts[],
+                                  size_t* accts_len)
+{
+    struct mstdnt_account_args args = {
+        accounts,
+        accts_len,
+    };
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/reblogged_by", id);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &args,
+        mstdnt_accounts_callback,
     };
 
     return mastodont_request(data, &req_args);
