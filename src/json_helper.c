@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <mastodont_json_helper.h>
 
 int _mstdnt_json_init(cJSON** root,

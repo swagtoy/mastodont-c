@@ -19,6 +19,7 @@
 #include <assert.h>
 #include <mastodont_request.h>
 #include <mastodont_query.h>
+#include <mastodont_error.h>
 
 #define CONV_SIZE 64
 

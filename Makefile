@@ -1,5 +1,5 @@
 CC ?= cc
-CFLAGS = -g -ansi -I ./include/
+CFLAGS = -g -ansi -Wall -Werror=implicit-function-declaration -I ./include/
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 TARGET = libmastodont.a # shared
