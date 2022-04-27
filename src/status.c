@@ -200,8 +200,8 @@ int mastodont_get_account_statuses(mastodont_t* data,
     struct mastodont_request_args req_args = {
         storage,
         url,
-        NULL, 0,
         params, _mstdnt_arr_len(params),
+        NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
         _mstdnt_statuses_result_callback
