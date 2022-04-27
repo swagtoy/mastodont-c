@@ -161,6 +161,8 @@ int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
     {
         _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
     }
+    
+    return 0;
 }
 
 
@@ -185,7 +187,6 @@ int mstdnt_account_action(mastodont_t* data,
 
     return mastodont_request(data, &req_args);
 }
-
 
 /* These are all the same */
 MSTDNT_ACCOUNT_ACTION_DECL(follow)

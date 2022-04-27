@@ -183,6 +183,33 @@ struct _mstdnt_status_context_result_cb_args
     size_t* size_after;
 };
 
+struct mstdnt_bookmarks_args
+{
+    char* max_id;
+    char* since_id;
+    char* min_id;
+    int limit;
+};
+
+struct mstdnt_favourites_args
+{
+    char* max_id;
+    char* min_id;
+    int limit;
+};
+
+int mastodont_get_bookmarks(mastodont_t* data,
+                            struct mstdnt_bookmarks_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size);
+
+int mastodont_get_favourites(mastodont_t* data,
+                             struct mstdnt_favourites_args* args,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_status* statuses[],
+                             size_t* size);
+
 int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
                                      struct mstdnt_storage* storage,
                                      void* _args);

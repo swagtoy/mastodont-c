@@ -485,6 +485,74 @@ int mastodont_status_reblogged_by(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+
+int mastodont_get_bookmarks(mastodont_t* data,
+                            struct mstdnt_bookmarks_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size)
+{
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    
+    union param_value u_max_id, u_since_id, u_min_id, u_limit;
+    u_max_id.s = args->max_id;
+    u_since_id.s = args->since_id;
+    u_min_id.s = args->min_id;
+    u_limit.i = args->limit;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/bookmarks",
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
+    
+    return mastodont_request(data, &req_args);
+}
+
+int mastodont_get_favourites(mastodont_t* data,
+                            struct mstdnt_favourites_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_status* statuses[],
+                            size_t* size)
+{
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    
+    union param_value u_max_id, u_min_id, u_limit;
+    u_max_id.s = args->max_id;
+    u_min_id.s = args->min_id;
+    u_limit.i = args->limit;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/favourites",
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
+    
+    return mastodont_request(data, &req_args);
+}
+
+
 void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     cleanup_attachments(status->media_attachments);
