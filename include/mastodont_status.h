@@ -75,6 +75,21 @@ struct mstdnt_status
     mstdnt_bool pinned;
 };
 
+struct mstdnt_account_statuses_args
+{
+    mstdnt_bool pinned;
+    mstdnt_bool only_media;
+    mstdnt_bool with_muted;
+    mstdnt_bool exclude_reblogs;
+    mstdnt_bool exclude_replies;
+    char* tagged;
+    char* max_id;
+    char* min_id;
+    char* since_id;
+    int offset;
+    int limit;
+};
+
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
 void mstdnt_cleanup_status(struct mstdnt_status* status);
 
@@ -109,7 +124,7 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
 
 int mastodont_get_account_statuses(mastodont_t* data,
                                    char* id,
-                                   struct mstdnt_args* args,
+                                   struct mstdnt_account_statuses_args* args,
                                    struct mstdnt_storage* storage,
                                    struct mstdnt_status* statuses[],
                                    size_t* size);

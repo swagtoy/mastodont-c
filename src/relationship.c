@@ -103,6 +103,8 @@ int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
     {
         mstdnt_relationship_json((*relationships) + i++, rel_j_list->child);
     }
+
+    return 0;
 }
 
 int mstdnt_relationship_result(struct mstdnt_fetch_results* results,

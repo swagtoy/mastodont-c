@@ -1,5 +1,5 @@
 CC ?= cc
-CFLAGS = -g -ansi -Wall -Werror=implicit-function-declaration -I ./include/ `pkg-config --cflags libcjson`
+CFLAGS = -g -ansi -Wall -Werror=implicit-function-declaration -Wno-unused-variable -I ./include/ `pkg-config --cflags libcjson`
 SRC = $(wildcard src/*.c)
 OBJ = $(patsubst %.c,%.o,$(SRC))
 TARGET = libmastodont.a # shared

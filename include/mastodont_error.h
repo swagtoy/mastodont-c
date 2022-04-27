@@ -21,4 +21,4 @@
 int mstdnt_check_error(struct mstdnt_fetch_results* result,
                        struct mstdnt_storage* storage);
 
-#endif // MASTODONT_ERROR_H
+#endif /* MASTODONT_ERROR_H */

@@ -43,6 +43,8 @@ int mstdnt_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON
     {
         _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
     }
+
+    return 0;
 }
 
 void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type)

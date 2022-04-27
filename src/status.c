@@ -156,10 +156,9 @@ int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
     return mstdnt_statuses_from_result(storage, results, args->statuses, args->size);
 }
 
-/* TODO Still need to handle get params */
 int mastodont_get_account_statuses(mastodont_t* data,
                                    char* id,
-                                   struct mstdnt_args* args,
+                                   struct mstdnt_account_statuses_args* args,
                                    struct mstdnt_storage* storage,
                                    struct mstdnt_status* statuses[],
                                    size_t* size)
@@ -168,11 +167,41 @@ int mastodont_get_account_statuses(mastodont_t* data,
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
+    union param_value u_pinned, u_tagged, u_only_media,
+        u_with_muted, u_exclude_reblogs, u_exclude_replies,
+        u_exclude_visibilities, u_max_id, u_min_id,
+        u_since_id, u_offset, u_limit;
+    u_pinned.i = args->pinned;
+    u_only_media.i = args->only_media;
+    u_with_muted.i = args->with_muted;
+    u_exclude_reblogs.i = args->exclude_reblogs;
+    u_exclude_replies.i = args->exclude_replies;
+    u_tagged.s = args->tagged;
+    u_max_id.s = args->max_id;
+    u_min_id.s = args->min_id;
+    u_since_id.s = args->since_id;
+    u_offset.i = args->offset;
+    u_limit.i = args->limit;
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_INT, "pinned", u_pinned },
+        { _MSTDNT_QUERY_STRING, "tagged", u_tagged },
+        { _MSTDNT_QUERY_INT, "only_media", u_only_media },
+        { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
+        { _MSTDNT_QUERY_INT, "exclude_reblogs", u_exclude_reblogs },
+        { _MSTDNT_QUERY_INT, "exclude_replies", u_exclude_replies },
+        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
+        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
+        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
+        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_INT, "offset", u_offset },
+    };
+
     struct mastodont_request_args req_args = {
         storage,
         url,
         NULL, 0,
-        NULL, 0, /* TODO */
+        params, _mstdnt_arr_len(params),
         CURLOPT_HTTPGET,
         &cb_args,
         _mstdnt_statuses_result_callback
@@ -388,6 +417,8 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
             }
         }
     }
+    
+    return 0;
 }
 
 int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,

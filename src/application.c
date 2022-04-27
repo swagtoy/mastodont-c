@@ -91,7 +91,7 @@ static int mstdnt_token_result_callback(struct mstdnt_fetch_results* results,
                                         struct mstdnt_storage* storage,
                                         void* args)
 {
-    mstdnt_token_result(results, storage, args);
+    return mstdnt_token_result(results, storage, args);
 }
 
 int mastodont_register_app(mastodont_t* data,
