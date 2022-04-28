@@ -99,18 +99,11 @@ int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
 {
-    union param_value u_client_name, u_redirect_uris,
-        u_scopes, u_website;
-    u_client_name.s = args->client_name;
-    u_redirect_uris.s = args->redirect_uris;
-    u_scopes.s = args->scopes;
-    u_website.s = args->website;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "client_name", u_client_name },
-        { _MSTDNT_QUERY_STRING, "redirect_uris", u_redirect_uris },
-        { _MSTDNT_QUERY_STRING, "scopes", u_scopes },
-        { _MSTDNT_QUERY_STRING, "website", u_website },
+        { _MSTDNT_QUERY_STRING, "client_name", { .s = args->client_name } },
+        { _MSTDNT_QUERY_STRING, "redirect_uris", { .s = args->redirect_uris } },
+        { _MSTDNT_QUERY_STRING, "scopes", { .s = args->scopes } },
+        { _MSTDNT_QUERY_STRING, "website", { .s = args->website } },
     };
     
     struct mastodont_request_args req_args = {
@@ -132,27 +125,15 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)
 {
-    union param_value u_grant_type, u_client_id,
-        u_client_secret, u_redirect_uri,
-        u_scope, u_code, u_username, u_password;
-    u_grant_type.s = args->grant_type;
-    u_client_id.s = args->client_id;
-    u_client_secret.s = args->client_secret;
-    u_redirect_uri.s = args->redirect_uri;
-    u_scope.s = args->scope;
-    u_code.s = args->code;
-    u_username.s = args->username;
-    u_password.s = args->password;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "grant_type", u_grant_type },
-        { _MSTDNT_QUERY_STRING, "client_id", u_client_id },
-        { _MSTDNT_QUERY_STRING, "client_secret", u_client_secret },
-        { _MSTDNT_QUERY_STRING, "redirect_uri", u_redirect_uri },
-        { _MSTDNT_QUERY_STRING, "scope", u_scope },
-        { _MSTDNT_QUERY_STRING, "code", u_code },
-        { _MSTDNT_QUERY_STRING, "username", u_username },
-        { _MSTDNT_QUERY_STRING, "password", u_password },
+        { _MSTDNT_QUERY_STRING, "grant_type", { .s = args->grant_type } },
+        { _MSTDNT_QUERY_STRING, "client_id", { .s = args->client_id } },
+        { _MSTDNT_QUERY_STRING, "client_secret", { .s = args->client_secret } },
+        { _MSTDNT_QUERY_STRING, "redirect_uri", { .s = args->redirect_uri } },
+        { _MSTDNT_QUERY_STRING, "scope", { .s = args->scope } },
+        { _MSTDNT_QUERY_STRING, "code", { .s = args->code } },
+        { _MSTDNT_QUERY_STRING, "username", { .s = args->username } },
+        { _MSTDNT_QUERY_STRING, "password", { .s = args->password } },
     };
 
     struct mastodont_request_args req_args = {

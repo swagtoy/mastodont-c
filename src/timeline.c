@@ -30,19 +30,12 @@ int mastodont_timeline_list(mastodont_t* data,
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
-
-    union param_value u_local, u_remote, u_only_media,
-        u_max_id, u_since_id, u_min_id, u_limit;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
-
+    
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
 
     struct mastodont_request_args req_args = {
@@ -65,25 +58,14 @@ int mastodont_timeline_public(mastodont_t* data,
                               size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
-    
-    union param_value u_local, u_remote, u_only_media,
-        u_max_id, u_since_id, u_min_id, u_limit;
-    u_local.i = args->local;
-    u_remote.i = args->remote;
-    u_only_media.i = args->only_media;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_INT, "local", u_local },
-        { _MSTDNT_QUERY_INT, "remote", u_remote },
-        { _MSTDNT_QUERY_INT, "only_media", u_only_media },
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
     
     struct mastodont_request_args req_args = {
@@ -107,25 +89,15 @@ int mastodont_timeline_direct(mastodont_t* data,
                               size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
-    
-    union param_value u_max_id, u_since_id, u_min_id,
-        u_limit, u_local, u_offset, u_with_muted;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
-    u_offset.i = args->offset;
-    u_local.i = args->local;
-    u_with_muted.i = args->with_muted;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
-        { _MSTDNT_QUERY_INT, "offset", u_offset },
-        { _MSTDNT_QUERY_INT, "local", u_local },
-        { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
     };
     
     struct mastodont_request_args req_args = {
@@ -149,22 +121,13 @@ int mastodont_timeline_home(mastodont_t* data,
                             size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
-    
-    union param_value u_max_id, u_since_id, u_min_id,
-        u_limit, u_local, u_offset;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
-    u_local.i = args->local;
-    u_offset.i = args->offset;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
-        { _MSTDNT_QUERY_INT, "offset", u_offset },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
     };
     
     struct mastodont_request_args req_args = {

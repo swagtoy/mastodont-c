@@ -142,15 +142,14 @@ int mastodont_get_relationships(mastodont_t* data,
                                 struct mstdnt_relationship* relationships[],
                                 size_t* size)
 {
-    /* struct _mstdnt_query_param params[] = { 0 }; */
     struct _mstdnt_relationships_cb_args cb_args = { relationships, size };
-
-    union param_value u_ids;
-    u_ids.a.arr = ids;
-    u_ids.a.arr_len = ids_len;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_ARRAY, "id", u_ids }
+        { _MSTDNT_QUERY_ARRAY, "id",
+          {
+                .a.arr = ids,
+                .a.arr_len = ids_len
+          }
+        }
     };
     
     struct mastodont_request_args req_args = {

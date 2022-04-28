@@ -167,34 +167,18 @@ int mastodont_get_account_statuses(mastodont_t* data,
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
-    union param_value u_pinned, u_tagged, u_only_media,
-        u_with_muted, u_exclude_reblogs, u_exclude_replies,
-        u_exclude_visibilities, u_max_id, u_min_id,
-        u_since_id, u_offset, u_limit;
-    u_pinned.i = args->pinned;
-    u_only_media.i = args->only_media;
-    u_with_muted.i = args->with_muted;
-    u_exclude_reblogs.i = args->exclude_reblogs;
-    u_exclude_replies.i = args->exclude_replies;
-    u_tagged.s = args->tagged;
-    u_max_id.s = args->max_id;
-    u_min_id.s = args->min_id;
-    u_since_id.s = args->since_id;
-    u_offset.i = args->offset;
-    u_limit.i = args->limit;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_INT, "pinned", u_pinned },
-        { _MSTDNT_QUERY_STRING, "tagged", u_tagged },
-        { _MSTDNT_QUERY_INT, "only_media", u_only_media },
-        { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
-        { _MSTDNT_QUERY_INT, "exclude_reblogs", u_exclude_reblogs },
-        { _MSTDNT_QUERY_INT, "exclude_replies", u_exclude_replies },
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
-        { _MSTDNT_QUERY_INT, "offset", u_offset },
+        { _MSTDNT_QUERY_INT, "pinned", { .i = args->pinned } },
+        { _MSTDNT_QUERY_STRING, "tagged", { .s = args->tagged } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
+        { _MSTDNT_QUERY_INT, "exclude_reblogs", { .i = args->exclude_reblogs } },
+        { _MSTDNT_QUERY_INT, "exclude_replies", { .i = args->exclude_replies } },
+        { _MSTDNT_QUERY_STRING, "max_id",  { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
     };
 
     struct mastodont_request_args req_args = {
@@ -215,31 +199,17 @@ int mastodont_create_status(mastodont_t* data,
                             struct mstdnt_args* args,
                             struct mstdnt_storage* storage)
 {
-    union param_value u_content_type, u_expires_in,
-        u_in_reply_to_conversation_id, u_in_reply_to_id,
-        u_language, u_media_ids, u_poll, u_preview, u_scheduled_at,
-        u_sensitive, u_spoiler_text, u_status, u_visibility;
-    u_content_type.s = args->content_type;
-    u_expires_in.i = args->expires_in;
-    u_in_reply_to_conversation_id.s = args->in_reply_to_conversation_id;
-    u_in_reply_to_id.s = args->in_reply_to_id;
-    u_language.s = args->language;
-    u_media_ids.a.arr = args->media_ids;
-    u_media_ids.a.arr_len = args->media_ids_len;
-    /* poll */
-    u_preview.i = args->preview;
-    u_scheduled_at.s = args->scheduled_at;
-    u_sensitive.i = args->sensitive;
-    u_spoiler_text.s = args->spoiler_text;
-    u_status.s = args->status;
-    u_visibility.s = args->visibility;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "in_reply_to_id", u_in_reply_to_id },
-        { _MSTDNT_QUERY_STRING, "content_type", u_content_type },
-        { _MSTDNT_QUERY_STRING, "status", u_status },
-        { _MSTDNT_QUERY_STRING, "visibility", u_visibility },
-        { _MSTDNT_QUERY_ARRAY, "media_ids", u_media_ids },
+        { _MSTDNT_QUERY_STRING, "in_reply_to_id", { .s = args->in_reply_to_id } },
+        { _MSTDNT_QUERY_STRING, "content_type", { .s = args->content_type } },
+        { _MSTDNT_QUERY_STRING, "status", { .s = args->status } },
+        { _MSTDNT_QUERY_STRING, "visibility", { .s = args->visibility } },
+        { _MSTDNT_QUERY_ARRAY, "media_ids",
+          {
+              .a.arr = args->media_ids,
+              .a.arr_len = args->media_ids_len
+          }
+        },
     };
 
     struct mastodont_request_args req_args = {
@@ -524,18 +494,12 @@ int mastodont_get_bookmarks(mastodont_t* data,
                             size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
-    
-    union param_value u_max_id, u_since_id, u_min_id, u_limit;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
     
     struct mastodont_request_args req_args = {
@@ -558,16 +522,11 @@ int mastodont_get_favourites(mastodont_t* data,
                             size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
-    
-    union param_value u_max_id, u_min_id, u_limit;
-    u_max_id.s = args->max_id;
-    u_min_id.s = args->min_id;
-    u_limit.i = args->limit;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
     
     struct mastodont_request_args req_args = {

@@ -93,21 +93,13 @@ int mastodont_get_scrobbles(mastodont_t* data,
     struct _mstdnt_scrobbles_cb_args cb_args = { scrobbles, size };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/accounts/%s/scrobbles", id);
-    
-    union param_value u_max_id, u_min_id,
-        u_since_id, u_offset, u_limit;
-    u_max_id.s = args->max_id;
-    u_min_id.s = args->min_id;
-    u_since_id.s = args->since_id;
-    u_offset.i = args->offset;
-    u_limit.i = args->limit;
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_INT, "offset", u_offset },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
 
     struct mastodont_request_args req_args = {
