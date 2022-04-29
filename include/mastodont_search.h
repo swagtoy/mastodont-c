@@ -49,9 +49,10 @@ struct mstdnt_search_results
     // TODO tags
 };
 
-int mastodont_search(mastodont* data,
+int mastodont_search(mastodont_t* data,
                      char* query,
+                     struct mstdnt_storage* storage,
                      struct mstdnt_search_args* args,
-                     struct mstdnt_searcH_results* results);
+                     struct mstdnt_search_results* results);
 
 #endif /* MASTODONT_SEARCH_H */

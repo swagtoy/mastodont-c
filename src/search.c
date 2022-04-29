@@ -29,7 +29,7 @@ static const char* type_to_string(enum mstdnt_search_type type)
     }
 }
 
-int mastodont_search(mastodont* data,
+int mastodont_search(mastodont_t* data,
                      char* query,
                      struct mstdnt_storage* storage,
                      struct mstdnt_search_args* args,
@@ -39,7 +39,7 @@ int mastodont_search(mastodont* data,
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
         { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERR_STRING, "q", { .s = query } },
+        { _MSTDNT_QUERY_STRING, "q", { .s = query } },
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "type", { .s = type_to_string(args->type) } },
         { _MSTDNT_QUERY_INT, "resolve", { .i = args->resolve } },
@@ -52,11 +52,12 @@ int mastodont_search(mastodont* data,
     struct mastodont_request_args req_args = {
         storage,
         "api/v2/search",
-        params, _mstdnt_arr_len(parma),
+        params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
         results,
-        _mstdnt_search_result_callback,
+        /* _mstdnt_search_result_callback, */
+        NULL
     };
     
     return mastodont_request(data, &req_args);
