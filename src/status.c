@@ -547,6 +547,7 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     cleanup_attachments(status->media_attachments);
     cleanup_status_pleroma(&(status->pleroma));
+    cleanup_emojis(status->emojis);
     if (status->reblog)
         free(status->reblog);
 }
