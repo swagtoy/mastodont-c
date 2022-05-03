@@ -7,6 +7,9 @@ AR = ar
 
 all: static
 
+docs: 
+	doxygen Doxyfile
+
 static: $(OBJ)
 	$(AR) rcs $(TARGET) $(OBJ)
 
@@ -16,3 +19,5 @@ static: $(OBJ)
 clean:
 	rm -f $(TARGET)
 	rm -f $(OBJ)
+
+.PHONY: clean docs all test
