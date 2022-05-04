@@ -24,6 +24,7 @@
 #include <mastodont_account.h>
 #include <mastodont_attachment.h>
 #include <mastodont_scrobbles.h>
+#include <mastodont_search.h>
 
 /* Functions required form curl */
 void mastodont_global_curl_init();
