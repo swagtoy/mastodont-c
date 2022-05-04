@@ -91,6 +91,7 @@ struct mstdnt_account_statuses_args
 };
 
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
+
 void mstdnt_cleanup_status(struct mstdnt_status* status);
 
 int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
@@ -103,6 +104,11 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_status* status);
 
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
+
+// Generated function
+int mstdnt_statuses_json(struct mstdnt_status* statuses[],
+                         size_t* size,
+                         cJSON* js);
 
 void _mstdnt_val_status_call(cJSON* v, void* _type);
 void _mstdnt_val_malloc_status_call(cJSON* v, void* _type);
@@ -160,8 +166,8 @@ int mastodont_create_status(mastodont_t* data,
 
 /* Generates do and undo functions */
 #define MSTDNT_STATUS_ACTION_DECL(type) int mastodont_##type##_status(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_status* status)
-#define MSTDNT_STATUS_ACTION_FUNC_URL(action) { \
-    return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/" action);\
+#define MSTDNT_STATUS_ACTION_FUNC_URL(action) {                         \
+        return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/" action); \
     }
 
 MSTDNT_STATUS_ACTION_DECL(favourite);

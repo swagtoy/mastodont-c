@@ -67,23 +67,6 @@ int mstdnt_accounts_result(struct mstdnt_fetch_results* results,
     if (_mstdnt_json_init(&root, results, storage) &&
         !cJSON_IsArray(root))
         return 1;
-
-    if (size) *size = cJSON_GetArraySize(root);
-
-    /* accounts can be an empty array! */
-    if (!(size ? *size : cJSON_GetArraySize(root)))
-        return 0; /* Not an error, but we are done parsing */
-
-    /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *accts = calloc(1, (size ? *size : cJSON_GetArraySize(root))
-                       * sizeof(struct mstdnt_account));
-    if (*accts == NULL)
-        return 1;
-    
-    cJSON_ArrayForEach(acct_j_list, root)
-    {
-        mstdnt_account_from_json((*accts) + i++, acct_j_list->child);
-    }
     
     return 0;
 }

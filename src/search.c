@@ -36,10 +36,7 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
                               struct mstdnt_fetch_results* results,
                               struct mstdnt_search_results* search_results)
 {
-    size_t i = 0;
-    size_t arr_len = 0;
-    size_t size = 0;
-    cJSON* root, *item;
+    cJSON* root;
     if (_mstdnt_json_init(&root, results, storage))
         return 1;
 
@@ -49,15 +46,9 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
     cJSON* hashtags = cJSON_GetObjectItemCaseSensitive(root, "hashtags");
 
     // Statuses
-    if (statuses && cJSON_IsArray(statuses) && (size = cJSON_GetArraySize(statuses)))
-    {
-        search_results->statuses = calloc(1, size * sizeof(struct mstdnt_status));
-        search_results->statuses_len = size;
-        cJSON_ArrayForEach(item, statuses)
-        {
-            mstdnt_status_from_json(search_results->statuses + arr_len++, item->child);
-        }
-    }
+    mstdnt_statuses_json(&(search_results->statuses),
+                         &(search_results->statuses_len),
+                         statuses);
     
     return 0;
 }

@@ -21,6 +21,7 @@
 #include <mastodont_query.h>
 #include <mastodont_pleroma.h>
 #include <mastodont_request.h>
+#include <mastodont_generate.h>
 
 void _mstdnt_val_status_call(cJSON* v, void* _type)
 {
@@ -122,31 +123,16 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
                                 struct mstdnt_status* statuses[],
                                 size_t* size)
 {
-    size_t i = 0;
     cJSON* root, *status_j_list;
     if (_mstdnt_json_init(&root, results, storage) &&
         !cJSON_IsArray(root))
         return 1;
 
-    if (size) *size = cJSON_GetArraySize(root);
-
-    /* Statuses can be an empty array! */
-    if (!(size ? *size : cJSON_GetArraySize(root)))
-        return 0; /* Not an error, but we are done parsing */
-
-    /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *statuses = calloc(1, (size ? *size : cJSON_GetArraySize(root))
-                       * sizeof(struct mstdnt_status));
-    if (*statuses == NULL)
-        return 1;
-    
-    cJSON_ArrayForEach(status_j_list, root)
-    {
-        mstdnt_status_from_json((*statuses) + i++, status_j_list->child);
-    }
-    
-    return 0;
+    return mstdnt_statuses_json(statuses, size, root);
 }
+
+// GENERATE mstdnt_statuses_from_json
+GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_from_json)
 
 int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
                                      struct mstdnt_storage* storage,
@@ -250,27 +236,27 @@ static int mstdnt_status_action(mastodont_t* data,
 
 /* These are all the same */
 MSTDNT_STATUS_ACTION_DECL(favourite)
-MSTDNT_STATUS_ACTION_FUNC_URL("favourite")
+    MSTDNT_STATUS_ACTION_FUNC_URL("favourite")
 
-MSTDNT_STATUS_ACTION_DECL(unfavourite)
-MSTDNT_STATUS_ACTION_FUNC_URL("unfavourite")
+    MSTDNT_STATUS_ACTION_DECL(unfavourite)
+    MSTDNT_STATUS_ACTION_FUNC_URL("unfavourite")
 
-MSTDNT_STATUS_ACTION_DECL(reblog)
-MSTDNT_STATUS_ACTION_FUNC_URL("reblog")
+    MSTDNT_STATUS_ACTION_DECL(reblog)
+    MSTDNT_STATUS_ACTION_FUNC_URL("reblog")
 
-MSTDNT_STATUS_ACTION_DECL(unreblog)
-MSTDNT_STATUS_ACTION_FUNC_URL("unreblog")
+    MSTDNT_STATUS_ACTION_DECL(unreblog)
+    MSTDNT_STATUS_ACTION_FUNC_URL("unreblog")
     
-MSTDNT_STATUS_ACTION_DECL(pin)
-MSTDNT_STATUS_ACTION_FUNC_URL("pin")
+    MSTDNT_STATUS_ACTION_DECL(pin)
+    MSTDNT_STATUS_ACTION_FUNC_URL("pin")
 
-MSTDNT_STATUS_ACTION_DECL(unpin)
-MSTDNT_STATUS_ACTION_FUNC_URL("unpin")
+    MSTDNT_STATUS_ACTION_DECL(unpin)
+    MSTDNT_STATUS_ACTION_FUNC_URL("unpin")
 
-MSTDNT_STATUS_ACTION_DECL(bookmark)
-MSTDNT_STATUS_ACTION_FUNC_URL("bookmark")
+    MSTDNT_STATUS_ACTION_DECL(bookmark)
+    MSTDNT_STATUS_ACTION_FUNC_URL("bookmark")
 
-MSTDNT_STATUS_ACTION_DECL(unbookmark)
+    MSTDNT_STATUS_ACTION_DECL(unbookmark)
 MSTDNT_STATUS_ACTION_FUNC_URL("unbookmark")
 
 /* TODO Mutes can be timed */
@@ -516,10 +502,10 @@ int mastodont_get_bookmarks(mastodont_t* data,
 }
 
 int mastodont_get_favourites(mastodont_t* data,
-                            struct mstdnt_favourites_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* statuses[],
-                            size_t* size)
+                             struct mstdnt_favourites_args* args,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_status* statuses[],
+                             size_t* size)
 {
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
 
