@@ -49,6 +49,10 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
     mstdnt_statuses_json(&(search_results->statuses),
                          &(search_results->statuses_len),
                          statuses);
+
+    mstdnt_accounts_json(&(search_results->accts),
+                         &(search_results->accts_len),
+                         accounts);
     
     return 0;
 }

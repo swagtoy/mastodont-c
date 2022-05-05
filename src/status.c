@@ -131,7 +131,7 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
     return mstdnt_statuses_json(statuses, size, root);
 }
 
-// GENERATE mstdnt_statuses_from_json
+// GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_from_json)
 
 int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,

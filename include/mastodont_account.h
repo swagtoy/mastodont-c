@@ -68,6 +68,10 @@ int mstdnt_account_action(mastodont_t* data,
                           struct mstdnt_relationship* rel,
                           char* url_str);
 
+int mstdnt_accounts_json(struct mstdnt_account* accounts[],
+                         size_t* size,
+                         cJSON* js);
+
 #define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
 #define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) { \
     return mstdnt_account_action(data, id, storage, relationship, "api/v1/accounts/%s/" action); \

@@ -19,7 +19,7 @@
 #include <mastodont_account.h>
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
-
+#include <mastodont_generate.h>
 void _mstdnt_val_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account* type = _type;
@@ -56,6 +56,9 @@ int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
     mstdnt_account_from_json(acct, root->child);
     return 0;
 }
+
+// GENERATE mstdnt_statuses_json
+GENERATE_JSON_ARRAY_FUNC(mstdnt_accounts_json, struct mstdnt_account, mstdnt_account_from_json)
 
 int mstdnt_accounts_result(struct mstdnt_fetch_results* results,
                            struct mstdnt_storage* storage,
