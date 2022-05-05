@@ -13,17 +13,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_TAG
-#define MASTODONT_TAG
-#include "mastodont_history.h"
-
-struct mstdnt_tag
+void load_tag_json(struct mstdnt_tag* tag, cJSON* js)
 {
-    char* name;
-    char* url;
-    struct mstdnt_history history[];
-};
+    cJSON* v;
 
-void load_tag_json(struct mstdnt_tag* tag, cJSON* emo_json);
+    memset(tag, 0, sizeof(struct mstdnt_tag));
 
-#endif /* MASTODONT_TAG */
+    struct _mstdnt_val_ref refs[] = {
+        
+    };
+}
