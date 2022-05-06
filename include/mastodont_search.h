@@ -46,7 +46,8 @@ struct mstdnt_search_results
     size_t accts_len;
     struct mstdnt_status* statuses;
     size_t statuses_len;
-    // TODO tags
+    struct mstdnt_tag* tags;
+    size_t tags_len;
 };
 
 int mastodont_search(mastodont_t* data,

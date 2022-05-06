@@ -54,9 +54,9 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
                          &(search_results->accts_len),
                          accounts);
 
-    mstdnt_tags_json(&(search_results->accts),
-                     &(search_results->accts_len),
-                     accounts);
+    mstdnt_tags_json(&(search_results->tags),
+                     &(search_results->tags_len),
+                     hashtags);
     
     return 0;
 }
