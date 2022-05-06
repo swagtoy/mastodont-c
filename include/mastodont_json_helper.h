@@ -38,6 +38,7 @@ int _mstdnt_json_init(cJSON** root,
 int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
                         size_t refs_len);
 
+void _mstdnt_val_string_unix_call(cJSON* v, void* _type);
 void _mstdnt_val_string_call(cJSON* v, void* _type);
 void _mstdnt_val_bool_call(cJSON* v, void* _type);
 void _mstdnt_val_uint_call(cJSON* v, void* _type);

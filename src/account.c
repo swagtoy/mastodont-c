@@ -20,6 +20,7 @@
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_generate.h>
+
 void _mstdnt_val_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account* type = _type;

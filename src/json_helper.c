@@ -13,8 +13,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <time.h>
+#include <stdlib.h>
 #include <string.h>
 #include <mastodont_json_helper.h>
+
+// UNIX timestamp, above but I don't care
+#define TIMESTAMP_LEN 16
 
 int _mstdnt_json_init(cJSON** root,
                       struct mstdnt_fetch_results* results,
@@ -41,6 +46,22 @@ int _mstdnt_key_val_ref(cJSON* v, struct _mstdnt_val_ref* refs,
         }
     }
     return 1;
+}
+
+void _mstdnt_val_string_unix_call(cJSON* v, void* _type)
+{
+    long conv;
+    time_t* type = _type;
+    char* endptr;
+    if (!cJSON_IsString(v))
+    {
+        *type = 0;
+        return;
+    }
+
+    // Convert string to long
+    conv = strtol(v->valuestring, &endptr, 10);
+    *type = v->valuestring != *endptr ? conv : 0;
 }
 
 void _mstdnt_val_string_call(cJSON* v, void* _type)

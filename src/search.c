@@ -20,7 +20,7 @@
 #include <mastodont_request.h>
 #include <mastodont_status.h>
 #include <mastodont_account.h>
-
+#include <mastodont_tag.h>
 static const char* type_to_string(enum mstdnt_search_type type)
 {
     switch (type)
@@ -53,6 +53,10 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
     mstdnt_accounts_json(&(search_results->accts),
                          &(search_results->accts_len),
                          accounts);
+
+    mstdnt_tags_json(&(search_results->accts),
+                     &(search_results->accts_len),
+                     accounts);
     
     return 0;
 }
