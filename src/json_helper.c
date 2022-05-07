@@ -61,7 +61,41 @@ void _mstdnt_val_string_unix_call(cJSON* v, void* _type)
 
     // Convert string to long
     conv = strtol(v->valuestring, &endptr, 10);
-    *type = v->valuestring != *endptr ? conv : 0;
+    *type = v->valuestring != endptr ? conv : 0;
+}
+
+// Fuck you Gargron
+void _mstdnt_val_string_uint_call(cJSON* v, void* _type)
+{
+    long conv;
+    unsigned* type = _type;
+    char* endptr;
+    if (!cJSON_IsString(v))
+    {
+        *type = 0;
+        return;
+    }
+
+    // Convert string to long
+    conv = strtol(v->valuestring, &endptr, 10);
+    *type = v->valuestring != endptr ? conv : 0;
+}
+
+// Again, fuck you Gargron
+void _mstdnt_val_string_int_call(cJSON* v, void* _type)
+{
+    long conv;
+    int* type = _type;
+    char* endptr;
+    if (!cJSON_IsString(v))
+    {
+        *type = 0;
+        return;
+    }
+
+    // Convert string to long
+    conv = strtol(v->valuestring, &endptr, 10);
+    *type = v->valuestring != endptr ? conv : 0;
 }
 
 void _mstdnt_val_string_call(cJSON* v, void* _type)

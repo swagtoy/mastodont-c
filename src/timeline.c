@@ -51,6 +51,42 @@ int mastodont_timeline_list(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+int mastodont_timeline_tag(mastodont_t* data,
+                           char* hashtag,
+                           struct mstdnt_timeline_args* args,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_status* statuses[],
+                           size_t* size)
+{
+    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/tag/%s", hashtag);
+    
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->remote } },
+    };
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        params, _mstdnt_arr_len(params),
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        &cb_args,
+        _mstdnt_statuses_result_callback,
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,

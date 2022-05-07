@@ -24,8 +24,8 @@ int mstdnt_history_json(struct mstdnt_history* hist, cJSON* js)
 
     struct _mstdnt_val_ref refs[] = {
         { "day", &(hist->day), _mstdnt_val_string_unix_call },
-        { "uses", &(hist->uses), _mstdnt_val_uint_call },
-        { "accounts", &(hist->accounts), _mstdnt_val_uint_call },
+        { "uses", &(hist->uses), _mstdnt_val_string_uint_call },
+        { "accounts", &(hist->accounts), _mstdnt_val_string_uint_call },
     };
 
     for (cJSON* v = js; v; v = v->next)

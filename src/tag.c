@@ -23,7 +23,7 @@
 int mstdnt_tag_json(struct mstdnt_tag* tag, cJSON* js)
 {
     struct _mstdnt_generic_args history_args = {
-        .arg = tag->history,
+        .arg = &(tag->history),
         .size = &(tag->history_len)
     };
     

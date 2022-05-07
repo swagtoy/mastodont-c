@@ -56,5 +56,11 @@ int mastodont_timeline_direct(mastodont_t* data,
                               struct mstdnt_status* statuses[],
                               size_t* statuses_size);
 
+int mastodont_timeline_tag(mastodont_t* data,
+                           char* hashtag,
+                           struct mstdnt_timeline_args* args,
+                           struct mstdnt_storage* storage,
+                           struct mstdnt_status* statuses[],
+                           size_t* size);
 
 #endif /* MASTODONT_TIMELINE_H */
