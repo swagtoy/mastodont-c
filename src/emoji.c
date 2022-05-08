@@ -46,6 +46,8 @@ void load_emoji_react_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_js
     
     struct _mstdnt_val_ref refs[] = {
         { "name", &(emo->name), _mstdnt_val_string_call },
+        { "url", &(emo->url), _mstdnt_val_string_call },
+        { "static_url", &(emo->static_url), _mstdnt_val_string_call },
         { "count", &(emo->count), _mstdnt_val_uint_call },
         { "me", &(emo->me), _mstdnt_val_bool_call },
     };

@@ -150,3 +150,4 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
 
     return mastodont_request(data, &req_args);
 }
+

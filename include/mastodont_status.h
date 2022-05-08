@@ -104,6 +104,8 @@ int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
                               struct mstdnt_status* status);
 
 int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
+int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
+                                 struct mstdnt_storage* storage, struct mstdnt_status* status);
 
 // Generated function
 int mstdnt_statuses_json(struct mstdnt_status* statuses[],

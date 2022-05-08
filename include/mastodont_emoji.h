@@ -34,6 +34,10 @@ struct mstdnt_emoji_reaction
     char* name;
     size_t count;
     mstdnt_bool me;
+    // The following below are for custom emoji reactions
+    // They do not exist in Pleroma :^)
+    char* url;
+    char* static_url;
     /* TODO Accounts */
 };
 

@@ -528,6 +528,24 @@ int mastodont_get_favourites(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
+                                 struct mstdnt_storage* storage, struct mstdnt_status* status)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/statuses/%s/reactions/%s", id, emoji);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_PUT,
+        &status,
+        _mstdnt_status_from_result_callback
+    };
+    
+    return mastodont_request(api, &req_args);
+}
 
 void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
