@@ -76,6 +76,7 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     struct mstdnt_fetch_results results = { 0 };
     curl_mime* mime = NULL;
     char* post;
+    // TODO debug me
     char* url_query = args->params_query ?
         _mstdnt_query_string(data, args->url, args->params_query, args->params_query_len) :
         args->url;
