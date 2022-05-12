@@ -98,7 +98,7 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 
 int mstdnt_status_json_callback(cJSON* json, void* status)
 {
-    return mstdnt_status_json((struct mstdnt_status*)status, json);
+    return mstdnt_status_json((struct mstdnt_status*)status, json->child);
 }
 
 // GENERATE mstdnt_statuses_json
