@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_REQUEST_H
 #define MASTODONT_REQUEST_H
+#include <cjson/cJSON.h>
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 #include "mastodont_query.h"
@@ -29,7 +30,7 @@ struct mastodont_request_args
     size_t params_post_len;
     CURLoption request_type;
     void* args;
-    int (*callback)(void*);
+    int (*callback)(cJSON*, void*);
 };
 
 int mastodont_request(mastodont_t* data, struct mastodont_request_args* args);

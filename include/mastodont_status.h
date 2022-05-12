@@ -90,20 +90,11 @@ struct mstdnt_account_statuses_args
     int limit;
 };
 
+// Cleanup
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
-
 void mstdnt_cleanup_status(struct mstdnt_status* status);
 
-int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
-                                struct mstdnt_fetch_results* results,
-                                struct mstdnt_status* status[],
-                                size_t* size);
-
-int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* status);
-
-int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js);
+int mstdnt_status_json(struct mstdnt_status* status, cJSON* js);
 int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
                                  struct mstdnt_storage* storage, struct mstdnt_status* status);
 
@@ -115,20 +106,13 @@ int mstdnt_statuses_json(struct mstdnt_status* statuses[],
 void _mstdnt_val_status_call(cJSON* v, void* _type);
 void _mstdnt_val_malloc_status_call(cJSON* v, void* _type);
 
-int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
-                                      struct mstdnt_storage* storage,
-                                      struct mstdnt_status* statuses_before[],
-                                      struct mstdnt_status* statuses_after[],
-                                      size_t* size_before,
-                                      size_t* size_after);
-
-int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
-                                    struct mstdnt_storage* storage,
-                                    struct mstdnt_status* statuses_before[],
-                                    struct mstdnt_status* statuses_after[],
-                                    size_t* size_before,
-                                    size_t* size_after,
-                                    cJSON* js);
+int mstdnt_status_context_json(struct mstdnt_fetch_results* results,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_status* statuses_before[],
+                               struct mstdnt_status* statuses_after[],
+                               size_t* size_before,
+                               size_t* size_after,
+                               cJSON* js);
 
 int mastodont_get_account_statuses(mastodont_t* data,
                                    char* id,
@@ -233,16 +217,8 @@ int mastodont_get_favourites(mastodont_t* data,
                              struct mstdnt_status* statuses[],
                              size_t* size);
 
-int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
-                                     struct mstdnt_storage* storage,
-                                     void* _args);
-
-int _mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
-                                        struct mstdnt_storage* storage,
-                                        void* status);
-
-int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
-                                                struct mstdnt_storage* storage,
-                                                void* _args);
+int mstdnt_statuses_json_callback(cJSON* json, void* _args);
+int mstdnt_status_json_callback(cJSON* json, void* status);
+int mstdnt_status_context_json_callback(cJSON* json, void* _args);
 
 #endif /* MASTODONT_STATUS */

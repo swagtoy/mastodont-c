@@ -27,7 +27,7 @@ void _mstdnt_val_status_call(cJSON* v, void* _type)
 {
     struct mstdnt_status* type = _type;
 
-    mstdnt_status_from_json(type, v->child);
+    mstdnt_status_json(type, v->child);
 }
 
 
@@ -42,10 +42,10 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
     *type = calloc(1, sizeof(struct mstdnt_status));
     
     if (*type)
-        mstdnt_status_from_json(*type, v->child);
+        mstdnt_status_json(*type, v->child);
 }
 
-int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
+int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
 
@@ -96,43 +96,18 @@ int mstdnt_status_from_json(struct mstdnt_status* status, cJSON* js)
     return 0;
 }
 
-int mstdnt_status_from_result(struct mstdnt_fetch_results* results,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* status)
+int mstdnt_status_json_callback(cJSON* json, void* status)
 {
-    /* Can be null sometimes */
-    if (!status) return 0;
-    
-    cJSON* root;
-    if (_mstdnt_json_init(&root, results, storage) ||
-        !cJSON_IsObject(root))
-        return 1;
-
-    return mstdnt_status_from_json(status, root->child);
-}
-
-int _mstdnt_status_from_result_callback(struct mstdnt_fetch_results* results,
-                                        struct mstdnt_storage* storage,
-                                        void* status)
-{
-    return mstdnt_status_from_result(results, storage, (struct mstdnt_status*)status);
-}
-
-int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
-                                struct mstdnt_fetch_results* results,
-                                struct mstdnt_status* statuses[],
-                                size_t* size)
-{
-    return mstdnt_statuses_json(statuses, size, storage->root);
+    return mstdnt_status_json((struct mstdnt_status*)status, json);
 }
 
 // GENERATE mstdnt_statuses_json
-GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_from_json)
+GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_json)
 
-int mstdnt_statuses_json_callback(void* _args)
+int mstdnt_statuses_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_statuses_cb_args* args = _args;
-    return mstdnt_statuses_from_result(storage, results, args->statuses, args->size);
+    return mstdnt_statuses_json(args->statuses, args->size, json);
 }
 
 int mastodont_get_account_statuses(mastodont_t* data,
@@ -167,7 +142,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback
+        mstdnt_statuses_json_callback
     };
     
     return mastodont_request(data, &req_args);
@@ -221,7 +196,7 @@ static int mstdnt_status_action(mastodont_t* data,
         NULL, 0,
         CURLOPT_POST,
         status,
-        _mstdnt_status_from_result_callback
+        mstdnt_status_json_callback
     };
 
     return mastodont_request(data, &req_args);
@@ -284,42 +259,13 @@ int mastodont_get_status(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         status,
-        _mstdnt_status_from_result_callback,
+        mstdnt_status_json_callback,
     };
 
     return mastodont_request(data, &req_args);
 }
 
-
-int mstdnt_status_context_from_result(struct mstdnt_fetch_results* results,
-                                      struct mstdnt_storage* storage,
-                                      struct mstdnt_status* statuses_before[],
-                                      struct mstdnt_status* statuses_after[],
-                                      size_t* size_before,
-                                      size_t* size_after)
-{
-    cJSON* root;
-
-    /* Empty data */
-    *size_before = 0;
-    *size_after = 0;
-    *statuses_before = NULL;
-    *statuses_after = NULL;
-    
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
-    mstdnt_status_context_from_json(results,
-                                    storage,
-                                    statuses_before,
-                                    statuses_after,
-                                    size_before,
-                                    size_after,
-                                    root);
-    return 0;
-}
-
-int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
+int mstdnt_status_context_json(struct mstdnt_fetch_results* results,
                                     struct mstdnt_storage* storage,
                                     struct mstdnt_status* statuses_before[],
                                     struct mstdnt_status* statuses_after[],
@@ -362,25 +308,12 @@ int mstdnt_status_context_from_json(struct mstdnt_fetch_results* results,
             
             cJSON_ArrayForEach(status_item, v)
             {
-                mstdnt_status_from_json((*stat_ptr) + (*size_ptr)++, status_item->child);
+                mstdnt_status_json((*stat_ptr) + (*size_ptr)++, status_item->child);
             }
         }
     }
     
     return 0;
-}
-
-int _mstdnt_status_context_from_result_callback(struct mstdnt_fetch_results* results,
-                                                struct mstdnt_storage* storage,
-                                                void* _args)
-{
-    struct _mstdnt_status_context_result_cb_args* args = _args;
-    return mstdnt_status_context_from_result(results,
-                                             storage,
-                                             args->statuses_before,
-                                             args->statuses_after,
-                                             args->size_before,
-                                             args->size_after);
 }
 
 int mastodont_get_status_context(mastodont_t* data,
@@ -407,7 +340,7 @@ int mastodont_get_status_context(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        _mstdnt_status_context_from_result_callback,
+        mstdnt_status_context_json_callback,
     };
 
     return mastodont_request(data, &req_args);
@@ -488,7 +421,7 @@ int mastodont_get_bookmarks(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
     
     return mastodont_request(data, &req_args);
@@ -515,7 +448,7 @@ int mastodont_get_favourites(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
     
     return mastodont_request(data, &req_args);
@@ -534,7 +467,7 @@ int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
         NULL, 0,
         CURLOPT_PUT,
         &status,
-        _mstdnt_status_from_result_callback
+        mstdnt_status_json_callback
     };
     
     return mastodont_request(api, &req_args);

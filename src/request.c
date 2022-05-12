@@ -20,6 +20,7 @@
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 #include <mastodont_error.h>
+#include <mastodont_json_helper.h>
 
 #define CONV_SIZE 64
 
@@ -118,10 +119,10 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
 
     // Create json structure
     if (_mstdnt_json_init(&root, &results, storage) &&
-        mstdnt_check_error(&results, storage))
+        mstdnt_check_error(storage))
     {
         /* Optional */
-        if (args->callback) res = args->callback(args->args);
+        if (args->callback) res = args->callback(storage->root, args->args);
     }
 
     mastodont_fetch_results_cleanup(&results);

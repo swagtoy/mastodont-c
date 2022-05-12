@@ -32,6 +32,7 @@ int mstdnt_check_error(struct mstdnt_storage* storage)
 {
     int res = 0;
     cJSON* v;
+    cJSON* root = storage->root;
 
     /* Make sure empty */
     storage->error = NULL;
