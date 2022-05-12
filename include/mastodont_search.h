@@ -50,6 +50,10 @@ struct mstdnt_search_results
     size_t tags_len;
 };
 
+int mstdnt_search_json_callback(cJSON* json, void* _args);
+
+int mstdnt_search_json(struct mstdnt_search_results* search_results, cJSON* json);
+
 int mastodont_search(mastodont_t* data,
                      char* query,
                      struct mstdnt_storage* storage,

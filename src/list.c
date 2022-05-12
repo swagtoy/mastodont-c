@@ -19,13 +19,14 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_fetch.h>
 #include <mastodont_request.h>
+#include <mastodont_generate.h>
 
 struct mstdnt_get_lists_args {
     struct mstdnt_list** lists;
     size_t* size;
 };
 
-int mstdnt_list_from_json(struct mstdnt_list* list, cJSON* js)
+int mstdnt_list_json(struct mstdnt_list* list, cJSON* js)
 {
     cJSON* v;
     
@@ -45,41 +46,13 @@ int mstdnt_list_from_json(struct mstdnt_list* list, cJSON* js)
     return 0;
 }
 
-int mstdnt_lists_from_result(struct mstdnt_storage* storage,
-                             struct mstdnt_fetch_results* results,
-                             struct mstdnt_list* lists[],
-                             size_t* size)
-{
-    size_t i = 0;
-    cJSON* root, *list_j_list;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
 
-    if (!cJSON_IsArray(root))
-        return 1;
-
-    if (size) *size = cJSON_GetArraySize(root);
-
-    /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *lists = malloc((size ? *size : cJSON_GetArraySize(root))
-                    * sizeof(struct mstdnt_list));
-    if (*lists == NULL)
-        return 1;
+GENERATE_JSON_ARRAY_FUNC(mstdnt_lists_json, struct mstdnt_list, mstdnt_list_json)
     
-    cJSON_ArrayForEach(list_j_list, root)
-    {
-        mstdnt_list_from_json((*lists) + i++, list_j_list->child);
-    }
-    storage->needs_cleanup = 1;
-    return 0;
-}
-
-static int mstdnt_lists_from_result_callback(struct mstdnt_fetch_results* results,
-                                             struct mstdnt_storage* storage,
-                                             void* _args)
+static int mstdnt_lists_json_callback(cJSON* json, void* _args)
 {
     struct mstdnt_get_lists_args* args = _args;
-    return mstdnt_lists_from_result(storage, results, args->lists, args->size);
+    return mstdnt_lists_json(args->lists, args->size, json);
 }
 
 int mastodont_get_lists(mastodont_t* data,
@@ -99,7 +72,7 @@ int mastodont_get_lists(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        mstdnt_lists_from_result_callback
+        mstdnt_lists_json_callback
     };
 
     return mastodont_request(data, &req_args);

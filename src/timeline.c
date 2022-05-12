@@ -45,7 +45,7 @@ int mastodont_timeline_list(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
 
     return mastodont_request(data, &req_args);
@@ -81,7 +81,7 @@ int mastodont_timeline_tag(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
 
     return mastodont_request(data, &req_args);
@@ -111,7 +111,7 @@ int mastodont_timeline_public(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
     
     return mastodont_request(data, &req_args);
@@ -143,7 +143,7 @@ int mastodont_timeline_direct(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
     
     return mastodont_request(data, &req_args);
@@ -173,7 +173,7 @@ int mastodont_timeline_home(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_statuses_result_callback,
+        mstdnt_statuses_json_callback,
     };
     
     return mastodont_request(data, &req_args);

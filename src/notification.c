@@ -20,6 +20,7 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
 #include <mastodont_request.h>
+#include <mastodont_generate.h>
 
 static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
 {
@@ -44,7 +45,7 @@ static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
     else if (strcmp(v->valuestring, "pleroma:report") == 0) *type = MSTDNT_NOTIFICATION_REPORT;
 }
 
-int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
+int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
@@ -66,43 +67,12 @@ int mstdnt_notification_from_json(struct mstdnt_notification* notif, cJSON* js)
     return 0;
 }
 
-int mstdnt_notifications_from_result(struct mstdnt_fetch_results* results,
-                                     struct mstdnt_storage* storage,
-                                     struct mstdnt_notification* notif[],
-                                     size_t* size)
-{
-    size_t i = 0;
-    cJSON* root, *notif_j_list;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
+GENERATE_JSON_ARRAY_FUNC(mstdnt_notifications_json, struct mstdnt_notification, mstdnt_notification_json)
 
-    if (size) *size = cJSON_GetArraySize(root);
-
-    /* malloc array - cJSON does a loop to count, let's do it once preferably */
-    *notif = calloc(1, (size ? *size : cJSON_GetArraySize(root))
-                    * sizeof(struct mstdnt_notification));
-    if (*notif == NULL)
-        return 1;
-    
-    cJSON_ArrayForEach(notif_j_list, root)
-    {
-        /* Null out values incase no match */
-        (*notif)[i].account = NULL;
-        (*notif)[i].status = NULL;
-        /* notif[i]->pleroma = NULL; */
-        
-        mstdnt_notification_from_json((*notif) + i++, notif_j_list->child);
-    }
-
-    return 0;
-}
-
-int _mstdnt_notifications_result_callback(struct mstdnt_fetch_results* results,
-                                          struct mstdnt_storage* storage,
-                                          void* _args)
+int mstdnt_notifications_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_notifications_result_cb_args* args = _args;
-    return mstdnt_notifications_from_result(results, storage, args->notif, args->size);
+    return mstdnt_notifications_json(args->notif, args->size, json);
 }
 
 
@@ -143,7 +113,7 @@ int mastodont_get_notifications(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_notifications_result_callback,
+        mstdnt_notifications_json_callback,
     };
     
     return mastodont_request(data, &req_args);

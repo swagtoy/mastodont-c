@@ -53,14 +53,12 @@ int mastodont_get_scrobbles(mastodont_t* data,
                             struct mstdnt_scrobble* scrobbles[],
                             size_t* size);
 
-int mstdnt_scrobbles_result(struct mstdnt_fetch_results* results,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_scrobble* scrobbles[],
-                            size_t* size);
+int mstdnt_scrobbles_json(struct mstdnt_scrobble* scrobbles[],
+                          size_t* size,
+                          cJSON* json);
 
-int _mstdnt_scrobbles_result_callback(struct mstdnt_fetch_results* results,
-                                      struct mstdnt_storage* storage,
-                                      void* arg);
+int mstdnt_scrobbles_json_callback(cJSON* json,
+                                   void* arg);
 
 int mstdnt_scrobble_json(struct mstdnt_scrobble* scrobble, cJSON* js);
 

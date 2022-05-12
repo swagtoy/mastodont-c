@@ -21,6 +21,7 @@
 #include <mastodont_status.h>
 #include <mastodont_account.h>
 #include <mastodont_tag.h>
+
 static const char* type_to_string(enum mstdnt_search_type type)
 {
     switch (type)
@@ -32,14 +33,8 @@ static const char* type_to_string(enum mstdnt_search_type type)
     }
 }
 
-int mstdnt_search_from_result(struct mstdnt_storage* storage,
-                              struct mstdnt_fetch_results* results,
-                              struct mstdnt_search_results* search_results)
+int mstdnt_search_json(struct mstdnt_search_results* search_results, cJSON* root)
 {
-    cJSON* root;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
     // Not many items here, just use cJSON_GetObjectItemCaseSensitive() instead
     cJSON* statuses = cJSON_GetObjectItemCaseSensitive(root, "statuses");
     cJSON* accounts = cJSON_GetObjectItemCaseSensitive(root, "accounts");
@@ -61,11 +56,9 @@ int mstdnt_search_from_result(struct mstdnt_storage* storage,
     return 0;
 }
 
-int _mstdnt_search_result_callback(struct mstdnt_fetch_results* results,
-                                   struct mstdnt_storage* storage,
-                                   void* _args)
+int mstdnt_search_json_callback(cJSON* json, void* _args)
 {
-    return mstdnt_search_from_result(storage, results, _args);
+    return mstdnt_search_json(_args, json);
 }
 
 int mastodont_search(mastodont_t* data,
@@ -95,7 +88,7 @@ int mastodont_search(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         results,
-        _mstdnt_search_result_callback
+        mstdnt_search_json_callback
     };
     
     return mastodont_request(data, &req_args);

@@ -41,6 +41,18 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
 // GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_accounts_json, struct mstdnt_account, mstdnt_account_json)
 
+int mstdnt_account_json_callback(cJSON* json, void* _args)
+{
+    // Not sure why it expects it to be in the child
+    return mstdnt_account_json(_args, json->child);
+}
+
+int mstdnt_accounts_json_callback(cJSON* json, void* _args)
+{
+    struct mstdnt_account_args* args = _args;
+    return mstdnt_accounts_json(args->acct, args->size, json);
+}
+
 int mastodont_get_account(mastodont_t* data,
                           int lookup, /* TODO move into separate function for consistancy */
                           char* id,

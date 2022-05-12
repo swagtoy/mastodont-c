@@ -92,7 +92,7 @@ int mastodont_get_account(mastodont_t* data,
                           struct mstdnt_account* acct,
                           struct mstdnt_storage* storage);
 
-int mstdnt_account_json(struct mstdnt_account* status, cJSON* js);
+int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js);
 int mstdnt_account_json_callback(cJSON* json, void* _args);
 int mstdnt_accounts_json_callback(cJSON* json, void* _args);
 void _mstdnt_val_account_call(cJSON* v, void* _type);

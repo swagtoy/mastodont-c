@@ -118,13 +118,20 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     }
 
     // Create json structure
-    if (_mstdnt_json_init(&root, &results, storage) &&
-        mstdnt_check_error(storage))
+    if (_mstdnt_json_init(&root, &results, storage))
+    {
+        res = 1;
+        goto cleanup_res;
+    }
+
+    // Make sure there is no error
+    if (!mstdnt_check_error(storage))
     {
         /* Optional */
         if (args->callback) res = args->callback(storage->root, args->args);
     }
 
+cleanup_res:
     mastodont_fetch_results_cleanup(&results);
 cleanup:
     if (args->params_post && args->request_type == CURLOPT_POST) free(post);

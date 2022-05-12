@@ -265,13 +265,11 @@ int mastodont_get_status(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-int mstdnt_status_context_json(struct mstdnt_fetch_results* results,
-                                    struct mstdnt_storage* storage,
-                                    struct mstdnt_status* statuses_before[],
-                                    struct mstdnt_status* statuses_after[],
-                                    size_t* size_before,
-                                    size_t* size_after,
-                                    cJSON* root)
+int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
+                               struct mstdnt_status* statuses_after[],
+                               size_t* size_before,
+                               size_t* size_after,
+                               cJSON* root)
 {
     cJSON* v, *status_item;
     size_t* size_ptr = NULL;
@@ -314,6 +312,16 @@ int mstdnt_status_context_json(struct mstdnt_fetch_results* results,
     }
     
     return 0;
+}
+
+int mstdnt_status_context_json_callback(cJSON* json, void* _args)
+{
+    struct _mstdnt_status_context_result_cb_args* args = _args;
+    return mstdnt_status_context_json(args->statuses_before,
+                                      args->statuses_after,
+                                      args->size_before,
+                                      args->size_after,
+                                      json);
 }
 
 int mastodont_get_status_context(mastodont_t* data,
@@ -366,7 +374,7 @@ int mastodont_status_favourited_by(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        mstdnt_accounts_callback,
+        mstdnt_accounts_json_callback,
     };
 
     return mastodont_request(data, &req_args);
@@ -392,7 +400,7 @@ int mastodont_status_reblogged_by(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &args,
-        mstdnt_accounts_callback,
+        mstdnt_accounts_json_callback,
     };
 
     return mastodont_request(data, &req_args);

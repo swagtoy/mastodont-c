@@ -26,12 +26,11 @@ struct mstdnt_list
     char* replies_policy;
 };
 
-int mstdnt_list_from_json(struct mstdnt_list* list, cJSON* js);
+int mstdnt_list_json(struct mstdnt_list* list, cJSON* js);
 
-int mstdnt_lists_from_result(struct mstdnt_storage* storage,
-                             struct mstdnt_fetch_results* results,
-                             struct mstdnt_list* lists[],
-                             size_t* size);
+int mstdnt_lists_json(struct mstdnt_list* lists[],
+                      size_t* size,
+                      cJSON* json);
 
 int mastodont_get_lists(mastodont_t* api,
                         struct mstdnt_list* lists[],
