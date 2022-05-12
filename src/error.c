@@ -28,13 +28,10 @@ static void _mstdnt_val_errors_call(cJSON* v, void* _type)
     }
 }
 
-int mstdnt_check_error(struct mstdnt_fetch_results* results,
-                       struct mstdnt_storage* storage)
+int mstdnt_check_error(struct mstdnt_storage* storage)
 {
     int res = 0;
-    cJSON* root, *v;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
+    cJSON* v;
 
     /* Make sure empty */
     storage->error = NULL;
@@ -49,6 +46,8 @@ int mstdnt_check_error(struct mstdnt_fetch_results* results,
     
     for (v = root->child; v; v = v->next)
         if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)) == 0)
+        {
             res = 1;
+        }
     return res;
 }

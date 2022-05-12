@@ -26,9 +26,9 @@ int _mstdnt_json_init(cJSON** root,
                       struct mstdnt_storage* storage)
 {
     *root = cJSON_ParseWithLength(results->response, results->size);
+    storage->root = *root;
     if (*root == NULL)
         return 1;
-    storage->root = *root;
     storage->needs_cleanup = 1;
     return 0;
 }

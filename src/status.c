@@ -123,20 +123,13 @@ int mstdnt_statuses_from_result(struct mstdnt_storage* storage,
                                 struct mstdnt_status* statuses[],
                                 size_t* size)
 {
-    cJSON* root, *status_j_list;
-    if (_mstdnt_json_init(&root, results, storage) &&
-        !cJSON_IsArray(root))
-        return 1;
-
-    return mstdnt_statuses_json(statuses, size, root);
+    return mstdnt_statuses_json(statuses, size, storage->root);
 }
 
 // GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_from_json)
 
-int _mstdnt_statuses_result_callback(struct mstdnt_fetch_results* results,
-                                     struct mstdnt_storage* storage,
-                                     void* _args)
+int mstdnt_statuses_json_callback(void* _args)
 {
     struct _mstdnt_statuses_cb_args* args = _args;
     return mstdnt_statuses_from_result(storage, results, args->statuses, args->size);

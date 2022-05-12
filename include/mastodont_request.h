@@ -29,9 +29,7 @@ struct mastodont_request_args
     size_t params_post_len;
     CURLoption request_type;
     void* args;
-    int (*callback)(struct mstdnt_fetch_results* results,
-                    struct mstdnt_storage* storage,
-                    void*);
+    int (*callback)(void*);
 };
 
 int mastodont_request(mastodont_t* data, struct mastodont_request_args* args);

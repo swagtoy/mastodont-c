@@ -74,6 +74,7 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
     struct mstdnt_fetch_results results = { 0 };
+    cJSON* root;
     curl_mime* mime = NULL;
     char* post;
     // TODO debug me
@@ -115,19 +116,14 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         goto cleanup;
     }
 
-
-    if (mstdnt_check_error(&results, storage))
+    // Create json structure
+    if (_mstdnt_json_init(&root, &results, storage) &&
+        mstdnt_check_error(&results, storage))
     {
-        res = 1;
-        goto cleanup_res;
+        /* Optional */
+        if (args->callback) res = args->callback(args->args);
     }
 
-    storage->needs_cleanup = 1;
-
-    /* Optional */
-    if (args->callback) res = args->callback(&results, storage, args->args);
-
-cleanup_res:
     mastodont_fetch_results_cleanup(&results);
 cleanup:
     if (args->params_post && args->request_type == CURLOPT_POST) free(post);

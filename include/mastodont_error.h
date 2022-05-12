@@ -18,7 +18,6 @@
 #include <mastodont_types.h>
 #include <mastodont_fetch.h>
 
-int mstdnt_check_error(struct mstdnt_fetch_results* result,
-                       struct mstdnt_storage* storage);
+int mstdnt_check_error(struct mstdnt_storage* storage);
 
 #endif /* MASTODONT_ERROR_H */
