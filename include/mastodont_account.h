@@ -86,28 +86,15 @@ MSTDNT_ACCOUNT_ACTION_DECL(unblock);
 MSTDNT_ACCOUNT_ACTION_DECL(subscribe);
 MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe);
 
-int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_account* acct);
-
-int mstdnt_accounts_result(struct mstdnt_fetch_results* results,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_account* accts[],
-                           size_t* size);
-
 int mastodont_get_account(mastodont_t* data,
                           int lookup_type,
                           char* id,
                           struct mstdnt_account* acct,
                           struct mstdnt_storage* storage);
 
-int mstdnt_account_from_json(struct mstdnt_account* status, cJSON* js);
-int mstdnt_account_callback(struct mstdnt_fetch_results* results,
-                            struct mstdnt_storage* storage,
-                            void* _args);
-int mstdnt_accounts_callback(struct mstdnt_fetch_results* results,
-                             struct mstdnt_storage* storage,
-                             void* _args);
+int mstdnt_account_json(struct mstdnt_account* status, cJSON* js);
+int mstdnt_account_json_callback(cJSON* json, void* _args);
+int mstdnt_accounts_json_callback(cJSON* json, void* _args);
 void _mstdnt_val_account_call(cJSON* v, void* _type);
 void _mstdnt_val_malloc_account_call(cJSON* v, void* _type);
 

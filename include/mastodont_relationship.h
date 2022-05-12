@@ -16,6 +16,7 @@
 #ifndef MASTODONT_RELATIONSHIP_H
 #define MASTODONT_RELATIONSHIP_H
 #include <stdint.h>
+#include <cjson/cJSON.h>
 #include <mastodont_types.h>
 #include <mastodont_request.h>
 
@@ -41,24 +42,15 @@ struct mstdnt_relationship
     char* note;
 };
 
-int _mstdnt_relationship_result_callback(struct mstdnt_fetch_results* results,
-                                         struct mstdnt_storage* storage,
-                                         void* _args);
-
-int mstdnt_relationship_result(struct mstdnt_fetch_results* results,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_relationship* relationship);
+int mstdnt_relationship_json_callback(cJSON* json, void* _args);
 
 int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js);
 
-int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_relationship* relationships[],
-                                size_t* size);
+int mstdnt_relationships_json(struct mstdnt_relationship* relationships[],
+                              size_t* size,
+                              cJSON* json);
 
-int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
-                                          struct mstdnt_storage* storage,
-                                          void* _args);
+int mstdnt_relationships_json_callback(cJSON* json, void* _args);
 
 int mastodont_get_relationships(mastodont_t* data,
                                 char** ids,

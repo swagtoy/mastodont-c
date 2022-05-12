@@ -25,7 +25,7 @@ void _mstdnt_val_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account* type = _type;
 
-    mstdnt_account_from_json(type, v->child);
+    mstdnt_account_json(type, v->child);
 }
 
 void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
@@ -35,60 +35,11 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
     *type = calloc(1, sizeof(struct mstdnt_account));
 
     if (*type)
-        mstdnt_account_from_json(*type, v->child);
-}
-
-int mstdnt_account_from_result(struct mstdnt_fetch_results* results,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_account* acct)
-{
-    cJSON* root;
-    root = cJSON_ParseWithLength(results->response, results->size);
-
-    memset(acct, 0, sizeof(struct mstdnt_account));
-
-    if (root == NULL)
-    {
-        return 1;
-    }
-    storage->root = root;
-    storage->needs_cleanup = 1;
-
-    mstdnt_account_from_json(acct, root->child);
-    return 0;
+        mstdnt_account_json(*type, v->child);
 }
 
 // GENERATE mstdnt_statuses_json
-GENERATE_JSON_ARRAY_FUNC(mstdnt_accounts_json, struct mstdnt_account, mstdnt_account_from_json)
-
-int mstdnt_accounts_result(struct mstdnt_fetch_results* results,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_account* accts[],
-                           size_t* size)
-{
-    size_t i = 0;
-    cJSON* root, *acct_j_list;
-    if (_mstdnt_json_init(&root, results, storage) &&
-        !cJSON_IsArray(root))
-        return 1;
-    
-    return 0;
-}
-
-int mstdnt_account_callback(struct mstdnt_fetch_results* results,
-                            struct mstdnt_storage* storage,
-                            void* args)
-{
-    return mstdnt_account_from_result(results, storage, args);
-}
-
-int mstdnt_accounts_callback(struct mstdnt_fetch_results* results,
-                             struct mstdnt_storage* storage,
-                             void* _args)
-{
-    struct mstdnt_account_args* args = _args;
-    return mstdnt_accounts_result(results, storage, args->acct, args->size);
-}
+GENERATE_JSON_ARRAY_FUNC(mstdnt_accounts_json, struct mstdnt_account, mstdnt_account_json)
 
 int mastodont_get_account(mastodont_t* data,
                           int lookup, /* TODO move into separate function for consistancy */
@@ -109,14 +60,14 @@ int mastodont_get_account(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         acct, /* args */
-        mstdnt_account_callback, /* callback */
+        mstdnt_account_json_callback, /* callback */
     };
     
     return mastodont_request(data, &req_args);
 }
 
 
-int mstdnt_account_from_json(struct mstdnt_account* acct, cJSON* js)
+int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
 {
     cJSON* v;
     
@@ -169,7 +120,7 @@ int mstdnt_account_action(mastodont_t* data,
         NULL, 0,
         CURLOPT_POST,
         rel,
-        _mstdnt_relationship_result_callback
+        mstdnt_relationship_json_callback
     };
 
     return mastodont_request(data, &req_args);

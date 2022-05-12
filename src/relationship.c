@@ -17,6 +17,7 @@
 #include <mastodont_relationship.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
+#include <mastodont_generate.h>
 
 #define FLAG_ARG(flag) { &(relationship->flags), flag }
 
@@ -81,58 +82,18 @@ int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js
     return 0;
 }
 
-int mstdnt_relationships_result(struct mstdnt_fetch_results* results,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_relationship* relationships[],
-                                size_t* size)
+// GENERATE mstdnt_statuses_json
+GENERATE_JSON_ARRAY_FUNC(mstdnt_relationships_json, struct mstdnt_relationship, mstdnt_relationship_json)
+
+int mstdnt_relationship_json_callback(cJSON* json, void* _args)
 {
-    size_t i = 0;
-    cJSON* root, *rel_j_list;
-    if (_mstdnt_json_init(&root, results, storage) &&
-        !cJSON_IsArray(root))
-        return 1;
-
-    if (size) *size = cJSON_GetArraySize(root);
-
-    *relationships = calloc(1, (size ? *size : cJSON_GetArraySize(root))
-                       * sizeof(struct mstdnt_relationship));
-    if (*relationships == NULL)
-        return 1;
-
-    cJSON_ArrayForEach(rel_j_list, root)
-    {
-        mstdnt_relationship_json((*relationships) + i++, rel_j_list->child);
-    }
-
-    return 0;
+    return mstdnt_relationship_json((struct mstdnt_relationship*)_args, json);
 }
 
-int mstdnt_relationship_result(struct mstdnt_fetch_results* results,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_relationship* relationship)
-{
-    if (!relationship) return 0;
-
-    cJSON* root;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
-    return mstdnt_relationship_json(relationship, root->child);
-}
-
-int _mstdnt_relationship_result_callback(struct mstdnt_fetch_results* results,
-                                          struct mstdnt_storage* storage,
-                                          void* _args)
-{
-    return mstdnt_relationship_result(results, storage, (struct mstdnt_relationship*)_args);
-}
-
-int _mstdnt_relationships_result_callback(struct mstdnt_fetch_results* results,
-                                          struct mstdnt_storage* storage,
-                                          void* _args)
+int mstdnt_relationships_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_relationships_cb_args* args = _args;
-    return mstdnt_relationships_result(results, storage, args->relationships, args->size);
+    return mstdnt_relationships_json(args->relationships, args->size, json);
 }
 
 int mastodont_get_relationships(mastodont_t* data,
@@ -159,7 +120,7 @@ int mastodont_get_relationships(mastodont_t* data,
         NULL, 0,
         CURLOPT_HTTPGET,
         &cb_args,
-        _mstdnt_relationships_result_callback
+        mstdnt_relationships_json_callback
     };
 
     return mastodont_request(data, &req_args);
