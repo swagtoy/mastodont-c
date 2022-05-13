@@ -49,6 +49,10 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
 
+    // Not an error
+    if (!(status && js))
+        return 0;
+
     /* Zero out */
     memset(status, 0, sizeof(struct mstdnt_status));
 
@@ -474,7 +478,7 @@ int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
         NULL, 0,
         NULL, 0,
         CURLOPT_PUT,
-        &status,
+        status,
         mstdnt_status_json_callback
     };
     
@@ -487,7 +491,10 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
     cleanup_status_pleroma(&(status->pleroma));
     cleanup_emojis(status->emojis);
     if (status->reblog)
+    {
+        mstdnt_cleanup_status(status->reblog);
         free(status->reblog);
+    }
 }
 
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
