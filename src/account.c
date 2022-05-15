@@ -78,6 +78,22 @@ int mastodont_get_account(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+int mastodont_verify_credentials(mastodont_t* data,
+                                 struct mstdnt_account* acct,
+                                 struct mstdnt_storage* storage)
+{
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/accounts/verify_credentials",
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        acct, /* args */
+        mstdnt_account_json_callback, /* callback */
+    };
+    
+    return mastodont_request(data, &req_args);
+}
 
 int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
 {

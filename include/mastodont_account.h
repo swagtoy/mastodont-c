@@ -86,6 +86,9 @@ MSTDNT_ACCOUNT_ACTION_DECL(unblock);
 MSTDNT_ACCOUNT_ACTION_DECL(subscribe);
 MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe);
 
+int mastodont_verify_credentials(mastodont_t* data,
+                                 struct mstdnt_account* acct,
+                                 struct mstdnt_storage* storage);
 int mastodont_get_account(mastodont_t* data,
                           int lookup_type,
                           char* id,
