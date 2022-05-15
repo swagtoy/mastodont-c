@@ -20,10 +20,10 @@
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 
-void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json)
+int mstdnt_attachment_json(struct mstdnt_attachment* att, cJSON* att_json)
 {
-    cJSON* it;
-
+    if (!att) return 1;
+    
     /* Zero out */
     memset(att, 0, sizeof(struct mstdnt_attachment));
     
@@ -38,25 +38,9 @@ void load_attachment_from_json(struct mstdnt_attachment* att, cJSON* att_json)
         { "blurhash", &(att->blurhash), _mstdnt_val_string_call },        
     };
 
-    for (it = att_json; it; it = it->next)
-    {
+    for (cJSON* it = att_json; it; it = it->next)
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
-    }
-}
 
-int mstdnt_attachment_result(struct mstdnt_fetch_results* results,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_attachment* att)
-{
-    /* Can be null sometimes */
-    if (!att) return 0;
-    
-    cJSON* root;
-    if (_mstdnt_json_init(&root, results, storage) ||
-        !cJSON_IsObject(root))
-        return 1;
-
-    load_attachment_from_json(att, root->child);
     return 0;
 }
 
@@ -84,15 +68,13 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     int i;
     for (it = v_array, i = 0; it; (++i, it = it->next))
     {
-        load_attachment_from_json((*attachments) + i, it->child);
+        mstdnt_attachment_json(it->child, (*attachments) + i);
     }
 }
 
-static int mstdnt_attachment_callback(struct mstdnt_fetch_results* results,
-                                      struct mstdnt_storage* storage,
-                                      void* _args)
+static int mstdnt_attachment_json_callback(cJSON* json, void* _args)
 {
-    return mstdnt_attachment_result(results, storage, _args);
+    return mstdnt_attachment_result(json, _args);
 }
 
 int mastodont_upload_media(mastodont_t* api,

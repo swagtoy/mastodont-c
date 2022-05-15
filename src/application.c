@@ -20,19 +20,11 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-int mstdnt_app_result(struct mstdnt_fetch_results* results,
-                      struct mstdnt_storage* storage,
-                      struct mstdnt_app* app)
+static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
 {
-    cJSON* root, *v;
-
     /* Zero out */
-    memset(storage, 0, sizeof(struct mstdnt_storage));
     memset(app, 0, sizeof(struct mstdnt_app));
     
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
     struct _mstdnt_val_ref refs[] = {
         { "id", &(app->id), _mstdnt_val_string_call },
         { "name", &(app->name), _mstdnt_val_string_call },
@@ -43,31 +35,20 @@ int mstdnt_app_result(struct mstdnt_fetch_results* results,
         { "vapid_key", &(app->vapid_key), _mstdnt_val_string_call },
     };
 
-    for (v = root->child; v; v = v->next)
-    {
+    for (cJSON* v = json->child; v; v = v->next)
         if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)))
-        {
             return 1;
-        }
-    }
+
     return 0;
 }
 
-static int mstdnt_app_result_callback(struct mstdnt_fetch_results* results,
-                                   struct mstdnt_storage* storage,
-                                   void* args)
+static int mstdnt_app_json_callback(cJSON* json, void* args)
 {
-    return mstdnt_app_result(results, storage, args);
+    return mstdnt_app_json(json, args);
 }
 
-int mstdnt_token_result(struct mstdnt_fetch_results* results,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_oauth_token* app)
+static int mstdnt_token_json(cJSON* json, struct mstdnt_oauth_token* app)
 {
-    cJSON* root, *v;
-    if (_mstdnt_json_init(&root, results, storage))
-        return 1;
-
     struct _mstdnt_val_ref refs[] = {
         { "access_token", &(app->access_token), _mstdnt_val_string_call },
         { "token_type", &(app->token_type), _mstdnt_val_string_call },
@@ -76,22 +57,16 @@ int mstdnt_token_result(struct mstdnt_fetch_results* results,
         { "me", &(app->me), _mstdnt_val_string_call },
     };
 
-    for (v = root; v; v = v->next)
-    {
+    for (cJSON* v = json; v; v = v->next)
         if (_mstdnt_key_val_ref(v->child, refs, _mstdnt_arr_len(refs)) == 1)
-        {
             return 1;
-        }
-    }
-
+    
     return 0;
 }
 
-static int mstdnt_token_result_callback(struct mstdnt_fetch_results* results,
-                                        struct mstdnt_storage* storage,
-                                        void* args)
+static int mstdnt_token_json_callback(cJSON* json, void* args)
 {
-    return mstdnt_token_result(results, storage, args);
+    return mstdnt_token_json(json, args);
 }
 
 int mastodont_register_app(mastodont_t* data,
@@ -113,7 +88,7 @@ int mastodont_register_app(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         CURLOPT_POST,
         app,
-        mstdnt_app_result_callback
+        mstdnt_app_json_callback
     };
 
     return mastodont_request(data, &req_args);
@@ -145,7 +120,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         _mstdnt_arr_len(params),
         CURLOPT_POST,
         token,
-        mstdnt_token_result_callback
+        mstdnt_token_json_callback
     };
 
     return mastodont_request(data, &req_args);

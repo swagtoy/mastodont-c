@@ -48,14 +48,6 @@ struct mstdnt_oauth_token
     time_t time;
 };
 
-int mstdnt_app_result(struct mstdnt_fetch_results* results,
-                      struct mstdnt_storage* storage,
-                      struct mstdnt_app* app);
-
-int mstdnt_token_result(struct mstdnt_fetch_results* results,
-                        struct mstdnt_storage* storage,
-                        struct mstdnt_oauth_token* app);
-
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_args* args,
                            struct mstdnt_storage* storage,
