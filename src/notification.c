@@ -130,7 +130,11 @@ void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t not
 
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
 {
-    if (notif->account) free(notif->account);
+    if (notif->account)
+    {
+        mstdnt_cleanup_account(notif->account);
+        free(notif->account);
+    }
     if (notif->status)
     {
         mstdnt_cleanup_status(notif->status);

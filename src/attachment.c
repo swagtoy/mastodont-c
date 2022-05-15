@@ -20,7 +20,7 @@
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 
-int mstdnt_attachment_json(struct mstdnt_attachment* att, cJSON* att_json)
+int mstdnt_attachment_json(cJSON* att_json, struct mstdnt_attachment* att)
 {
     if (!att) return 1;
     
@@ -38,7 +38,7 @@ int mstdnt_attachment_json(struct mstdnt_attachment* att, cJSON* att_json)
         { "blurhash", &(att->blurhash), _mstdnt_val_string_call },        
     };
 
-    for (cJSON* it = att_json; it; it = it->next)
+    for (cJSON* it = att_json->child; it; it = it->next)
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
 
     return 0;
@@ -74,7 +74,7 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
 
 static int mstdnt_attachment_json_callback(cJSON* json, void* _args)
 {
-    return mstdnt_attachment_result(json, _args);
+    return mstdnt_attachment_json(json, _args);
 }
 
 int mastodont_upload_media(mastodont_t* api,
@@ -94,13 +94,13 @@ int mastodont_upload_media(mastodont_t* api,
         params, _mstdnt_arr_len(params),
         CURLOPT_MIMEPOST,
         attachment,
-        mstdnt_attachment_callback,
+        mstdnt_attachment_json_callback,
     };
 
     return mastodont_request(api, &req_args);
 }
 
-void cleanup_attachments(struct mstdnt_attachment* attachment)
+void mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment)
 {
     if (attachment) free(attachment);
 }

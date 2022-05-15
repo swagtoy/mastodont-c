@@ -487,7 +487,8 @@ int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
 
 void mstdnt_cleanup_status(struct mstdnt_status* status)
 {
-    cleanup_attachments(status->media_attachments);
+    mstdnt_cleanup_attachments(status->media_attachments);
+    mstdnt_cleanup_account(&(status->account));
     cleanup_status_pleroma(&(status->pleroma));
     cleanup_emojis(status->emojis);
     if (status->reblog)

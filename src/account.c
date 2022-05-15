@@ -102,6 +102,11 @@ int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
     /* Zero out */
     memset(acct, 0, sizeof(struct mstdnt_account));
 
+    struct _mstdnt_generic_args emj_args = {
+        &(acct->emojis),
+        &(acct->emojis_len)
+    };
+
     struct _mstdnt_val_ref refs[] = {
         { "id", &(acct->id), _mstdnt_val_string_call },
         { "username", &(acct->username), _mstdnt_val_string_call },
@@ -112,6 +117,7 @@ int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
         { "url", &(acct->url), _mstdnt_val_string_call },
         { "avatar", &(acct->avatar), _mstdnt_val_string_call },
         { "avatar_static", &(acct->avatar_static), _mstdnt_val_string_call },
+        { "emojis", &emj_args, _mstdnt_val_emojis_call },
         { "header", &(acct->header), _mstdnt_val_string_call },
         { "header_static", &(acct->header_static), _mstdnt_val_string_call },
         { "last_status_at", &(acct->last_status_at), _mstdnt_val_string_call },
@@ -178,3 +184,8 @@ MSTDNT_ACCOUNT_ACTION_FUNC_URL("subscribe")
     
 MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe)
 MSTDNT_ACCOUNT_ACTION_FUNC_URL("unsubscribe")
+
+void mstdnt_cleanup_account(struct mstdnt_account* acct)
+{
+    cleanup_emojis(acct->emojis);
+}

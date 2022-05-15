@@ -18,6 +18,7 @@
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 #include "mastodont_relationship.h"
+#include "mastodont_emoji.h"
 #include <cjson/cJSON.h>
 
 #define MSTDNT_LOOKUP_ACCT 0
@@ -45,6 +46,9 @@ struct mstdnt_account
     char* header_static;
     mstdnt_bool locked;
     mstdnt_bool discoverable;
+
+    struct mstdnt_emoji* emojis;
+    size_t emojis_len;
 
     /* Statistic attributes */
     char* created_at;
@@ -100,5 +104,8 @@ int mstdnt_account_json_callback(cJSON* json, void* _args);
 int mstdnt_accounts_json_callback(cJSON* json, void* _args);
 void _mstdnt_val_account_call(cJSON* v, void* _type);
 void _mstdnt_val_malloc_account_call(cJSON* v, void* _type);
+
+// Cleanup
+void mstdnt_cleanup_account(struct mstdnt_account* acct);
 
 #endif /* MASTODONT_ACCOUNT */
