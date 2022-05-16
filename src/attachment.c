@@ -68,7 +68,7 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     int i;
     for (it = v_array, i = 0; it; (++i, it = it->next))
     {
-        mstdnt_attachment_json(it->child, (*attachments) + i);
+        mstdnt_attachment_json(it, (*attachments) + i);
     }
 }
 
