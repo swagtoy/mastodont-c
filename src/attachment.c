@@ -20,6 +20,27 @@
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 
+void _mstdnt_val_attachment_type_call(cJSON* v, void* _type)
+{
+    enum mstdnt_attachment_type* type = _type;
+    if (!cJSON_IsString(v))
+    {
+        *type = MSTDNT_ATTACHMENT_UNKNOWN;
+        return;
+    }
+
+    if (strcmp(v->valuestring, "unknown") == 0)
+        *type = MSTDNT_ATTACHMENT_UNKNOWN;
+    else if (strcmp(v->valuestring, "image") == 0)
+        *type = MSTDNT_ATTACHMENT_IMAGE;
+    else if (strcmp(v->valuestring, "gifv") == 0)
+        *type = MSTDNT_ATTACHMENT_GIFV;
+    else if (strcmp(v->valuestring, "video") == 0)
+        *type = MSTDNT_ATTACHMENT_VIDEO;
+    else if (strcmp(v->valuestring, "audio") == 0)
+        *type = MSTDNT_ATTACHMENT_AUDIO;
+}
+
 int mstdnt_attachment_json(cJSON* att_json, struct mstdnt_attachment* att)
 {
     if (!att) return 1;
@@ -29,7 +50,7 @@ int mstdnt_attachment_json(cJSON* att_json, struct mstdnt_attachment* att)
     
     struct _mstdnt_val_ref refs[] = {
         { "id", &(att->id), _mstdnt_val_string_call },
-        /* TODO type */
+        { "type", &(att->type), _mstdnt_val_attachment_type_call },
         { "url", &(att->url), _mstdnt_val_string_call },
         { "preview_url", &(att->preview_url), _mstdnt_val_string_call },
         { "remote_url", &(att->remote_url), _mstdnt_val_string_call },
