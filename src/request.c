@@ -130,6 +130,8 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
         /* Optional */
         if (args->callback) res = args->callback(storage->root, args->args);
     }
+    else
+        res = 1;
 
 cleanup_res:
     mastodont_fetch_results_cleanup(&results);

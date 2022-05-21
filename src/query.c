@@ -107,6 +107,9 @@ char* _mstdnt_query_string(mastodont_t* data,
                 val_ptr = escape_str;
             }
 
+            if (val_ptr == NULL)
+                break;
+
             /* Get lengths */
             key_len = strlen(key_ptr);
             val_len = strlen(val_ptr);

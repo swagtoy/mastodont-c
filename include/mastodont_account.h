@@ -107,5 +107,6 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type);
 
 // Cleanup
 void mstdnt_cleanup_account(struct mstdnt_account* acct);
+void mstdnt_cleanup_accounts(struct mstdnt_account* accts, size_t len);
 
 #endif /* MASTODONT_ACCOUNT */

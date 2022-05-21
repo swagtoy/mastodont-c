@@ -187,5 +187,14 @@ MSTDNT_ACCOUNT_ACTION_FUNC_URL("unsubscribe")
 
 void mstdnt_cleanup_account(struct mstdnt_account* acct)
 {
+    if (!acct) return;
     cleanup_emojis(acct->emojis);
 }
+
+void mstdnt_cleanup_accounts(struct mstdnt_account* accts, size_t len)
+{
+    if (!accts) return;
+    for (int i = 0; i < len; ++i)
+        mstdnt_cleanup_account(accts + i);
+}
+

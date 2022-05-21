@@ -60,4 +60,6 @@ int mastodont_search(mastodont_t* data,
                      struct mstdnt_search_args* args,
                      struct mstdnt_search_results* results);
 
+void mstdnt_cleanup_search_results(struct mstdnt_search_results* res);
+
 #endif /* MASTODONT_SEARCH_H */

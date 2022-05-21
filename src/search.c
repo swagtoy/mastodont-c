@@ -93,3 +93,11 @@ int mastodont_search(mastodont_t* data,
     
     return mastodont_request(data, &req_args);
 }
+
+void mstdnt_cleanup_search_results(struct mstdnt_search_results* res)
+{
+    if (!res) return;
+    mstdnt_cleanup_accounts(res->accts, res->accts_len);
+    mstdnt_cleanup_statuses(res->statuses, res->statuses_len);
+    mstdnt_cleanup_tags(res->tags, res->tags_len);
+}
