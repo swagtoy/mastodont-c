@@ -13,23 +13,17 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MASTODONT_FETCH_H
-#define MASTODONT_FETCH_H
-#include <cjson/cJSON.h>
-#include <mastodont_types.h>
-#include <curl/curl.h>
+#include <mastodont_static.h>
+#include <mastodont_fetch.h>
 
-struct mstdnt_fetch_results
+int mastodont_instance_panel(mastodont_t* api,
+                             struct mstdnt_fetch_results* html)
 {
-    char* response;
-    size_t size;
-};
+    return mastodont_fetch_curl(api, "instance/panel.html", html, CURLOPT_HTTPGET);
+}
 
-size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content);
-void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res);
-int mastodont_fetch_curl(mastodont_t* mstdnt,
-                         char* url,
-                         struct mstdnt_fetch_results* results,
-                         CURLoption request_t);
-
-#endif /* MASTODONT_FETCH_H */
+int mastodont_terms_of_service(mastodont_t* api,
+                               struct mstdnt_fetch_results* html)
+{
+    return mastodont_fetch_curl(api, "static/terms-of-service.html", html, CURLOPT_HTTPGET);
+}

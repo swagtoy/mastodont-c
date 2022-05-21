@@ -33,11 +33,16 @@ int mastodont_set_token(mastodont_t* data, char* token)
     return 0;
 }
 
-void mastodont_free(mastodont_t* data)
+void mastodont_cleanup(mastodont_t* data)
 {
     curl_easy_cleanup(data->curl);
     if (data->token_heap)
         free(data->token);
+}
+
+void mastodont_free(void* ptr)
+{
+    free(ptr);
 }
 
 void mastodont_storage_cleanup(struct mstdnt_storage* storage)

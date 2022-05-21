@@ -18,7 +18,7 @@
 #include "mastodont_fetch.h"
 
 /* For use with libcurl */
-static size_t write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
+size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
 {
     size_t size = nmemb * _size; /* Mostly pointless, but portable */
     struct mstdnt_fetch_results* res = _content; /* Cast */
@@ -69,7 +69,7 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
 
     /* Set options */
     curl_easy_setopt(mstdnt->curl, CURLOPT_URL, url);
-    curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEFUNCTION, write_callback);
+    curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEFUNCTION, mstdnt_curl_write_callback);
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
     /* Should we verify the peer's SSL cert? */
     curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYPEER,
