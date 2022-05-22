@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_STATUS
 #define MASTODONT_STATUS
+#include <time.h>
 #include <cjson/cJSON.h>
 #include "mastodont_pleroma.h"
 #include "mastodont_types.h"
@@ -35,7 +36,7 @@ struct mstdnt_status
 {
     char* id;
     char* uri;
-    char* created_at;
+    time_t created_at;
     struct mstdnt_account account;
     char* content;
     char* visibility;

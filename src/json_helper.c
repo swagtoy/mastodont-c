@@ -64,6 +64,25 @@ void _mstdnt_val_string_unix_call(cJSON* v, void* _type)
     *type = v->valuestring != endptr ? conv : 0;
 }
 
+void _mstdnt_val_datetime_unix_call(cJSON* v, void* _type)
+{
+    struct tm conv_time = { 0 };
+    time_t* type = _type;
+
+    if (sscanf(v->valuestring, "%d-%d-%dT%d:%d:%d.000Z",
+               &conv_time.tm_year - 1900,
+               &conv_time.tm_mon,
+               &conv_time.tm_mday,
+               &conv_time.tm_hour,
+               &conv_time.tm_min,
+               &conv_time.tm_sec) == 6)
+    {
+        *type = mktime(&conv_time);
+    }
+    else
+        *type = 0; // 70's, baby!
+}
+
 // Fuck you Gargron
 void _mstdnt_val_string_uint_call(cJSON* v, void* _type)
 {

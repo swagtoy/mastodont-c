@@ -45,6 +45,7 @@ void _mstdnt_val_string_call(cJSON* v, void* _type);
 void _mstdnt_val_bool_call(cJSON* v, void* _type);
 void _mstdnt_val_uint_call(cJSON* v, void* _type);
 void _mstdnt_val_sint_call(cJSON* v, void* _type);
+void _mstdnt_val_datetime_unix_call(cJSON* v, void* _type);
 
 /* DEPRECATED */
 struct _mstdnt_str_val

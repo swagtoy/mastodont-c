@@ -69,7 +69,7 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
     struct _mstdnt_val_ref vals[] = {
         { "id", &(status->id), _mstdnt_val_string_call },
         { "uri", &(status->uri), _mstdnt_val_string_call },
-        { "created_at", &(status->created_at), _mstdnt_val_string_call },
+        { "created_at", &(status->created_at), _mstdnt_val_datetime_unix_call },
         { "content", &(status->content), _mstdnt_val_string_call },
         { "spoiler_text", &(status->spoiler_text), _mstdnt_val_string_call },
         { "in_reply_to_id", &(status->in_reply_to_id), _mstdnt_val_string_call },
