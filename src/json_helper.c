@@ -13,6 +13,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#define _XOPEN_SOURCE
+#define _DEFAULT_SOURCE
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,18 +68,26 @@ void _mstdnt_val_string_unix_call(cJSON* v, void* _type)
 
 void _mstdnt_val_datetime_unix_call(cJSON* v, void* _type)
 {
-    struct tm conv_time = { 0 };
+    // First, assure correct time properties like DST
+    time_t loc_time = time(NULL);
+    struct tm* conv_time_cpy = gmtime(&loc_time);
+    struct tm conv_time;
+    // Copy over for use
+    memcpy(&conv_time, conv_time_cpy, sizeof(struct tm));
+    
     time_t* type = _type;
 
     if (sscanf(v->valuestring, "%d-%d-%dT%d:%d:%d.000Z",
-               &conv_time.tm_year - 1900,
+               &conv_time.tm_year,
                &conv_time.tm_mon,
                &conv_time.tm_mday,
                &conv_time.tm_hour,
                &conv_time.tm_min,
                &conv_time.tm_sec) == 6)
     {
-        *type = mktime(&conv_time);
+        conv_time.tm_year -= 1900;
+        conv_time.tm_mon -= 1;
+        *type = mktime(&conv_time) - timezone;
     }
     else
         *type = 0; // 70's, baby!
