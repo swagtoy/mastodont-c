@@ -108,6 +108,7 @@ int mastodont_get_nodeinfo(mastodont_t* api,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         nodeinfo,
         mstdnt_nodeinfo_json_callback
     };

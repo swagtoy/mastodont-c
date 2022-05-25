@@ -119,6 +119,7 @@ int mastodont_get_relationships(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &cb_args,
         mstdnt_relationships_json_callback
     };

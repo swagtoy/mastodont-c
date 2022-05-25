@@ -145,6 +145,7 @@ int mastodont_get_account_statuses(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &cb_args,
         mstdnt_statuses_json_callback
     };
@@ -177,6 +178,7 @@ int mastodont_create_status(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         CURLOPT_POST,
         NULL,
+        NULL,
         NULL, /* TODO populate the status back?
                * (not sure if the api returns it or not) */
     };
@@ -199,6 +201,7 @@ static int mstdnt_status_action(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_POST,
+        NULL,
         status,
         mstdnt_status_json_callback
     };
@@ -231,6 +234,26 @@ MSTDNT_STATUS_ACTION_DECL(favourite)
     MSTDNT_STATUS_ACTION_DECL(unbookmark)
 MSTDNT_STATUS_ACTION_FUNC_URL("unbookmark")
 
+// Delete's use a delete method
+MSTDNT_STATUS_ACTION_DECL(delete)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_CUSTOMREQUEST,
+        "DELETE",
+        status,
+        mstdnt_status_json_callback
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
 /* TODO Mutes can be timed */
 int mastodont_mute_conversation(mastodont_t* data,
                                 char* id,
@@ -262,6 +285,7 @@ int mastodont_get_status(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         status,
         mstdnt_status_json_callback,
     };
@@ -351,6 +375,7 @@ int mastodont_get_status_context(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &args,
         mstdnt_status_context_json_callback,
     };
@@ -377,6 +402,7 @@ int mastodont_status_favourited_by(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &args,
         mstdnt_accounts_json_callback,
     };
@@ -403,6 +429,7 @@ int mastodont_status_reblogged_by(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &args,
         mstdnt_accounts_json_callback,
     };
@@ -432,6 +459,7 @@ int mastodont_get_bookmarks(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &cb_args,
         mstdnt_statuses_json_callback,
     };
@@ -459,6 +487,7 @@ int mastodont_get_favourites(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &cb_args,
         mstdnt_statuses_json_callback,
     };
@@ -478,6 +507,7 @@ int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
         NULL, 0,
         NULL, 0,
         CURLOPT_PUT,
+        NULL,
         status,
         mstdnt_status_json_callback
     };

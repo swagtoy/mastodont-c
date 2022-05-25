@@ -71,6 +71,7 @@ int mastodont_get_account(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         acct, /* args */
         mstdnt_account_json_callback, /* callback */
     };
@@ -88,6 +89,7 @@ int mastodont_verify_credentials(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         acct, /* args */
         mstdnt_account_json_callback, /* callback */
     };
@@ -153,6 +155,7 @@ int mstdnt_account_action(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_POST,
+        NULL,
         rel,
         mstdnt_relationship_json_callback
     };

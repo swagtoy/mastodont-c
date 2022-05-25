@@ -106,7 +106,8 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     else if (args->request_type == CURLOPT_POST)
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, "");
 
-    curlerror = mastodont_fetch_curl(data, url_query, &results, args->request_type);
+    curlerror = mastodont_fetch_curl(data, url_query, &results, args->request_type,
+                                     args->request_type_custom);
 
     if (mime) curl_mime_free(mime);
 

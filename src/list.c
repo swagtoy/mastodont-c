@@ -71,6 +71,7 @@ int mastodont_get_lists(mastodont_t* data,
         NULL, 0,
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &args,
         mstdnt_lists_json_callback
     };

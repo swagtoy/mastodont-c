@@ -114,6 +114,7 @@ int mastodont_upload_media(mastodont_t* api,
         NULL, 0,
         params, _mstdnt_arr_len(params),
         CURLOPT_MIMEPOST,
+        NULL,
         attachment,
         mstdnt_attachment_json_callback,
     };

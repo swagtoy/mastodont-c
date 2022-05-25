@@ -163,6 +163,7 @@ MSTDNT_STATUS_ACTION_DECL(pin);
 MSTDNT_STATUS_ACTION_DECL(unpin);
 MSTDNT_STATUS_ACTION_DECL(bookmark);
 MSTDNT_STATUS_ACTION_DECL(unbookmark);
+MSTDNT_STATUS_ACTION_DECL(delete);
 
 int mastodont_mute_conversation(mastodont_t* data,
                                 char* id,

@@ -30,6 +30,7 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res);
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* url,
                          struct mstdnt_fetch_results* results,
-                         CURLoption request_t);
+                         CURLoption request_t,
+                         char* request_t_custom);
 
 #endif /* MASTODONT_FETCH_H */

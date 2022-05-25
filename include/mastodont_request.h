@@ -29,6 +29,7 @@ struct mastodont_request_args
     struct _mstdnt_query_param* params_post;
     size_t params_post_len;
     CURLoption request_type;
+    char* request_type_custom;
     void* args;
     int (*callback)(cJSON*, void*);
 };

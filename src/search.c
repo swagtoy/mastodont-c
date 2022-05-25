@@ -87,6 +87,7 @@ int mastodont_search(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         results,
         mstdnt_search_json_callback
     };

@@ -47,8 +47,10 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* _url,
                          struct mstdnt_fetch_results* results,
-                         CURLoption request_t)
+                         CURLoption request_t,
+                         char* request_t_custom)
 {
+#define is_custom request_t_custom && request_t == CURLOPT_CUSTOMREQUEST
     int res = 3;
     char token[TOKEN_STR_SIZE] = { 0 };
     struct curl_slist* list = NULL;
@@ -76,12 +78,18 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
                      !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
     curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYHOST,
                      !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
-    /* PUT, POST, GET */
+    /* PUT, POST, GET, Custom */
     /* Mimes are expected to be set beforehand manually */
-    if (request_t != CURLOPT_MIMEPOST)
+    if (is_custom)
+        curl_easy_setopt(mstdnt->curl, request_t, request_t_custom);
+    else if (request_t != CURLOPT_MIMEPOST)
         curl_easy_setopt(mstdnt->curl, request_t, 1);
 
     res = curl_easy_perform(mstdnt->curl);
+
+    // Reset if custom
+    if (is_custom)
+        curl_easy_setopt(mstdnt->curl, request_t, NULL);
 
     if (list) curl_slist_free_all(list);
 

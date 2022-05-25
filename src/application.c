@@ -87,6 +87,7 @@ int mastodont_register_app(mastodont_t* data,
         NULL, 0,
         params, _mstdnt_arr_len(params),
         CURLOPT_POST,
+        NULL,
         app,
         mstdnt_app_json_callback
     };
@@ -119,6 +120,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         params,
         _mstdnt_arr_len(params),
         CURLOPT_POST,
+        NULL,
         token,
         mstdnt_token_json_callback
     };

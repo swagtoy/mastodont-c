@@ -77,6 +77,7 @@ int mastodont_get_scrobbles(mastodont_t* data,
         params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
+        NULL,
         &cb_args,
         mstdnt_scrobbles_json_callback
     };
