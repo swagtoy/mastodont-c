@@ -1,6 +1,6 @@
 CC ?= cc
-CFLAGS = -g -std=c99 -Wall -Werror=implicit-function-declaration -Wno-unused-variable -I ./include/ `pkg-config --cflags libcjson`
-SRC = $(wildcard src/*.c)
+CFLAGS = -g -std=c99 -Wall -Werror=implicit-function-declaration -Wno-unused-variable -I ./libs/ -I ./include/ 
+SRC = $(wildcard src/*.c) libs/cJSON/cJSON.c
 OBJ = $(patsubst %.c,%.o,$(SRC))
 TARGET = libmastodont.a # shared
 AR = ar
