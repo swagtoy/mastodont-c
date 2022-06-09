@@ -32,10 +32,16 @@ int mastodont_timeline_list(mastodont_t* data,
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
     
     struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
+        /* { _MSTDNT_QUERY_INT, "exclude_visibilities", { .i = args->only_media } }, */
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
         { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
     };
 
     struct mastodont_request_args req_args = {
@@ -67,12 +73,16 @@ int mastodont_timeline_tag(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        // TODO ANY
+        // TODO ALL
+        // TODO NONE
+        // TODO exclude_visibilities
         { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
         { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
         { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
         { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
-        { _MSTDNT_QUERY_INT, "only_media", { .i = args->remote } },
-        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
     };
 
     struct mastodont_request_args req_args = {
@@ -89,6 +99,20 @@ int mastodont_timeline_tag(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
+static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
+{
+    switch (vis)
+    {
+    case MSTDNT_REPLY_VIS_SELF:
+        return "self";
+    case MSTDNT_REPLY_VIS_FOLLOWING:
+        return "following";
+    case MSTDNT_REPLY_VIS_NONE:
+    default:
+        return NULL;
+    }
+}
+
 int mastodont_timeline_public(mastodont_t* data,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
@@ -98,11 +122,15 @@ int mastodont_timeline_public(mastodont_t* data,
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_STRING, "instance", { .s = args->instance } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
+        { _MSTDNT_QUERY_STRING, "reply_visibility", { .s = (char*)reply_visibility_str(args->reply_visibility) } },
         { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
         { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
         { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
     };
     
@@ -135,7 +163,6 @@ int mastodont_timeline_direct(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
         { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
         { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
-        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
         { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
     };
     
@@ -163,6 +190,12 @@ int mastodont_timeline_home(mastodont_t* data,
     struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
 
     struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_INT, "local", { .i = args->local } },
+        { _MSTDNT_QUERY_INT, "remote", { .i = args->remote } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
+        /* { _MSTDNT_QUERY_INT, "exclude_visibilities", { .i = args->with_muted } }, */
+        { _MSTDNT_QUERY_STRING, "reply_visibility", { .s = (char*)reply_visibility_str(args->reply_visibility) } },        
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
         { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
         { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },

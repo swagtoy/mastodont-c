@@ -18,10 +18,19 @@
 #include <mastodont_types.h>
 #include <mastodont_status.h>
 
+enum mstdnt_reply_visibility
+{
+    MSTDNT_REPLY_VIS_NONE,
+    MSTDNT_REPLY_VIS_SELF,
+    MSTDNT_REPLY_VIS_FOLLOWING,
+};
+
 struct mstdnt_timeline_args
 {
     int only_media;
-    int remote;    
+    char* instance;
+    int remote;
+    enum mstdnt_reply_visibility reply_visibility;
     char* max_id;
     char* since_id;
     char* min_id;
