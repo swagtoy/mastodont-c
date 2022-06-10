@@ -49,8 +49,85 @@ int mstdnt_account_json_callback(cJSON* json, void* _args)
 
 int mstdnt_accounts_json_callback(cJSON* json, void* _args)
 {
-    struct mstdnt_account_args* args = _args;
+    struct _mstdnt_accounts_args* args = _args;
     return mstdnt_accounts_json(args->acct, args->size, json);
+}
+
+static int mastodont_get_accounts_query(char* url,
+                                        mastodont_t* data,
+                                        struct mstdnt_account_args* args,
+                                        struct mstdnt_storage* storage,
+                                        struct mstdnt_account* accts[],
+                                        size_t* accts_len)
+{
+    struct _mstdnt_accounts_args _args = {
+        accts,
+        accts_len,
+    };
+
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_INT, "with_relationships", { .i = args->with_relationships } },
+    };
+
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_HTTPGET,
+        NULL,
+        &_args,
+        mstdnt_accounts_json_callback,
+    };
+
+    return mastodont_request(data, &req_args);
+}
+
+int mastodont_get_followers(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_account* accts[],
+                            size_t* accts_len)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/followers", id);
+    return mastodont_get_accounts_query(url, data, args, storage, accts, accts_len);
+}
+
+int mastodont_get_following(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_account* accts[],
+                            size_t* accts_len)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/following", id);
+    return mastodont_get_accounts_query(url, data, args, storage, accts, accts_len);
+}
+
+int mastodont_get_blocks(mastodont_t* data,
+                         struct mstdnt_account_args* args,
+                         struct mstdnt_storage* storage,
+                         struct mstdnt_account* accts[],
+                         size_t* accts_len)
+{
+    return mastodont_get_accounts_query("api/v1/blocks", data, args, storage, accts, accts_len);
+}
+
+int mastodont_get_mutes(mastodont_t* data,
+                        struct mstdnt_account_args* args,
+                        struct mstdnt_storage* storage,
+                        struct mstdnt_account* accts[],
+                        size_t* accts_len)
+{
+    return mastodont_get_accounts_query("api/v1/mutes", data, args, storage, accts, accts_len);
 }
 
 int mastodont_get_account(mastodont_t* data,

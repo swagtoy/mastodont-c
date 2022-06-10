@@ -389,7 +389,7 @@ int mastodont_status_favourited_by(mastodont_t* data,
                                    struct mstdnt_account* accounts[],
                                    size_t* accts_len)
 {
-    struct mstdnt_account_args args = {
+    struct _mstdnt_accounts_args args = {
         accounts,
         accts_len,
     };
@@ -416,7 +416,7 @@ int mastodont_status_reblogged_by(mastodont_t* data,
                                   struct mstdnt_account* accounts[],
                                   size_t* accts_len)
 {
-    struct mstdnt_account_args args = {
+    struct _mstdnt_accounts_args args = {
         accounts,
         accts_len,
     };

@@ -20,7 +20,7 @@
 
 enum mstdnt_reply_visibility
 {
-    MSTDNT_REPLY_VIS_NONE,
+    MSTDNT_REPLY_VIS_NONE = 0,
     MSTDNT_REPLY_VIS_SELF,
     MSTDNT_REPLY_VIS_FOLLOWING,
 };

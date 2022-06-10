@@ -24,7 +24,7 @@
 #define MSTDNT_LOOKUP_ACCT 0
 #define MSTDNT_LOOKUP_ID 1
 
-struct mstdnt_account_args
+struct _mstdnt_accounts_args
 {
     struct mstdnt_account** acct;
     size_t* size;
@@ -66,6 +66,16 @@ struct mstdnt_account
     char* mute_expires_at;
 };
 
+struct mstdnt_account_args
+{
+    char* max_id;
+    char* min_id;
+    char* since_id;
+    int offset;
+    int limit;
+    int with_relationships; // mastodont_get_mutes
+};
+
 int mstdnt_account_action(mastodont_t* data,
                           char* id,
                           struct mstdnt_storage* storage,
@@ -98,6 +108,32 @@ int mastodont_get_account(mastodont_t* data,
                           char* id,
                           struct mstdnt_account* acct,
                           struct mstdnt_storage* storage);
+
+int mastodont_get_blocks(mastodont_t* data,
+                         struct mstdnt_account_args* args,
+                         struct mstdnt_storage* storage,
+                         struct mstdnt_account* accts[],
+                         size_t* accts_len);
+
+int mastodont_get_mutes(mastodont_t* data,
+                        struct mstdnt_account_args* args,
+                        struct mstdnt_storage* storage,
+                        struct mstdnt_account* accts[],
+                        size_t* accts_len);
+
+int mastodont_get_followers(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_account* accts[],
+                            size_t* accts_len);
+
+int mastodont_get_following(mastodont_t* data,
+                            char* id,
+                            struct mstdnt_account_args* args,
+                            struct mstdnt_storage* storage,
+                            struct mstdnt_account* accts[],
+                            size_t* accts_len);
 
 int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js);
 int mstdnt_account_json_callback(cJSON* json, void* _args);
