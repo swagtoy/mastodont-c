@@ -77,7 +77,7 @@ static int mastodont_get_accounts_query(char* url,
     struct mastodont_request_args req_args = {
         storage,
         url,
-        NULL, 0,
+        params, _mstdnt_arr_len(params),
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
