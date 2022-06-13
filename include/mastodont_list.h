@@ -94,6 +94,6 @@ int mastodont_list_remove_accounts(mastodont_t* api,
                                    struct mstdnt_storage* storage);
 
 // Cleanup
-void mstdnt_cleanup_lists(struct mstdnt_list* lists, size_t len);
+void mstdnt_cleanup_lists(struct mstdnt_list* lists);
 
 #endif /* MASTODONT_LIST_H */

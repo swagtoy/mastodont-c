@@ -305,8 +305,7 @@ int mastodont_list_get_accounts(mastodont_t* data,
     return mastodont_request(data, &req_args);
 }
 
-void mstdnt_cleanup_lists(struct mstdnt_list* lists, size_t len)
+void mstdnt_cleanup_lists(struct mstdnt_list* lists)
 {
-    if (!lists) return;
     free(lists);
 }
