@@ -18,12 +18,29 @@
 #include <mastodont_types.h>
 #include <cjson/cJSON.h>
 #include <mastodont_fetch.h>
+#include <mastodont_account.h>
+
+enum mstdnt_list_replies_policy
+{
+    MSTDNT_LIST_REPLIES_POLICY_NONE,
+    MSTDNT_LIST_REPLIES_POLICY_LIST,
+    // Not sure why there is one for followed... you cannot add
+    // people to a list who don't follow you? I'd imagine it's the same as
+    // the last one.
+    MSTDNT_LIST_REPLIES_POLICY_FOLLOWED
+};
 
 struct mstdnt_list
 {
     char* id;
     char* title;
-    char* replies_policy;
+    enum mstdnt_list_replies_policy replies_policy;
+};
+
+struct mstdnt_list_args
+{
+    char* title;
+    enum mstdnt_list_replies_policy replies_policy;
 };
 
 int mstdnt_list_json(struct mstdnt_list* list, cJSON* js);
@@ -33,8 +50,50 @@ int mstdnt_lists_json(struct mstdnt_list* lists[],
                       cJSON* json);
 
 int mastodont_get_lists(mastodont_t* api,
-                        struct mstdnt_list* lists[],
                         struct mstdnt_storage* storage,
+                        struct mstdnt_list* lists[],
                         size_t* size);
+
+int mastodont_get_list(mastodont_t* api,
+                       char* id,
+                       struct mstdnt_storage* storage,
+                       struct mstdnt_list* lists);
+
+int mastodont_create_list(mastodont_t* api,
+                          struct mstdnt_list_args* args,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_list* list);
+
+int mastodont_update_list(mastodont_t* api,
+                          char* id,
+                          struct mstdnt_list_args* args,
+                          struct mstdnt_storage* storage,
+                          struct mstdnt_list* list);
+
+int mastodont_delete_list(mastodont_t* api,
+                          char* id,
+                          struct mstdnt_storage* storage);
+
+int mastodont_list_get_accounts(mastodont_t* data,
+                                char* id,
+                                struct mstdnt_account_args* args,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_account* accts[],
+                                size_t* accts_len);
+
+int mastodont_list_add_accounts(mastodont_t* api,
+                                char* id,
+                                char** account_ids,
+                                size_t account_ids_len,
+                                struct mstdnt_storage* storage);
+
+int mastodont_list_remove_accounts(mastodont_t* api,
+                                   char* id,
+                                   char** account_ids,
+                                   size_t account_ids_len,
+                                   struct mstdnt_storage* storage);
+
+// Cleanup
+void mstdnt_cleanup_lists(struct mstdnt_list* lists, size_t len);
 
 #endif /* MASTODONT_LIST_H */
