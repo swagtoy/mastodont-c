@@ -130,11 +130,6 @@ void _mstdnt_val_string_int_call(cJSON* v, void* _type)
 void _mstdnt_val_string_call(cJSON* v, void* _type)
 {
     char** type = _type;
-    if (!cJSON_IsString(v))
-    {
-        *type = NULL;
-        return;
-    }
     *type = v->valuestring;
 }
 

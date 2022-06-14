@@ -39,7 +39,7 @@ struct mstdnt_status
     time_t created_at;
     struct mstdnt_account account;
     char* content;
-    char* visibility;
+    enum mstdnt_visibility_type visibility;
     mstdnt_bool sensitive;
     char* spoiler_text;
     struct mstdnt_attachment* media_attachments;

@@ -45,6 +45,35 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
         mstdnt_status_json(*type, v->child);
 }
 
+// Consider moving to mastodont_visibility_types?
+static void _mstdnt_val_visibility_call(cJSON* v, void* _type)
+{
+    enum mstdnt_visibility_type* type = _type;
+
+    // Check first, as we must read it
+    if (!cJSON_IsString(v))
+    {
+        *type = MSTDNT_VISIBILITY_UNKNOWN;
+        return;
+    }
+
+    char* str = v->valuestring;
+    if (strcmp(str, "public") == 0)
+        *type = MSTDNT_VISIBILITY_PUBLIC;
+    else if (strcmp(str, "unlisted") == 0)
+        *type = MSTDNT_VISIBILITY_UNLISTED;
+    else if (strcmp(str, "private") == 0)
+        *type = MSTDNT_VISIBILITY_PRIVATE;
+    else if (strcmp(str, "direct") == 0)
+        *type = MSTDNT_VISIBILITY_DIRECT;
+    else if (strcmp(str, "local") == 0)
+        *type = MSTDNT_VISIBILITY_LOCAL;
+    else if (strcmp(str, "list") == 0)
+        *type = MSTDNT_VISIBILITY_LIST;
+    else
+        *type = MSTDNT_VISIBILITY_UNKNOWN;
+}
+
 int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
@@ -76,7 +105,7 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
         { "language", &(status->language), _mstdnt_val_string_call },
         { "url", &(status->url), _mstdnt_val_string_call },
         { "text", &(status->text), _mstdnt_val_string_call },
-        { "visibility", &(status->visibility), _mstdnt_val_string_call },
+        { "visibility", &(status->visibility), _mstdnt_val_visibility_call },
         { "in_reply_to_account_id", &(status->in_reply_to_account_id), _mstdnt_val_string_call },
         { "sensitive", &(status->sensitive), _mstdnt_val_bool_call },
         { "favourited", &(status->favourited), _mstdnt_val_bool_call },
