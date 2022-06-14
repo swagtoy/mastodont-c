@@ -40,8 +40,9 @@ static void _mstdnt_val_replies_policy_call(cJSON* v, void* _type)
 
 int mstdnt_list_json(struct mstdnt_list* list, cJSON* js)
 {
+    if (!list) return 1;
     cJSON* v;
-    
+
     /* Zero out */
     memset(list, 0, sizeof(struct mstdnt_list));
     
