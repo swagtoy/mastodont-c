@@ -70,7 +70,9 @@ static void mime_params_post(curl_mime* mime,
     
 }
 
-int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
+int mastodont_request(mastodont_t* data,
+                      struct mstdnt_args* m_args,
+                      struct mastodont_request_args* args)
 {
     int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
@@ -87,7 +89,9 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     memset(storage, 0, sizeof(struct mstdnt_storage));
     storage->needs_cleanup = 0;
 
-    if (args->params_post && args->request_type == CURLOPT_POST)
+    if (args->params_post &&
+        (args->request_type == CURLOPT_POST ||
+         args->request_type == CURLOPT_CUSTOMREQUEST))
     {
         post = _mstdnt_query_string(data, NULL, args->params_post, args->params_post_len);
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
@@ -106,7 +110,11 @@ int mastodont_request(mastodont_t* data, struct mastodont_request_args* args)
     else if (args->request_type == CURLOPT_POST)
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, "");
 
-    curlerror = mastodont_fetch_curl(data, url_query, &results, args->request_type,
+    curlerror = mastodont_fetch_curl(data,
+                                     m_args,
+                                     url_query,
+                                     &results,
+                                     args->request_type,
                                      args->request_type_custom);
 
     if (mime) curl_mime_free(mime);

@@ -21,6 +21,7 @@
 
 /* TODO audit this function for overflows */
 char* _mstdnt_query_string(mastodont_t* data,
+                           struct mstdnt_args* args,
                            char* src,
                            struct _mstdnt_query_param* params,
                            size_t param_len)
@@ -102,7 +103,7 @@ char* _mstdnt_query_string(mastodont_t* data,
             else /* Point to it, it's a string */
             {
                 /* First, let's encode it */
-                escape_str = MSTDNT_T_FLAG_ISSET(data, MSTDNT_FLAG_NO_URI_SANITIZE) ?
+                escape_str = MSTDNT_T_FLAG_ISSET(args, MSTDNT_FLAG_NO_URI_SANITIZE) ?
                     params[i].value.s : curl_easy_escape(data->curl, params[i].value.s, 0);
                 val_ptr = escape_str;
             }
@@ -133,7 +134,7 @@ char* _mstdnt_query_string(mastodont_t* data,
             result[res_prev + key_len] = '=';
             strcpy(result + res_prev + 1 + key_len, val_ptr);
             /* Only free if flag is set, meaning it needs to be free'd */
-            if (!MSTDNT_T_FLAG_ISSET(data, MSTDNT_FLAG_NO_URI_SANITIZE))
+            if (!MSTDNT_T_FLAG_ISSET(args, MSTDNT_FLAG_NO_URI_SANITIZE))
                 curl_free(escape_str);
         }
 

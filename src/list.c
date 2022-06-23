@@ -175,8 +175,8 @@ int mastodont_update_list(mastodont_t* data,
         url,
         NULL, 0,
         params, _mstdnt_arr_len(params),
-        CURLOPT_PUT,
-        NULL,
+        CURLOPT_CUSTOMREQUEST,
+        "PUT",
         list,
         mstdnt_list_json_callback
     };

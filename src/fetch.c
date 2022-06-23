@@ -45,6 +45,7 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 
 #define TOKEN_STR_SIZE 512
 int mastodont_fetch_curl(mastodont_t* mstdnt,
+                         struct mstdnt_args* m_args,
                          char* _url,
                          struct mstdnt_fetch_results* results,
                          CURLoption request_t,
@@ -57,14 +58,14 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
 
     /* Setup URL */
     char url[MSTDNT_URLSIZE] = { 0 };
-    strncpy(url, mstdnt->url, MSTDNT_URLSIZE-1);
+    strncpy(url, m_args->url, MSTDNT_URLSIZE-1);
     strncat(url, _url, MSTDNT_URLSIZE-1);
 
     /* Setup token */
-    if (mstdnt->token)
+    if (m_args->token)
     {
         snprintf(token, TOKEN_STR_SIZE, "Authorization: Bearer %s",
-                 mstdnt->token);
+                 m_args->token);
         list = curl_slist_append(list, token);
         curl_easy_setopt(mstdnt->curl, CURLOPT_HTTPHEADER, list);
     }
@@ -75,9 +76,9 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
     curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
     /* Should we verify the peer's SSL cert? */
     curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYPEER,
-                     !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
+                     !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
     curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYHOST,
-                     !MSTDNT_T_FLAG_ISSET(mstdnt, MSTDNT_FLAG_SSL_UNVERIFIED));
+                     !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
     /* PUT, POST, GET, Custom */
     /* Mimes are expected to be set beforehand manually */
     if (is_custom)

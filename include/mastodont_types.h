@@ -24,18 +24,15 @@
 #define MSTDNT_URISIZE 512
 typedef unsigned char mstdnt_bool;
 
+// It's more logical to not sanitize than to sanitize data
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
-#define MSTDNT_FLAG_SSL_UNVERIFIED (1<<2)
+#define MSTDNT_FLAG_SSL_UNVERIFIED (1<<1)
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
 typedef struct mastodont
 {
-    char* url;
     CURL* curl;
-    char* token;
-    mstdnt_bool token_heap;
-    uint16_t flags;
 } mastodont_t;
 
 struct mstdnt_storage
@@ -44,6 +41,13 @@ struct mstdnt_storage
     cJSON* root;
     char* error;
     char* error_description;
+};
+
+struct mstdnt_args
+{
+    char* url;
+    char* token;
+    uint8_t flags;
 };
 
 struct mstdnt_file
