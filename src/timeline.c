@@ -20,7 +20,7 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-int mastodont_timeline_list(mastodont_t* data,
+int mastodont_timeline_list(mastodont_t* data, struct mstdnt_args* m_args,
                             char* list_id,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
@@ -55,10 +55,10 @@ int mastodont_timeline_list(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
 
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
-int mastodont_timeline_tag(mastodont_t* data,
+int mastodont_timeline_tag(mastodont_t* data, struct mstdnt_args* m_args,
                            char* hashtag,
                            struct mstdnt_timeline_args* args,
                            struct mstdnt_storage* storage,
@@ -96,7 +96,7 @@ int mastodont_timeline_tag(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
 
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
@@ -113,7 +113,7 @@ static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
     }
 }
 
-int mastodont_timeline_public(mastodont_t* data,
+int mastodont_timeline_public(mastodont_t* data, struct mstdnt_args* m_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
@@ -145,11 +145,11 @@ int mastodont_timeline_public(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 
-int mastodont_timeline_direct(mastodont_t* data,
+int mastodont_timeline_direct(mastodont_t* data, struct mstdnt_args* m_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
@@ -177,11 +177,11 @@ int mastodont_timeline_direct(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 
-int mastodont_timeline_home(mastodont_t* data,
+int mastodont_timeline_home(mastodont_t* data, struct mstdnt_args* m_args,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
@@ -214,6 +214,6 @@ int mastodont_timeline_home(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 

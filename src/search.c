@@ -61,7 +61,7 @@ int mstdnt_search_json_callback(cJSON* json, void* _args)
     return mstdnt_search_json(_args, json);
 }
 
-int mastodont_search(mastodont_t* data,
+int mastodont_search(mastodont_t* data, struct mstdnt_args* m_args,
                      char* query,
                      struct mstdnt_storage* storage,
                      struct mstdnt_search_args* args,
@@ -92,7 +92,7 @@ int mastodont_search(mastodont_t* data,
         mstdnt_search_json_callback
     };
     
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 void mstdnt_cleanup_search_results(struct mstdnt_search_results* res)

@@ -96,7 +96,7 @@ int mstdnt_relationships_json_callback(cJSON* json, void* _args)
     return mstdnt_relationships_json(args->relationships, args->size, json);
 }
 
-int mastodont_get_relationships(mastodont_t* data,
+int mastodont_get_relationships(mastodont_t* data, struct mstdnt_args* m_args,
                                 char** ids,
                                 size_t ids_len,
                                 struct mstdnt_storage* storage,
@@ -124,7 +124,7 @@ int mastodont_get_relationships(mastodont_t* data,
         mstdnt_relationships_json_callback
     };
 
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels)

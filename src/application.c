@@ -69,7 +69,7 @@ static int mstdnt_token_json_callback(cJSON* json, void* args)
     return mstdnt_token_json(json, args);
 }
 
-int mastodont_register_app(mastodont_t* data,
+int mastodont_register_app(mastodont_t* data, struct mstdnt_args* m_args,
                            struct mstdnt_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
@@ -92,11 +92,11 @@ int mastodont_register_app(mastodont_t* data,
         mstdnt_app_json_callback
     };
 
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 
 
-int mastodont_obtain_oauth_token(mastodont_t* data,
+int mastodont_obtain_oauth_token(mastodont_t* data, struct mstdnt_args* m_args,
                                  struct mstdnt_args* args,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)
@@ -125,6 +125,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         mstdnt_token_json_callback
     };
 
-    return mastodont_request(data, &req_args);
+    return mastodont_request(data, m_args,&req_args);
 }
 

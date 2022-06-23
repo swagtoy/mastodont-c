@@ -41,7 +41,7 @@ int mstdnt_nodeinfo_json(struct mstdnt_nodeinfo* nodeinfo, cJSON* js);
 
 int mstdnt_nodeinfo_json_callback(cJSON* json, void* nodeinfo);
 
-int mastodont_get_nodeinfo(mastodont_t* api,
+int mastodont_get_nodeinfo(mastodont_t* api, struct mstdnt_args* args,
                            char* version,
                            struct mstdnt_storage* storage,
                            struct mstdnt_nodeinfo* nodeinfo);

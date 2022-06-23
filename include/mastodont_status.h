@@ -96,7 +96,7 @@ void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
 void mstdnt_cleanup_status(struct mstdnt_status* status);
 
 int mstdnt_status_json(struct mstdnt_status* status, cJSON* js);
-int mastodont_status_emoji_react(mastodont_t* api, char* id, char* emoji,
+int mastodont_status_emoji_react(mastodont_t* api, struct mstdnt_args* args, char* id, char* emoji,
                                  struct mstdnt_storage* storage, struct mstdnt_status* status);
 
 // Generated function
@@ -113,19 +113,19 @@ int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
                                size_t* size_after,
                                cJSON* js);
 
-int mastodont_get_account_statuses(mastodont_t* data,
+int mastodont_get_account_statuses(mastodont_t* data, struct mstdnt_args* args,
                                    char* id,
                                    struct mstdnt_account_statuses_args* args,
                                    struct mstdnt_storage* storage,
                                    struct mstdnt_status* statuses[],
                                    size_t* size);
 
-int mastodont_get_status(mastodont_t* data,
+int mastodont_get_status(mastodont_t* data, struct mstdnt_args* args,
                          char* id,
                          struct mstdnt_storage* storage,
                          struct mstdnt_status* status);
 
-int mastodont_get_status_context(mastodont_t* data,
+int mastodont_get_status_context(mastodont_t* data, struct mstdnt_args* args,
                                  char* id,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_status* statuses_before[],
@@ -133,24 +133,24 @@ int mastodont_get_status_context(mastodont_t* data,
                                  size_t* size_before,
                                  size_t* size_after);
 
-int mastodont_status_favourited_by(mastodont_t* data,
+int mastodont_status_favourited_by(mastodont_t* data, struct mstdnt_args* args,
                                    char* id,
                                    struct mstdnt_storage* storage,
                                    struct mstdnt_account* accounts[],
                                    size_t* accts);
 
-int mastodont_status_reblogged_by(mastodont_t* data,
+int mastodont_status_reblogged_by(mastodont_t* data, struct mstdnt_args* args,
                                   char* id,
                                   struct mstdnt_storage* storage,
                                   struct mstdnt_account* accounts[],
                                   size_t* accts);
 
-int mastodont_create_status(mastodont_t* data,
+int mastodont_create_status(mastodont_t* data, struct mstdnt_args* args,
                             struct mstdnt_args* args,
                             struct mstdnt_storage* storage);
 
 /* Generates do and undo functions */
-#define MSTDNT_STATUS_ACTION_DECL(type) int mastodont_##type##_status(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_status* status)
+#define MSTDNT_STATUS_ACTION_DECL(type) int mastodont_##type##_status(mastodont_t* data, struct mstdnt_args* args, char* id, struct mstdnt_storage* storage, struct mstdnt_status* status)
 #define MSTDNT_STATUS_ACTION_FUNC_URL(action) {                         \
         return mstdnt_status_action(data, id, storage, status, "api/v1/statuses/%s/" action); \
     }
@@ -165,12 +165,12 @@ MSTDNT_STATUS_ACTION_DECL(bookmark);
 MSTDNT_STATUS_ACTION_DECL(unbookmark);
 MSTDNT_STATUS_ACTION_DECL(delete);
 
-int mastodont_mute_conversation(mastodont_t* data,
+int mastodont_mute_conversation(mastodont_t* data, struct mstdnt_args* args,
                                 char* id,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_status* status);
 
-int mastodont_unmute_conversation(mastodont_t* data,
+int mastodont_unmute_conversation(mastodont_t* data, struct mstdnt_args* args,
                                   char* id,
                                   struct mstdnt_storage* storage,
                                   struct mstdnt_status* status);
@@ -205,13 +205,13 @@ struct mstdnt_favourites_args
     int limit;
 };
 
-int mastodont_get_bookmarks(mastodont_t* data,
+int mastodont_get_bookmarks(mastodont_t* data, struct mstdnt_args* args,
                             struct mstdnt_bookmarks_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size);
 
-int mastodont_get_favourites(mastodont_t* data,
+int mastodont_get_favourites(mastodont_t* data, struct mstdnt_args* args,
                              struct mstdnt_favourites_args* args,
                              struct mstdnt_storage* storage,
                              struct mstdnt_status* statuses[],

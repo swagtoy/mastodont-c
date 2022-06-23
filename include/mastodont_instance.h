@@ -23,7 +23,7 @@ struct mstdnt_instance
 };
 
 // TODO
-int mastodont_instance(mastodont_t* api,
+int mastodont_instance(mastodont_t* api, struct mstdnt_args* args,
                        struct mstdnt_instance* inst);
 
 #endif /* MASTODONT_INSTANCE_H */

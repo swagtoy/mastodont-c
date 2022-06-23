@@ -76,7 +76,7 @@ struct mstdnt_account_args
     int with_relationships; // mastodont_get_mutes
 };
 
-int mstdnt_account_action(mastodont_t* data,
+int mstdnt_account_action(mastodont_t* data, struct mstdnt_args* args,
                           char* id,
                           struct mstdnt_storage* storage,
                           struct mstdnt_relationship* rel,
@@ -86,7 +86,7 @@ int mstdnt_accounts_json(struct mstdnt_account* accounts[],
                          size_t* size,
                          cJSON* js);
 
-#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
+#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mastodont_##type##_account(mastodont_t* data, struct mstdnt_args* args, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
 #define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) { \
     return mstdnt_account_action(data, id, storage, relationship, "api/v1/accounts/%s/" action); \
     }
@@ -100,35 +100,35 @@ MSTDNT_ACCOUNT_ACTION_DECL(unblock);
 MSTDNT_ACCOUNT_ACTION_DECL(subscribe);
 MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe);
 
-int mastodont_verify_credentials(mastodont_t* data,
+int mastodont_verify_credentials(mastodont_t* data, struct mstdnt_args* args,
                                  struct mstdnt_account* acct,
                                  struct mstdnt_storage* storage);
-int mastodont_get_account(mastodont_t* data,
+int mastodont_get_account(mastodont_t* data, struct mstdnt_args* args,
                           int lookup_type,
                           char* id,
                           struct mstdnt_account* acct,
                           struct mstdnt_storage* storage);
 
-int mastodont_get_blocks(mastodont_t* data,
+int mastodont_get_blocks(mastodont_t* data, struct mstdnt_args* args,
                          struct mstdnt_account_args* args,
                          struct mstdnt_storage* storage,
                          struct mstdnt_account* accts[],
                          size_t* accts_len);
 
-int mastodont_get_mutes(mastodont_t* data,
+int mastodont_get_mutes(mastodont_t* data, struct mstdnt_args* args,
                         struct mstdnt_account_args* args,
                         struct mstdnt_storage* storage,
                         struct mstdnt_account* accts[],
                         size_t* accts_len);
 
-int mastodont_get_followers(mastodont_t* data,
+int mastodont_get_followers(mastodont_t* data, struct mstdnt_args* args,
                             char* id,
                             struct mstdnt_account_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_account* accts[],
                             size_t* accts_len);
 
-int mastodont_get_following(mastodont_t* data,
+int mastodont_get_following(mastodont_t* data, struct mstdnt_args* args,
                             char* id,
                             struct mstdnt_account_args* args,
                             struct mstdnt_storage* storage,

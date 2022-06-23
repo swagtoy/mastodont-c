@@ -40,32 +40,32 @@ struct mstdnt_timeline_args
     int with_muted;
 };
 
-int mastodont_timeline_home(mastodont_t* data,
+int mastodont_timeline_home(mastodont_t* data, struct mstdnt_args* args,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size);
 
-int mastodont_timeline_list(mastodont_t* data,
+int mastodont_timeline_list(mastodont_t* data, struct mstdnt_args* args,
                             char* list_id,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
                             size_t* size);
 
-int mastodont_timeline_public(mastodont_t* data,
+int mastodont_timeline_public(mastodont_t* data, struct mstdnt_args* args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* statuses_size);
 
-int mastodont_timeline_direct(mastodont_t* data,
+int mastodont_timeline_direct(mastodont_t* data, struct mstdnt_args* args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
                               size_t* statuses_size);
 
-int mastodont_timeline_tag(mastodont_t* data,
+int mastodont_timeline_tag(mastodont_t* data, struct mstdnt_args* args,
                            char* hashtag,
                            struct mstdnt_timeline_args* args,
                            struct mstdnt_storage* storage,

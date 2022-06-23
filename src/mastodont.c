@@ -13,31 +13,15 @@ void mastodont_global_curl_cleanup()
     curl_global_cleanup();
 }
 
-int mastodont_init(mastodont_t* data, uint16_t flags)
+int mastodont_init(mastodont_t* data, struct mstdnt_args* m_args, uint16_t flags)
 {
     data->curl = curl_easy_init();
-    data->token = NULL;
-    data->token_heap = 0;
-    data->flags = flags;
     return data->curl == NULL;
-}
-
-int mastodont_set_token(mastodont_t* data, char* token)
-{
-    char* mtoken = malloc(strlen(token)+1);
-    if (!mtoken)
-        return 1;
-    data->token_heap = 1;
-    strcpy(mtoken, token);
-    data->token = mtoken;
-    return 0;
 }
 
 void mastodont_cleanup(mastodont_t* data)
 {
     curl_easy_cleanup(data->curl);
-    if (data->token_heap)
-        free(data->token);
 }
 
 void mastodont_free(void* ptr)
