@@ -16,7 +16,6 @@
 #ifndef MASTODONT_APPLICATION
 #define MASTODONT_APPLICATION
 #include "mastodont_types.h"
-#include "mastodont_args.h"
 #include "mastodont_fetch.h"
 #include <cjson/cJSON.h>
 
@@ -48,13 +47,31 @@ struct mstdnt_oauth_token
     time_t time;
 };
 
-int mastodont_register_app(mastodont_t* data, struct mstdnt_args* args,
-                           struct mstdnt_args* args,
+struct mstdnt_application_args
+{
+    char* grant_type;
+    char* client_id;
+    char* client_secret;
+    char* redirect_uri;
+    char* scope;
+    char* code;
+    char* username;
+    char* password;
+    char* client_name;
+    char* redirect_uris;
+    char* scopes;
+    char* website;
+};
+
+int mastodont_register_app(mastodont_t* data,
+                           struct mstdnt_args* m_args,
+                           struct mstdnt_application_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app);
 
-int mastodont_obtain_oauth_token(mastodont_t* data, struct mstdnt_args* args,
-                                 struct mstdnt_args* args,
+int mastodont_obtain_oauth_token(mastodont_t* data,
+                                 struct mstdnt_args* m_args,
+                                 struct mstdnt_application_args* args,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* app);
 

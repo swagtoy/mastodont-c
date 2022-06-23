@@ -98,7 +98,8 @@ static int mstdnt_attachment_json_callback(cJSON* json, void* _args)
     return mstdnt_attachment_json(json, _args);
 }
 
-int mastodont_upload_media(mastodont_t* api, struct mstdnt_args* args,
+int mastodont_upload_media(mastodont_t* api,
+                           struct mstdnt_args* m_args,
                            struct mstdnt_upload_media_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_attachment* attachment)
@@ -119,7 +120,7 @@ int mastodont_upload_media(mastodont_t* api, struct mstdnt_args* args,
         mstdnt_attachment_json_callback,
     };
 
-    return mastodont_request(api, &req_args);
+    return mastodont_request(api, m_args, &req_args);
 }
 
 void mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment)

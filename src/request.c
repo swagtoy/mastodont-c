@@ -82,7 +82,7 @@ int mastodont_request(mastodont_t* data,
     char* post;
     // TODO debug me
     char* url_query = args->params_query ?
-        _mstdnt_query_string(data, args->url, args->params_query, args->params_query_len) :
+        _mstdnt_query_string(data, m_args, args->url, args->params_query, args->params_query_len) :
         args->url;
 
     /* Zero out */
@@ -93,7 +93,7 @@ int mastodont_request(mastodont_t* data,
         (args->request_type == CURLOPT_POST ||
          args->request_type == CURLOPT_CUSTOMREQUEST))
     {
-        post = _mstdnt_query_string(data, NULL, args->params_post, args->params_post_len);
+        post = _mstdnt_query_string(data, m_args, NULL, args->params_post, args->params_post_len);
         curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
     }
     else if (args->params_post && args->request_type == CURLOPT_MIMEPOST)

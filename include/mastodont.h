@@ -32,8 +32,7 @@
 void mastodont_global_curl_init();
 void mastodont_global_curl_cleanup();
 
-int mastodont_init(mastodont_t* data, uint16_t flags);
-int mastodont_set_token(mastodont_t* data, char* token);
+int mastodont_init(mastodont_t* data);
 void mastodont_cleanup(mastodont_t* data);
 void mastodont_free(void*);
 

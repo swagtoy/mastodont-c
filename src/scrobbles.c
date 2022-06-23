@@ -52,7 +52,8 @@ int mstdnt_scrobbles_json_callback(cJSON* json, void* _args)
     return mstdnt_scrobbles_json(args->scrobbles, args->size, json);
 }
 
-int mastodont_get_scrobbles(mastodont_t* data, struct mstdnt_args* m_args,
+int mastodont_get_scrobbles(mastodont_t* data,
+                            struct mstdnt_args* m_args,
                             char* id,
                             struct mstdnt_get_scrobbles_args* args,
                             struct mstdnt_storage* storage,
@@ -82,6 +83,6 @@ int mastodont_get_scrobbles(mastodont_t* data, struct mstdnt_args* m_args,
         mstdnt_scrobbles_json_callback
     };
 
-    return mastodont_request(data, m_args,&req_args);
+    return mastodont_request(data, m_args, &req_args);
 }
 

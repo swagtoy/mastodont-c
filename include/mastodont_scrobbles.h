@@ -46,7 +46,8 @@ struct _mstdnt_scrobbles_cb_args
     size_t* size;
 };
 
-int mastodont_get_scrobbles(mastodont_t* data, struct mstdnt_args* args,
+int mastodont_get_scrobbles(mastodont_t* data,
+                            struct mstdnt_args* m_args,
                             char* id,
                             struct mstdnt_get_scrobbles_args* args,
                             struct mstdnt_storage* storage,

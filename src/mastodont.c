@@ -13,7 +13,7 @@ void mastodont_global_curl_cleanup()
     curl_global_cleanup();
 }
 
-int mastodont_init(mastodont_t* data, struct mstdnt_args* m_args, uint16_t flags)
+int mastodont_init(mastodont_t* data)
 {
     data->curl = curl_easy_init();
     return data->curl == NULL;

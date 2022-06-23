@@ -75,7 +75,8 @@ int mstdnt_notifications_json_callback(cJSON* json, void* _args)
     return mstdnt_notifications_json(args->notif, args->size, json);
 }
 
-int mastodont_get_notifications(mastodont_t* data, struct mstdnt_args* m_args,
+int mastodont_get_notifications(mastodont_t* data,
+                                struct mstdnt_args* m_args,
                                 struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
@@ -116,7 +117,7 @@ int mastodont_get_notifications(mastodont_t* data, struct mstdnt_args* m_args,
         mstdnt_notifications_json_callback,
     };
     
-    return mastodont_request(data, m_args,&req_args);
+    return mastodont_request(data, m_args, &req_args);
 }
 
 void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t notifs_len)

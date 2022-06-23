@@ -18,7 +18,6 @@
 #include "mastodont_types.h"
 #include "mastodont_account.h"
 #include "mastodont_status.h"
-#include "mastodont_args.h"
 #include "mastodont_notif_types.h"
 #include "mastodont_visibility_types.h"
 #include <cjson/cJSON.h>
@@ -57,7 +56,8 @@ struct _mstdnt_notifications_result_cb_args
 
 int mstdnt_notifications_json_callback(cJSON* json, void* _args);
 
-int mastodont_get_notifications(mastodont_t* data, struct mstdnt_args* args,
+int mastodont_get_notifications(mastodont_t* data,
+                                struct mstdnt_args* m_args,
                                 struct mstdnt_get_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
