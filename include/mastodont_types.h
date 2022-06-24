@@ -45,8 +45,8 @@ struct mstdnt_storage
 
 struct mstdnt_args
 {
-    char* url;
-    char* token;
+    const char* url;
+    const char* token;
     uint8_t flags;
 };
 
