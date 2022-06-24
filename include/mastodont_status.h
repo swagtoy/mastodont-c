@@ -94,6 +94,14 @@ struct mstdnt_status_args
 {
     char* in_reply_to_id;
     char* content_type;
+    int expires_in;
+    char* in_reply_to_conversation_id;
+    char* language;
+    char* poll; //?
+    char* preview;
+    char* scheduled_at;
+    int sensitive;
+    char* spoiler_text;
     char* status;
     char* visibility;
     char** media_ids;
