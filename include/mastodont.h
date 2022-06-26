@@ -28,14 +28,38 @@
 #include <mastodont_announcement.h>
 #include <mastodont_static.h>
 
-/* Functions required form curl */
+//! Initializes libcurl
 void mastodont_global_curl_init();
+//! Cleans up libcurl
 void mastodont_global_curl_cleanup();
 
+/*!
+ * Initializes a mastodont struct
+ *
+ * \param data Pointer to struct to fill in
+ * \return Value of curl_easy_init(); either Zero or non-zero
+ */
 int mastodont_init(mastodont_t* data);
+
+/*!
+ * Cleans up the mastodont struct
+ *
+ * \param data Pointer to the mastodont data
+ */
 void mastodont_cleanup(mastodont_t* data);
+
+/*!
+ * Call's free() or a library derivative
+ */
 void mastodont_free(void*);
 
+/*!
+ * Cleans up a storage struct.
+ *
+ * This contains information such as JSON information and errors.
+ *
+ * \param storage The storage block to cleanup
+ */
 void mastodont_storage_cleanup(struct mstdnt_storage* storage);
 
 #endif /* MASTODONT_H */
