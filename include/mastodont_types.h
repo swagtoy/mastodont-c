@@ -22,7 +22,10 @@
 #define _mstdnt_arr_len(arr) (sizeof(arr)/sizeof(arr[0]))
 #define MSTDNT_URLSIZE 2048
 #define MSTDNT_URISIZE 512
-typedef unsigned char mstdnt_bool;
+typedef int8_t mstdnt_bool;
+#define MSTDNT_TRUE 1
+#define MSTDNT_FALSE 0
+#define MSTDNT_BOOL_UNSET -1
 
 // It's more logical to not sanitize than to sanitize data
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)

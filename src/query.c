@@ -56,10 +56,12 @@ char* _mstdnt_query_string(mastodont_t* data,
     int res_count = 0;
     size_t arr_ind = 0;
     char* key_ptr;
+    int invalid_bool;
 
     /* If it's an array, we treat it as a "fake" regular key and keep iterating through it */
     for (i = 0; i < param_len; ++i)
     {
+        invalid_bool = 0;
         escape_str = NULL;
 
         /* If array is NULL, skip */
@@ -81,9 +83,17 @@ char* _mstdnt_query_string(mastodont_t* data,
             key_ptr = params[i].key;
         }
 
+        // If boolean and set to 0, make it unset
+        if (params[i].type == _MSTDNT_QUERY_BOOL &&
+            !(params[i].value.b >= 1))
+            invalid_bool = 1;
+
+        // If invalid_bool is true, then it's not actually set
         if (key_ptr &&
             !(params[i].type == _MSTDNT_QUERY_STRING &&
-              params[i].value.s == NULL))
+              params[i].value.s == NULL) &&
+            !(params[i].type == _MSTDNT_QUERY_BOOL &&
+              invalid_bool))
         {
 
             if (res_count++ == 0 && src_l)
@@ -91,17 +101,21 @@ char* _mstdnt_query_string(mastodont_t* data,
                 result[res_len-1] = '?';
 
             /* Convert value */
-            if (params[i].type == _MSTDNT_QUERY_INT)
+            if (params[i].type == _MSTDNT_QUERY_BOOL)
             {
+                if (params[i].value.b == 1)
+                    val_ptr = "false";
+                else // Anything above 1, can't be zero though
+                    val_ptr = "true";
+            }
+            else if (params[i].type == _MSTDNT_QUERY_INT) {
                 snprintf(conv_val, CONV_SIZE, "%d", params[i].value.i);
                 val_ptr = conv_val;
             }
-            else if (params[i].type == _MSTDNT_QUERY_ARRAY)
-            {
+            else if (params[i].type == _MSTDNT_QUERY_ARRAY) {
                 val_ptr = params[i].value.a.arr[arr_ind];
             }
-            else /* Point to it, it's a string */
-            {
+            else { /* Point to it, it's a string */
                 /* First, let's encode it */
                 escape_str = MSTDNT_T_FLAG_ISSET(args, MSTDNT_FLAG_NO_URI_SANITIZE) ?
                     params[i].value.s : curl_easy_escape(data->curl, params[i].value.s, 0);
