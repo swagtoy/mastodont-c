@@ -48,9 +48,7 @@ int mastodont_init(mastodont_t* data);
  */
 void mastodont_cleanup(mastodont_t* data);
 
-/*!
- * Call's free() or a library derivative
- */
+//! Call's free() or a library derivative
 void mastodont_free(void*);
 
 /*!
