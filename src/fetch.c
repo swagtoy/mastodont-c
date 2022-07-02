@@ -88,9 +88,12 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
 
     res = curl_easy_perform(mstdnt->curl);
 
+    // Reset values that are optional
     // Reset if custom
     if (is_custom)
         curl_easy_setopt(mstdnt->curl, request_t, NULL);
+
+    curl_easy_setopt(mstdnt->curl, CURLOPT_HTTPHEADER, NULL);
 
     if (list) curl_slist_free_all(list);
 
