@@ -22,7 +22,7 @@ struct mstdnt_chat
 {
     struct mstdnt_account account;
     const char* id;
-    int unread;
+    unsigned int unread;
 };
 
 struct mstdnt_chats_args
@@ -34,6 +34,11 @@ struct mstdnt_chats_args
     int offset;
     int limit;    
 };
+
+int mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js);
+int mstdnt_chats_json(struct mstdnt_chat* statuses[],
+                      size_t* size,
+                      cJSON* js);
 
 int mastodont_get_chats_v2(mastodont_t* data,
                            struct mstdnt_args* m_args,

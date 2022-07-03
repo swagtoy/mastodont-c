@@ -38,7 +38,7 @@ struct _mstdnt_query_param
     enum _mstdnt_query_type type;
     char* key;
     union param_value {
-        char* s;
+        const char* s;
         int i;
         mstdnt_bool b;
         struct _mstdnt_query_array a;
