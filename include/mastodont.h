@@ -27,6 +27,7 @@
 #include <mastodont_search.h>
 #include <mastodont_announcement.h>
 #include <mastodont_static.h>
+#include <mastodont_chats.h>
 
 //! Initializes libcurl
 void mastodont_global_curl_init();
