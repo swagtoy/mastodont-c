@@ -141,7 +141,7 @@ int mastodont_get_account(mastodont_t* data,
                           struct mstdnt_storage* storage)
 {
     /* Url */
-    char url[MSTDNT_URLSIZE] = { 0 };
+    char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE,
              lookup ? "api/v1/accounts/%s" : "api/v1/accounts/lookup?acct=%s",
              id);

@@ -15,14 +15,29 @@
 
 #ifndef MASTODONT_CHATS_H
 #define MASTODONT_CHATS_H
+#include <stddef.h>
+#include <time.h>
 #include "mastodont_types.h"
 #include "mastodont_account.h"
+#include "mastodont_emoji.h"
 
 struct mstdnt_chat
 {
     struct mstdnt_account account;
     const char* id;
     unsigned int unread;
+};
+
+struct mstdnt_message
+{
+    char* account_id;
+    char* chat_id;
+    char* content;
+    time_t created_at;
+    char* id;
+    struct mstdnt_emoji* emojis;
+    size_t emojis_len;
+    mstdnt_bool unread;
 };
 
 struct mstdnt_chats_args
@@ -32,13 +47,16 @@ struct mstdnt_chats_args
     const char* min_id;
     const char* since_id;
     int offset;
-    int limit;    
+    int limit;
 };
 
 int mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js);
 int mstdnt_chats_json(struct mstdnt_chat* statuses[],
                       size_t* size,
                       cJSON* js);
+int mstdnt_message_json(struct mstdnt_message* message, cJSON* js);
+int mstdnt_message_json_callback(cJSON* json, void* chat);
+int mstdnt_messages_json(struct mstdnt_message* message[], size_t* size, cJSON* js);
 
 int mastodont_get_chats_v2(mastodont_t* data,
                            struct mstdnt_args* m_args,
@@ -46,5 +64,13 @@ int mastodont_get_chats_v2(mastodont_t* data,
                            struct mstdnt_storage* storage,
                            struct mstdnt_chat* chats[],
                            size_t* chats_len);
+
+int mastodont_get_chat_messages(mastodont_t* data,
+                                struct mstdnt_args* m_args,
+                                char* chat_id,
+                                struct mstdnt_chats_args* args,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_message* chats[],
+                                size_t* size);
 
 #endif // MASTODONT_CHATS_H
