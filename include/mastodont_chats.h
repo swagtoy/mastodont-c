@@ -77,6 +77,6 @@ int mastodont_get_chat(mastodont_t* data,
                        struct mstdnt_args* m_args,
                        char* chat_id,
                        struct mstdnt_storage* storage,
-                       struct mstdnt_chat chat);
+                       struct mstdnt_chat* chat);
 
 #endif // MASTODONT_CHATS_H
