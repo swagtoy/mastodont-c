@@ -172,3 +172,28 @@ int mastodont_get_chat_messages(mastodont_t* data,
 
     return mastodont_request(data, m_args, &req_args);
 }
+
+int mastodont_get_chat(mastodont_t* data,
+                       struct mstdnt_args* m_args,
+                       char* chat_id,
+                       struct mstdnt_storage* storage,
+                       struct mstdnt_chat chat)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/chats/%s", chat_id);
+    
+    struct mastodont_request_args req_args = {
+        .storage = storage,
+        .url = url,
+        .params_query = NULL,
+        .params_query_len = NULL,
+        .params_post = NULL,
+        .params_post_len = 0,
+        .request_type = CURLOPT_HTTPGET,
+        .request_type_custom = NULL,
+        .args = NULL,
+        .callback = mstdnt_chat_json_callback,
+    };
+
+    return mastodont_request(data, m_args, &req_args);
+}
