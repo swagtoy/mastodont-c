@@ -20,22 +20,30 @@ int mastodont_instance_panel(mastodont_t* api,
                              struct mstdnt_args* m_args,
                              struct mstdnt_fetch_results* html)
 {
-    return mastodont_fetch_curl(api,
-                                m_args,
-                                "instance/panel.html",
-                                html,
-                                CURLOPT_HTTPGET,
-                                NULL);
+    CURL* curl = curl_easy_init();
+    int status = mastodont_fetch_curl(api,
+                                      curl,
+                                      m_args,
+                                      "instance/panel.html",
+                                      html,
+                                      CURLOPT_HTTPGET,
+                                      NULL);
+    curl_easy_cleanup(curl);
+    return status;
 }
 
 int mastodont_terms_of_service(mastodont_t* api,
                                struct mstdnt_args* m_args,
                                struct mstdnt_fetch_results* html)
 {
-    return mastodont_fetch_curl(api,
-                                m_args,
-                                "static/terms-of-service.html",
-                                html,
-                                CURLOPT_HTTPGET,
-                                NULL);
+    CURL* curl = curl_easy_init();
+    int status = mastodont_fetch_curl(api,
+                                      curl,
+                                      m_args,
+                                      "static/terms-of-service.html",
+                                      html,
+                                      CURLOPT_HTTPGET,
+                                      NULL);
+    curl_easy_cleanup(curl);
+    return status;
 }

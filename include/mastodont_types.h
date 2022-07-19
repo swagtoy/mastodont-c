@@ -35,7 +35,7 @@ typedef int8_t mstdnt_bool;
 
 typedef struct mastodont
 {
-    CURL* curl;
+    CURLM* curl;
 } mastodont_t;
 
 struct mstdnt_storage

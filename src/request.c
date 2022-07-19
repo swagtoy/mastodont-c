@@ -85,6 +85,9 @@ int mastodont_request(mastodont_t* data,
         _mstdnt_query_string(data, m_args, args->url, args->params_query, args->params_query_len) :
         args->url;
 
+    // Create cURL single handle, we will run this later and then block
+    CURL* curl = curl_easy_init();
+
     /* Zero out */
     memset(storage, 0, sizeof(struct mstdnt_storage));
     storage->needs_cleanup = 0;
@@ -94,13 +97,13 @@ int mastodont_request(mastodont_t* data,
          args->request_type == CURLOPT_CUSTOMREQUEST))
     {
         post = _mstdnt_query_string(data, m_args, NULL, args->params_post, args->params_post_len);
-        curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, post);
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post);
     }
     else if (args->params_post && args->request_type == CURLOPT_MIMEPOST)
     {
         /* Initialize MIME post */
-        mime = curl_mime_init(data->curl);
-        curl_easy_setopt(data->curl, args->request_type, mime);
+        mime = curl_mime_init(curl);
+        curl_easy_setopt(curl, args->request_type, mime);
 
         /* Let's handle query params array */
         mime_params_post(mime, args->params_post, args->params_post_len);
@@ -108,9 +111,10 @@ int mastodont_request(mastodont_t* data,
     /* Make it empty, no post data provided */
     /* I'm not sure why the pleroma api does this */
     else if (args->request_type == CURLOPT_POST)
-        curl_easy_setopt(data->curl, CURLOPT_POSTFIELDS, "");
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 
     curlerror = mastodont_fetch_curl(data,
+                                     curl,
                                      m_args,
                                      url_query,
                                      &results,
@@ -136,7 +140,7 @@ int mastodont_request(mastodont_t* data,
     // Make sure there is no error
     if (!mstdnt_check_error(storage))
     {
-        /* Optional */
+        /* Call our callback and do the large work */
         if (args->callback) res = args->callback(storage->root, args->args);
     }
     else
@@ -145,6 +149,9 @@ int mastodont_request(mastodont_t* data,
 cleanup_res:
     mastodont_fetch_results_cleanup(&results);
 cleanup:
+    // Note: the fetch removed the handle from our multi handle
+    curl_easy_cleanup(curl);
+    
     if (args->params_post && args->request_type == CURLOPT_POST) free(post);
     /* Only free if params_query set */
     if (args->params_query) free(url_query);

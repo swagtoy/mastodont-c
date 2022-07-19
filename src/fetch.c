@@ -45,6 +45,7 @@ void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 
 #define TOKEN_STR_SIZE 512
 int mastodont_fetch_curl(mastodont_t* mstdnt,
+                         CURL* curl,
                          struct mstdnt_args* m_args,
                          char* _url,
                          struct mstdnt_fetch_results* results,
@@ -52,7 +53,10 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
                          char* request_t_custom)
 {
 #define is_custom request_t_custom && request_t == CURLOPT_CUSTOMREQUEST
-    int res = 3;
+    CURLMcode res = 3;
+    int status = 0;
+    CURLMsg* msg;
+    int running = 1;
     char token[TOKEN_STR_SIZE] = { 0 };
     struct curl_slist* list = NULL;
 
@@ -67,35 +71,51 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
         snprintf(token, TOKEN_STR_SIZE, "Authorization: Bearer %s",
                  m_args->token);
         list = curl_slist_append(list, token);
-        curl_easy_setopt(mstdnt->curl, CURLOPT_HTTPHEADER, list);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
     }
 
     /* Set options */
-    curl_easy_setopt(mstdnt->curl, CURLOPT_URL, url);
-    curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEFUNCTION, mstdnt_curl_write_callback);
-    curl_easy_setopt(mstdnt->curl, CURLOPT_WRITEDATA, results);
+    curl_easy_setopt(curl, CURLOPT_URL, url);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, mstdnt_curl_write_callback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, results);
     /* Should we verify the peer's SSL cert? */
-    curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYPEER,
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER,
                      !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
-    curl_easy_setopt(mstdnt->curl, CURLOPT_SSL_VERIFYHOST,
+    curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST,
                      !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
     /* PUT, POST, GET, Custom */
     /* Mimes are expected to be set beforehand manually */
     if (is_custom)
-        curl_easy_setopt(mstdnt->curl, request_t, request_t_custom);
+        curl_easy_setopt(curl, request_t, request_t_custom);
     else if (request_t != CURLOPT_MIMEPOST)
-        curl_easy_setopt(mstdnt->curl, request_t, 1);
+        curl_easy_setopt(curl, request_t, 1);
 
-    res = curl_easy_perform(mstdnt->curl);
+    // Add curl handle to multi, then run and block
+    curl_multi_add_handle(mstdnt->curl, curl);
 
-    // Reset values that are optional
-    // Reset if custom
-    if (is_custom)
-        curl_easy_setopt(mstdnt->curl, request_t, NULL);
+    int msgs_left;
+    while (running)
+    {
+        res = curl_multi_perform(mstdnt->curl, &running);
 
-    curl_easy_setopt(mstdnt->curl, CURLOPT_HTTPHEADER, NULL);
+        if (running)
+            res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
 
+        // Check if our socket is done
+        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
+            if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
+            {
+                status = msg->data.result;
+                goto out;
+            }
+
+        if (res) break;
+    }
+    
+out:
+    // Looks like we're done here
+    curl_multi_remove_handle(mstdnt->curl, curl);
+    
     if (list) curl_slist_free_all(list);
-
-    return res;
+    return status;
 }
