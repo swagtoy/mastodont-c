@@ -92,43 +92,63 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
         curl_easy_setopt(curl, request_t, 1);
 
     // Add curl handle to multi, then run and block
+#ifndef THREAD_UNSAFE
     static pthread_mutex_t multi_mutex = PTHREAD_MUTEX_INITIALIZER;
+#endif
 
+#ifndef THREAD_UNSAFE
     pthread_mutex_lock(&multi_mutex);
+#endif
     curl_multi_add_handle(mstdnt->curl, curl);
+#ifndef THREAD_UNSAFE
     pthread_mutex_unlock(&multi_mutex);
+#endif
 
     int msgs_left;
     while (running)
     {
+#ifndef THREAD_UNSAFE
         pthread_mutex_lock(&multi_mutex);
+#endif
         res = curl_multi_perform(mstdnt->curl, &running);
+#ifndef THREAD_UNSAFE
         pthread_mutex_unlock(&multi_mutex);
+#endif
 
         if (running)
             res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
 
         // Check if our socket is done
+#ifndef THREAD_UNSAEF
         pthread_mutex_lock(&multi_mutex);
+#endif
         while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
         {
             if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
             {
                 status = msg->data.result;
+#ifndef THREAD_UNSAFE
                 pthread_mutex_unlock(&multi_mutex);
+#endif
                 goto out;
             }
         }
+#ifndef THREAD_UNSAFE
         pthread_mutex_unlock(&multi_mutex);
+#endif
 
         if (res) break;
     }
     
 out:
+#ifndef THREAD_UNSAFE
     pthread_mutex_lock(&multi_mutex);
+#endif
     // Looks like we're done here
     curl_multi_remove_handle(mstdnt->curl, curl);
+    #ifndef THREAD_UNSAFE
     pthread_mutex_unlock(&multi_mutex);
+#endif
     
     if (list) curl_slist_free_all(list);
     return status;
