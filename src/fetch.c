@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "mastodont_fetch.h"
 
 /* For use with libcurl */
@@ -91,30 +92,43 @@ int mastodont_fetch_curl(mastodont_t* mstdnt,
         curl_easy_setopt(curl, request_t, 1);
 
     // Add curl handle to multi, then run and block
+    static pthread_mutex_t multi_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+    pthread_mutex_lock(&multi_mutex);
     curl_multi_add_handle(mstdnt->curl, curl);
+    pthread_mutex_unlock(&multi_mutex);
 
     int msgs_left;
     while (running)
     {
+        pthread_mutex_lock(&multi_mutex);
         res = curl_multi_perform(mstdnt->curl, &running);
+        pthread_mutex_unlock(&multi_mutex);
 
         if (running)
             res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
 
         // Check if our socket is done
+        pthread_mutex_lock(&multi_mutex);
         while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
+        {
             if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
             {
                 status = msg->data.result;
+                pthread_mutex_unlock(&multi_mutex);
                 goto out;
             }
+        }
+        pthread_mutex_unlock(&multi_mutex);
 
         if (res) break;
     }
     
 out:
+    pthread_mutex_lock(&multi_mutex);
     // Looks like we're done here
     curl_multi_remove_handle(mstdnt->curl, curl);
+    pthread_mutex_unlock(&multi_mutex);
     
     if (list) curl_slist_free_all(list);
     return status;

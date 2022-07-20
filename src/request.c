@@ -157,4 +157,3 @@ cleanup:
     if (args->params_query) free(url_query);
     return res;
 }
-
