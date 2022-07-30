@@ -20,6 +20,12 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
+void _mstdnt_val_application_call(cJSON* v, void* _type)
+{
+    struct mstdnt_app* type = _type;
+    mstdnt_app_json(type, v->child);
+}
+
 static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
 {
     /* Zero out */
