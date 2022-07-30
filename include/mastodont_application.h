@@ -19,13 +19,6 @@
 #include "mastodont_fetch.h"
 #include <cjson/cJSON.h>
 
-struct mstdnt_application
-{
-    char* name;
-    char* website;
-    char* vapid_key;
-};
-
 struct mstdnt_app
 {
     char* id;
