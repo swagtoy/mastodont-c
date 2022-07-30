@@ -43,7 +43,7 @@ struct mstdnt_status
     char* spoiler_text;
     struct mstdnt_attachment* media_attachments;
     size_t media_attachments_len;
-    struct mstdnt_application application;
+    struct mstdnt_app application;
     struct mstdnt_status_pleroma pleroma;
 
     /* Rendering attributes */

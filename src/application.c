@@ -20,12 +20,6 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-void _mstdnt_val_application_call(cJSON* v, void* _type)
-{
-    struct mstdnt_app* type = _type;
-    mstdnt_app_json(type, v->child);
-}
-
 static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
 {
     /* Zero out */
@@ -75,6 +69,12 @@ static int mstdnt_token_json_callback(cJSON* json, void* args)
     return mstdnt_token_json(json, args);
 }
 
+void _mstdnt_val_application_call(cJSON* v, void* _type)
+{
+    struct mstdnt_app* type = _type;
+    mstdnt_app_json(type, v->child);
+}
+
 int mastodont_register_app(mastodont_t* data,
                            struct mstdnt_args* m_args,
                            struct mstdnt_application_args* args,
@@ -101,7 +101,6 @@ int mastodont_register_app(mastodont_t* data,
 
     return mastodont_request(data, m_args, &req_args);
 }
-
 
 int mastodont_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_args* m_args,
