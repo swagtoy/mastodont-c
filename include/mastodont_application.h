@@ -68,6 +68,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* app);
 
-void _mstdnt_val_application_call(cJSON* v, void* _type);
+void _mstdnt_val_malloc_application_call(cJSON* v, void* _type);
 
 #endif /* MASTODONT_ACCOUNT */

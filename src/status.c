@@ -115,7 +115,7 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
         { "bookmarked", &(status->bookmarked), _mstdnt_val_bool_call },
         { "pinned", &(status->pinned), _mstdnt_val_bool_call },
         { "reblogs_count", &(status->reblogs_count), _mstdnt_val_uint_call },
-        { "application", &(status->application), _mstdnt_val_application_call },
+        { "application", &(status->application), _mstdnt_val_malloc_application_call },
         { "favourites_count", &(status->favourites_count), _mstdnt_val_uint_call },
         { "replies_count", &(status->replies_count), _mstdnt_val_uint_call },
         { "media_attachments", &att_args, _mstdnt_val_attachments_call },
@@ -571,6 +571,7 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
         mstdnt_cleanup_status(status->reblog);
         free(status->reblog);
     }
+    free(status->application);
 }
 
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)

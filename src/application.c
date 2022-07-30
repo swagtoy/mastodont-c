@@ -22,6 +22,7 @@
 
 static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
 {
+    if (!json) return 1;
     /* Zero out */
     memset(app, 0, sizeof(struct mstdnt_app));
     
@@ -35,7 +36,7 @@ static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
         { "vapid_key", &(app->vapid_key), _mstdnt_val_string_call },
     };
 
-    for (cJSON* v = json->child; v; v = v->next)
+    for (cJSON* v = json; v; v = v->next)
         if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)))
             return 1;
 
@@ -58,8 +59,7 @@ static int mstdnt_token_json(cJSON* json, struct mstdnt_oauth_token* app)
     };
 
     for (cJSON* v = json; v; v = v->next)
-        if (_mstdnt_key_val_ref(v->child, refs, _mstdnt_arr_len(refs)) == 1)
-            return 1;
+        _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
     
     return 0;
 }
@@ -69,10 +69,22 @@ static int mstdnt_token_json_callback(cJSON* json, void* args)
     return mstdnt_token_json(json, args);
 }
 
-void _mstdnt_val_application_call(cJSON* v, void* _type)
+void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
 {
-    struct mstdnt_app* type = _type;
-    mstdnt_app_json(type, v->child);
+    struct mstdnt_app** type = _type;
+    // We can skip an array size check by just seeing
+    // if the first value of the child is not zero
+    if (!(v->child && !cJSON_IsInvalid(v->child)))
+    {
+        *type = NULL;
+        return;
+    }
+
+
+    *type = calloc(1, sizeof(struct mstdnt_app));
+
+    if (*type)
+        mstdnt_app_json(v->child, *type);
 }
 
 int mastodont_register_app(mastodont_t* data,
