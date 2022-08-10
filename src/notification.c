@@ -144,3 +144,22 @@ void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
     }
 }
 
+const char* mstdnt_notification_t_to_str(mstdnt_notification_t type)
+{
+    switch (type)
+    {
+    case MSTDNT_NOTIFICATION_FOLLOW: return "follow";
+    case MSTDNT_NOTIFICATION_FOLLOW_REQUEST: return "follow request";
+    case MSTDNT_NOTIFICATION_MENTION: return "mention";
+    case MSTDNT_NOTIFICATION_REBLOG: return "reblog";
+    case MSTDNT_NOTIFICATION_FAVOURITE: return "favourite";
+    case MSTDNT_NOTIFICATION_POLL: return "poll";
+    case MSTDNT_NOTIFICATION_STATUS: return "status";
+    case MSTDNT_NOTIFICATION_EMOJI_REACT: return "emoji reaction";
+    case MSTDNT_NOTIFICATION_CHAT_MENTION: return "chat mention";
+    case MSTDNT_NOTIFICATION_REPORT: return "report";
+    case MSTDNT_NOTIFICATION_NOOP:
+    default:
+        return "unknown";
+    }
+}

@@ -32,4 +32,12 @@
 
 typedef uint16_t mstdnt_notification_t;
 
+/**
+ * Turns a notification type into a string
+ *
+ * @param type Notification type.
+ * @return String literal representing type, e.g. 'follow', 'follow request'
+ */
+const char* mstdnt_notification_t_to_str(mstdnt_notification_t type);
+
 #endif /* MASTODONT_NOTIF_TYPES */
