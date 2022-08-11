@@ -64,6 +64,15 @@ int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_notification** notifs,
                                 size_t* size);
 
+int mastodont_notifications_clear(mastodont_t* data,
+                                  struct mstdnt_args* m_args,
+                                  struct mstdnt_storage* storage);
+
+int mastodont_notification_dismiss(mastodont_t* data,
+                                   struct mstdnt_args* m_args,
+                                   struct mstdnt_storage* storage,
+                                   char* id);
+
 int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js);
 void mstdnt_cleanup_notifications(struct mstdnt_notification* notif, size_t notif_len);
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif);

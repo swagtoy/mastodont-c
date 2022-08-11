@@ -121,6 +121,47 @@ int mastodont_get_notifications(mastodont_t* data,
     return mastodont_request(data, m_args, &req_args);
 }
 
+int mastodont_notification_dismiss(mastodont_t* data,
+                                   struct mstdnt_args* m_args,
+                                   struct mstdnt_storage* storage,
+                                   char* id)
+{
+    char url[MSTDNT_URLSIZE];
+    snprintf(url, MSTDNT_URLSIZE, "api/v1/notifications/%s/dismiss", id);
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        url,
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_POST,
+        NULL,
+        NULL,
+        NULL,
+    };
+    
+    return mastodont_request(data, m_args, &req_args);   
+}
+
+int mastodont_notifications_clear(mastodont_t* data,
+                                  struct mstdnt_args* m_args,
+                                  struct mstdnt_storage* storage)
+{
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/notifications/clear",
+        NULL, 0,
+        NULL, 0,
+        CURLOPT_POST,
+        NULL,
+        NULL,
+        NULL,
+    };
+    
+    return mastodont_request(data, m_args, &req_args);
+}
+
+
 void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t notifs_len)
 {
     size_t i;
