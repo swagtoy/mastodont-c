@@ -55,6 +55,7 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
     struct _mstdnt_val_ref vals[] = {
         { "account", &(notif->account), _mstdnt_val_malloc_account_call },
         { "created_at", &(notif->created_at), _mstdnt_val_string_call },
+        { "emoji", &(notif->created_at), _mstdnt_val_string_call },
         { "id", &(notif->id), _mstdnt_val_string_call },
         { "status", &(notif->status), _mstdnt_val_malloc_status_call },
         /* { "pleroma", &(notif->pleroma), _mstdnt_val_notif_pleroma_call }, */

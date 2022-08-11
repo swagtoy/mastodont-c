@@ -26,6 +26,7 @@ struct mstdnt_notification
 {
     char* id;
     char* created_at;
+    char* emoji;
     struct mstdnt_account* account;
     struct mstdnt_status* status;
     mstdnt_notification_t type;
