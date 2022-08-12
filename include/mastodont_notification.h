@@ -44,6 +44,7 @@ struct mstdnt_get_notifications_args
     mstdnt_bool with_muted;
     char* max_id;
     char* min_id;
+    char* id;
     char* since_id;
     int offset;
     int limit;
@@ -67,6 +68,11 @@ int mastodont_get_notifications(mastodont_t* data,
 int mastodont_notifications_clear(mastodont_t* data,
                                   struct mstdnt_args* m_args,
                                   struct mstdnt_storage* storage);
+
+int mastodont_notifications_read(mastodont_t* data,
+                                 struct mstdnt_args* m_args,
+                                 struct mstdnt_notification_args* args,
+                                 struct mstdnt_storage* storage);
 
 int mastodont_notification_dismiss(mastodont_t* data,
                                    struct mstdnt_args* m_args,

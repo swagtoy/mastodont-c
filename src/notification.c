@@ -78,7 +78,7 @@ int mstdnt_notifications_json_callback(cJSON* json, void* _args)
 
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_args* m_args,
-                                struct mstdnt_get_notifications_args* args,
+                                struct mstdnt_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
                                 size_t* size)
