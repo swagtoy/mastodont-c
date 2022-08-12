@@ -32,7 +32,7 @@ struct mstdnt_notification
     mstdnt_notification_t type;
 };
 
-struct mstdnt_get_notifications_args
+struct mstdnt_notifications_args
 {
     /* Bitmask */
     mstdnt_notification_t exclude_types;
@@ -60,7 +60,7 @@ int mstdnt_notifications_json_callback(cJSON* json, void* _args);
 
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_args* m_args,
-                                struct mstdnt_get_notifications_args* args,
+                                struct mstdnt_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
                                 size_t* size);
@@ -71,7 +71,7 @@ int mastodont_notifications_clear(mastodont_t* data,
 
 int mastodont_notifications_read(mastodont_t* data,
                                  struct mstdnt_args* m_args,
-                                 struct mstdnt_notification_args* args,
+                                 struct mstdnt_notifications_args* args,
                                  struct mstdnt_storage* storage);
 
 int mastodont_notification_dismiss(mastodont_t* data,
