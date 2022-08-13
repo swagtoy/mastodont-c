@@ -68,9 +68,14 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
     return 0;
 }
 
+int mstdnt_notification_json_callback(cJSON* json, void* notif)
+{
+    return mstdnt_notification_json(notif, json->child);
+}
+
 GENERATE_JSON_ARRAY_FUNC(mstdnt_notifications_json, struct mstdnt_notification, mstdnt_notification_json)
 
-int mstdnt_notifications_json_callback(cJSON* json, void* _args)
+ int mstdnt_notifications_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_notifications_result_cb_args* args = _args;
     return mstdnt_notifications_json(args->notif, args->size, json);
@@ -156,6 +161,31 @@ int mastodont_notifications_clear(mastodont_t* data,
         NULL,
         NULL,
         NULL,
+    };
+    
+    return mastodont_request(data, m_args, &req_args);
+}
+
+int mastodont_notifications_read(mastodont_t* data,
+                                 struct mstdnt_args* m_args,
+                                 struct mstdnt_notifications_args* args,
+                                 struct mstdnt_storage* storage,
+                                 struct mstdnt_notification* notification)
+{
+    struct _mstdnt_query_param params[] = {
+        { _MSTDNT_QUERY_STRING, "id", { .s = args->id } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+    };
+    
+    struct mastodont_request_args req_args = {
+        storage,
+        "api/v1/pleroma/notifications/read",
+        NULL, 0,
+        params, _mstdnt_arr_len(params),
+        CURLOPT_POST,
+        NULL,
+        notification,
+        mstdnt_notification_json_callback,
     };
     
     return mastodont_request(data, m_args, &req_args);
