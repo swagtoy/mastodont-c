@@ -49,6 +49,8 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
+    if (!notif) return 1;;
+
     /* Zero out */
     memset(notif, 0, sizeof(struct mstdnt_notification));
 
