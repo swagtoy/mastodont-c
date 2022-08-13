@@ -22,6 +22,12 @@
 #include "mastodont_visibility_types.h"
 #include <cjson/cJSON.h>
 
+struct mstdnt_notification_pleroma
+{
+    unsigned is_muted;
+    unsigned is_seen;
+};
+
 struct mstdnt_notification
 {
     char* id;
@@ -29,6 +35,7 @@ struct mstdnt_notification
     char* emoji;
     struct mstdnt_account* account;
     struct mstdnt_status* status;
+    struct mstdnt_notification_pleroma* pleroma;
     mstdnt_notification_t type;
 };
 
@@ -56,8 +63,12 @@ struct _mstdnt_notifications_result_cb_args
     size_t* size;
 };
 
+// Callback helpers
 int mstdnt_notification_json_callback(cJSON* json, void* notif);
 int mstdnt_notifications_json_callback(cJSON* json, void* _args);
+
+int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js);
+int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js);
 
 int mastodont_get_notifications(mastodont_t* data,
                                 struct mstdnt_args* m_args,
@@ -81,7 +92,6 @@ int mastodont_notification_dismiss(mastodont_t* data,
                                    struct mstdnt_storage* storage,
                                    char* id);
 
-int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js);
 void mstdnt_cleanup_notifications(struct mstdnt_notification* notif, size_t notif_len);
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif);
 

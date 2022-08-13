@@ -45,11 +45,21 @@ static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
     else if (strcmp(v->valuestring, "pleroma:report") == 0) *type = MSTDNT_NOTIFICATION_REPORT;
 }
 
+static void _mstdnt_val_malloc_notification_pleroma_call(cJSON* v, void* _type)
+{
+    struct mstdnt_notification_pleroma** type = _type;
+
+    *type = calloc(1, sizeof(struct mstdnt_notification_pleroma));
+
+    if (*type)
+        mstdnt_notification_pleroma_json(*type, v->child);
+}
+
 int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
-    if (!notif) return 1;;
+    if (!notif) return 1;
 
     /* Zero out */
     memset(notif, 0, sizeof(struct mstdnt_notification));
@@ -60,8 +70,28 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
         { "emoji", &(notif->emoji), _mstdnt_val_string_call },
         { "id", &(notif->id), _mstdnt_val_string_call },
         { "status", &(notif->status), _mstdnt_val_malloc_status_call },
-        /* { "pleroma", &(notif->pleroma), _mstdnt_val_notif_pleroma_call }, */
+        { "pleroma", &(notif->pleroma), _mstdnt_val_malloc_notification_pleroma_call },
         { "type", &(notif->type), _mstdnt_val_notif_type_call },
+    };
+    
+    for (v = js; v; v = v->next)
+        _mstdnt_key_val_ref(v, vals, _mstdnt_arr_len(vals));
+    
+    return 0;
+}
+
+int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js)
+{
+    cJSON* v;
+
+    if (!notif) return 1;
+
+    /* Zero out */
+    memset(notif, 0, sizeof(struct mstdnt_notification_pleroma));
+
+    struct _mstdnt_val_ref vals[] = {
+        { "is_muted", &(notif->is_muted), _mstdnt_val_uint_call },
+        { "is_seen", &(notif->is_seen), _mstdnt_val_uint_call },
     };
     
     for (v = js; v; v = v->next)
@@ -77,7 +107,7 @@ int mstdnt_notification_json_callback(cJSON* json, void* notif)
 
 GENERATE_JSON_ARRAY_FUNC(mstdnt_notifications_json, struct mstdnt_notification, mstdnt_notification_json)
 
- int mstdnt_notifications_json_callback(cJSON* json, void* _args)
+int mstdnt_notifications_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_notifications_result_cb_args* args = _args;
     return mstdnt_notifications_json(args->notif, args->size, json);
@@ -216,6 +246,7 @@ void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
         mstdnt_cleanup_status(notif->status);
         free(notif->status);
     }
+    free(notif->pleroma);
 }
 
 const char* mstdnt_notification_t_to_str(mstdnt_notification_t type)

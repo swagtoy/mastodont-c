@@ -13,6 +13,8 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+
+// TODO Move me to statuses
 #ifndef MASTODONT_PLEROMA
 #define MASTODONT_PLEROMA
 #include <mastodont_types.h>
