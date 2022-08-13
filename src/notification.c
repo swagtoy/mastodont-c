@@ -90,8 +90,8 @@ int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, 
     memset(notif, 0, sizeof(struct mstdnt_notification_pleroma));
 
     struct _mstdnt_val_ref vals[] = {
-        { "is_muted", &(notif->is_muted), _mstdnt_val_uint_call },
-        { "is_seen", &(notif->is_seen), _mstdnt_val_uint_call },
+        { "is_muted", &(notif->is_muted), _mstdnt_val_bool_call },
+        { "is_seen", &(notif->is_seen), _mstdnt_val_bool_call },
     };
     
     for (v = js; v; v = v->next)

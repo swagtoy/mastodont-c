@@ -25,7 +25,7 @@ struct mstdnt_scrobble
     struct mstdnt_account account;
     char* album;
     char* artist;
-    char* created_at;
+    time_t created_at;
     char* id;
     int length;
     char* title;

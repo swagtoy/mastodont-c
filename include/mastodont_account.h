@@ -51,7 +51,7 @@ struct mstdnt_account
     size_t emojis_len;
 
     /* Statistic attributes */
-    char* created_at;
+    time_t created_at;
     char* last_status_at;
     unsigned statuses_count;
     unsigned followers_count;

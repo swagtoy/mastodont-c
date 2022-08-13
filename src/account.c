@@ -196,7 +196,7 @@ int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
         { "username", &(acct->username), _mstdnt_val_string_call },
         { "acct", &(acct->acct), _mstdnt_val_string_call },
         { "display_name", &(acct->display_name), _mstdnt_val_string_call },
-        { "created_at", &(acct->created_at), _mstdnt_val_string_call },
+        { "created_at", &(acct->created_at), _mstdnt_val_datetime_unix_call },
         { "note", &(acct->note), _mstdnt_val_string_call },
         { "url", &(acct->url), _mstdnt_val_string_call },
         { "avatar", &(acct->avatar), _mstdnt_val_string_call },

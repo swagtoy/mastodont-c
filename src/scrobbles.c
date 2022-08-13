@@ -32,7 +32,7 @@ int mstdnt_scrobble_json(struct mstdnt_scrobble* scrobble, cJSON* js)
         { "account", &(scrobble->account), _mstdnt_val_account_call },
         { "album", &(scrobble->album), _mstdnt_val_string_call },
         { "artist", &(scrobble->artist), _mstdnt_val_string_call },
-        { "created_at", &(scrobble->created_at), _mstdnt_val_string_call },
+        { "created_at", &(scrobble->created_at), _mstdnt_val_datetime_unix_call },
         { "id", &(scrobble->id), _mstdnt_val_string_call },
         { "length", &(scrobble->length), _mstdnt_val_uint_call },
         { "title", &(scrobble->title), _mstdnt_val_string_call }
