@@ -37,15 +37,14 @@ static int mstdnt_app_json(cJSON* json, struct mstdnt_app* app)
     };
 
     for (cJSON* v = json; v; v = v->next)
-        if (_mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs)))
-            return 1;
+        _mstdnt_key_val_ref(v, refs, _mstdnt_arr_len(refs));
 
     return 0;
 }
 
 static int mstdnt_app_json_callback(cJSON* json, void* args)
 {
-    return mstdnt_app_json(json, args);
+    return mstdnt_app_json(json->child, args);
 }
 
 static int mstdnt_token_json(cJSON* json, struct mstdnt_oauth_token* app)
@@ -66,7 +65,7 @@ static int mstdnt_token_json(cJSON* json, struct mstdnt_oauth_token* app)
 
 static int mstdnt_token_json_callback(cJSON* json, void* args)
 {
-    return mstdnt_token_json(json, args);
+    return mstdnt_token_json(json->child, args);
 }
 
 void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
