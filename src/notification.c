@@ -66,7 +66,7 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
 
     struct _mstdnt_val_ref vals[] = {
         { "account", &(notif->account), _mstdnt_val_malloc_account_call },
-        { "created_at", &(notif->created_at), _mstdnt_val_string_call },
+        { "created_at", &(notif->created_at), _mstdnt_val_datetime_unix_call },
         { "emoji", &(notif->emoji), _mstdnt_val_string_call },
         { "id", &(notif->id), _mstdnt_val_string_call },
         { "status", &(notif->status), _mstdnt_val_malloc_status_call },
@@ -205,8 +205,8 @@ int mastodont_notifications_read(mastodont_t* data,
                                  struct mstdnt_notification* notification)
 {
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "id", { .s = args->id } },
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
+        { _MSTDNT_QUERY_STRING, "id", { .s = args ? args->id : NULL } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args ? args->max_id : NULL } },
     };
     
     struct mastodont_request_args req_args = {

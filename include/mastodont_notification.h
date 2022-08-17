@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_NOTIFICATION
 #define MASTODONT_NOTIFICATION
+#include <time.h>
 #include "mastodont_types.h"
 #include "mastodont_account.h"
 #include "mastodont_status.h"
@@ -31,7 +32,7 @@ struct mstdnt_notification_pleroma
 struct mstdnt_notification
 {
     char* id;
-    char* created_at;
+    time_t created_at;
     char* emoji;
     struct mstdnt_account* account;
     struct mstdnt_status* status;
