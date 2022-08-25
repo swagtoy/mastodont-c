@@ -47,7 +47,6 @@ void _mstdnt_val_emojis_call(cJSON* v, void* _type);
 void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type);
 void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions);
 void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s);
-// TODO add length for compatibility
 void cleanup_emojis(struct mstdnt_emoji* emo);
 
 #endif /* MASTODONT_EMOJI */
