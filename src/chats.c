@@ -199,9 +199,17 @@ int mastodont_get_chat(mastodont_t* data,
     return mastodont_request(data, m_args, &req_args);
 }
 
-void mstdnt_cleanup_chats(struct mstdnt_chat* chats)
+void mstdnt_cleanup_chat(struct mstdnt_chat* chat)
+{
+    mstdnt_cleanup_account(&(chat->account));
+}
+
+
+void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t len)
 {
     if (!chats) return;
+    for (size_t i = 0; i < len; ++i)
+        mstdnt_cleanup_chat(chats + i);
     free(chats);
 }
 

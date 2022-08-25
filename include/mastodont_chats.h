@@ -79,7 +79,8 @@ int mastodont_get_chat(mastodont_t* data,
                        struct mstdnt_storage* storage,
                        struct mstdnt_chat* chat);
 
-void mstdnt_cleanup_chats(struct mstdnt_chat* chats);
+void mstdnt_cleanup_chat(struct mstdnt_chat* chat);
+void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t len);
 void mstdnt_cleanup_messages(struct mstdnt_message* chats);
 
 #endif // MASTODONT_CHATS_H
