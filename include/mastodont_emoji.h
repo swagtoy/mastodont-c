@@ -41,12 +41,13 @@ struct mstdnt_emoji_reaction
     /* TODO Accounts */
 };
 
+// TODO move static?
 void load_emoji_from_json(struct mstdnt_emoji* emo, cJSON* emo_json);
 void load_emoji_react_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json);
 void _mstdnt_val_emojis_call(cJSON* v, void* _type);
 void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type);
-void cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions);
-void cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s);
-void cleanup_emojis(struct mstdnt_emoji* emo);
+void mstdnt_cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions);
+void mstdnt_cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s);
+void mstdnt_cleanup_emojis(struct mstdnt_emoji* emo);
 
 #endif /* MASTODONT_EMOJI */

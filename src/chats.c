@@ -21,6 +21,7 @@
 #include <mastodont_request.h>
 #include <mastodont_generate.h>
 #include <mastodont_json_helper.h>
+#include <mastodont_emoji.h>
 
 struct _mstdnt_chats_cb_args
 {
