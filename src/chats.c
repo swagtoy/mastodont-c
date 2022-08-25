@@ -197,3 +197,18 @@ int mastodont_get_chat(mastodont_t* data,
 
     return mastodont_request(data, m_args, &req_args);
 }
+
+void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t chats_len)
+{
+    // Unused for compatibility
+    (void)chats_len;
+    if (!chats) return;
+    free(chats);
+}
+
+void mstdnt_cleanup_messages(struct mstdnt_message* messages, size_t messages_len)
+{
+    (void)messages_len;
+    if (!chats) return;
+    mstdnt_cleanup_emojis(messages->emojis);
+}
