@@ -56,13 +56,13 @@ struct mstdnt_application_args
     char* website;
 };
 
-int mastodont_register_app(mastodont_t* data,
+int mstdnt_register_app(mstdnt_t* data,
                            struct mstdnt_args* m_args,
                            struct mstdnt_application_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app);
 
-int mastodont_obtain_oauth_token(mastodont_t* data,
+int mstdnt_obtain_oauth_token(mstdnt_t* data,
                                  struct mstdnt_args* m_args,
                                  struct mstdnt_application_args* args,
                                  struct mstdnt_storage* storage,

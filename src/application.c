@@ -86,7 +86,7 @@ void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
         mstdnt_app_json(v->child, *type);
 }
 
-int mastodont_register_app(mastodont_t* data,
+int mstdnt_register_app(mstdnt_t* data,
                            struct mstdnt_args* m_args,
                            struct mstdnt_application_args* args,
                            struct mstdnt_storage* storage,
@@ -99,7 +99,7 @@ int mastodont_register_app(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "website", { .s = args->website } },
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         "api/v1/apps",
         NULL, 0,
@@ -110,10 +110,10 @@ int mastodont_register_app(mastodont_t* data,
         mstdnt_app_json_callback
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
-int mastodont_obtain_oauth_token(mastodont_t* data,
+int mstdnt_obtain_oauth_token(mstdnt_t* data,
                                  struct mstdnt_args* m_args,
                                  struct mstdnt_application_args* args,
                                  struct mstdnt_storage* storage,
@@ -130,7 +130,7 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "password", { .s = args->password } },
     };
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         "oauth/token",
         NULL,
@@ -143,6 +143,6 @@ int mastodont_obtain_oauth_token(mastodont_t* data,
         mstdnt_token_json_callback
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 

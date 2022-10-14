@@ -16,12 +16,12 @@
 #include <mastodont_static.h>
 #include <mastodont_fetch.h>
 
-int mastodont_instance_panel(mastodont_t* api,
+int mstdnt_instance_panel(mstdnt_t* api,
                              struct mstdnt_args* m_args,
                              struct mstdnt_fetch_results* html)
 {
     CURL* curl = curl_easy_init();
-    int status = mastodont_fetch_curl(api,
+    int status = mstdnt_fetch_curl(api,
                                       curl,
                                       m_args,
                                       "instance/panel.html",
@@ -32,12 +32,12 @@ int mastodont_instance_panel(mastodont_t* api,
     return status;
 }
 
-int mastodont_terms_of_service(mastodont_t* api,
+int mstdnt_terms_of_service(mstdnt_t* api,
                                struct mstdnt_args* m_args,
                                struct mstdnt_fetch_results* html)
 {
     CURL* curl = curl_easy_init();
-    int status = mastodont_fetch_curl(api,
+    int status = mstdnt_fetch_curl(api,
                                       curl,
                                       m_args,
                                       "static/terms-of-service.html",

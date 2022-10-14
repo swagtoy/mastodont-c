@@ -26,8 +26,8 @@ struct mstdnt_fetch_results
 };
 
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content);
-void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res);
-int mastodont_fetch_curl(mastodont_t* mstdnt,
+void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res);
+int mstdnt_fetch_curl(mstdnt_t* mstdnt,
                          CURL* curl,
                          struct mstdnt_args* args,
                          char* url,

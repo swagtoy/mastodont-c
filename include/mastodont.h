@@ -30,27 +30,27 @@
 #include <mastodont_chats.h>
 
 //! Initializes libcurl
-void mastodont_global_curl_init();
+void mstdnt_global_curl_init();
 //! Cleans up libcurl
-void mastodont_global_curl_cleanup();
+void mstdnt_global_curl_cleanup();
 
 /*!
- * Initializes a mastodont struct
+ * Initializes a mstdnt struct
  *
  * \param data Pointer to struct to fill in
  * \return Value of curl_easy_init(); either Zero or non-zero
  */
-int mastodont_init(mastodont_t* data);
+int mstdnt_init(mstdnt_t* data);
 
 /*!
- * Cleans up the mastodont struct
+ * Cleans up the mstdnt struct
  *
- * \param data Pointer to the mastodont data
+ * \param data Pointer to the mstdnt data
  */
-void mastodont_cleanup(mastodont_t* data);
+void mstdnt_cleanup(mstdnt_t* data);
 
 //! Call's free() or a library derivative
-void mastodont_free(void*);
+void mstdnt_free(void*);
 
 /*!
  * Cleans up a storage struct.
@@ -59,6 +59,6 @@ void mastodont_free(void*);
  *
  * \param storage The storage block to cleanup
  */
-void mastodont_storage_cleanup(struct mstdnt_storage* storage);
+void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
 
 #endif /* MASTODONT_H */

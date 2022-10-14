@@ -49,37 +49,37 @@ int mstdnt_lists_json(struct mstdnt_list* lists[],
                       size_t* size,
                       cJSON* json);
 
-int mastodont_get_lists(mastodont_t* api,
+int mstdnt_get_lists(mstdnt_t* api,
                         struct mstdnt_args* m_args,
                         struct mstdnt_storage* storage,
                         struct mstdnt_list* lists[],
                         size_t* size);
 
-int mastodont_get_list(mastodont_t* api,
+int mstdnt_get_list(mstdnt_t* api,
                        struct mstdnt_args* m_args,
                        char* id,
                        struct mstdnt_storage* storage,
                        struct mstdnt_list* lists);
 
-int mastodont_create_list(mastodont_t* api,
+int mstdnt_create_list(mstdnt_t* api,
                           struct mstdnt_args* m_args,
                           struct mstdnt_list_args* args,
                           struct mstdnt_storage* storage,
                           struct mstdnt_list* list);
 
-int mastodont_update_list(mastodont_t* api,
+int mstdnt_update_list(mstdnt_t* api,
                           struct mstdnt_args* m_args,
                           char* id,
                           struct mstdnt_list_args* args,
                           struct mstdnt_storage* storage,
                           struct mstdnt_list* list);
 
-int mastodont_delete_list(mastodont_t* api,
+int mstdnt_delete_list(mstdnt_t* api,
                           struct mstdnt_args* m_args,
                           char* id,
                           struct mstdnt_storage* storage);
 
-int mastodont_list_get_accounts(mastodont_t* data,
+int mstdnt_list_get_accounts(mstdnt_t* data,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 struct mstdnt_account_args* args,
@@ -87,14 +87,14 @@ int mastodont_list_get_accounts(mastodont_t* data,
                                 struct mstdnt_account* accts[],
                                 size_t* accts_len);
 
-int mastodont_list_add_accounts(mastodont_t* api,
+int mstdnt_list_add_accounts(mstdnt_t* api,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 char** account_ids,
                                 size_t account_ids_len,
                                 struct mstdnt_storage* storage);
 
-int mastodont_list_remove_accounts(mastodont_t* api,
+int mstdnt_list_remove_accounts(mstdnt_t* api,
                                    struct mstdnt_args* m_args,
                                    char* id,
                                    char** account_ids,

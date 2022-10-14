@@ -72,7 +72,7 @@ static int mstdnt_lists_json_callback(cJSON* json, void* _args)
     return mstdnt_lists_json(args->lists, args->size, json);
 }
 
-int mastodont_get_lists(mastodont_t* data,
+int mstdnt_get_lists(mstdnt_t* data,
                         struct mstdnt_args* m_args,
                         struct mstdnt_storage* storage,
                         struct mstdnt_list* lists[],
@@ -83,7 +83,7 @@ int mastodont_get_lists(mastodont_t* data,
         size
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         "api/v1/lists",
         NULL, 0,
@@ -94,10 +94,10 @@ int mastodont_get_lists(mastodont_t* data,
         mstdnt_lists_json_callback
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
-int mastodont_get_list(mastodont_t* data,
+int mstdnt_get_list(mstdnt_t* data,
                        struct mstdnt_args* m_args,
                        char* id,
                        struct mstdnt_storage* storage,
@@ -106,7 +106,7 @@ int mastodont_get_list(mastodont_t* data,
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s", id);
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -117,7 +117,7 @@ int mastodont_get_list(mastodont_t* data,
         mstdnt_list_json_callback
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
 static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
@@ -134,7 +134,7 @@ static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
     }
 }
 
-int mastodont_create_list(mastodont_t* data, struct mstdnt_args* m_args,
+int mstdnt_create_list(mstdnt_t* data, struct mstdnt_args* m_args,
                           struct mstdnt_list_args* args,
                           struct mstdnt_storage* storage,
                           struct mstdnt_list* list)
@@ -144,7 +144,7 @@ int mastodont_create_list(mastodont_t* data, struct mstdnt_args* m_args,
         { _MSTDNT_QUERY_STRING, "replies_policy", { .s = (char*)replies_policy_str(args->replies_policy) } },
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         "api/v1/lists",
         NULL, 0,
@@ -155,10 +155,10 @@ int mastodont_create_list(mastodont_t* data, struct mstdnt_args* m_args,
         mstdnt_list_json_callback
     };
 
-    return mastodont_request(data, m_args,&req_args);
+    return mstdnt_request(data, m_args,&req_args);
 }
 
-int mastodont_update_list(mastodont_t* data,
+int mstdnt_update_list(mstdnt_t* data,
                           struct mstdnt_args* m_args,
                           char* id,
                           struct mstdnt_list_args* args,
@@ -173,7 +173,7 @@ int mastodont_update_list(mastodont_t* data,
         { _MSTDNT_QUERY_STRING, "replies_policy", { .s = (char*)replies_policy_str(args->replies_policy) } },
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -184,10 +184,10 @@ int mastodont_update_list(mastodont_t* data,
         mstdnt_list_json_callback
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
-int mastodont_delete_list(mastodont_t* api,
+int mstdnt_delete_list(mstdnt_t* api,
                           struct mstdnt_args* m_args,
                           char* id,
                           struct mstdnt_storage* storage)
@@ -195,7 +195,7 @@ int mastodont_delete_list(mastodont_t* api,
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s", id);
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -206,10 +206,10 @@ int mastodont_delete_list(mastodont_t* api,
         NULL,
     };
 
-    return mastodont_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args);
 }
 
-int mastodont_list_add_accounts(mastodont_t* api,
+int mstdnt_list_add_accounts(mstdnt_t* api,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 char** account_ids,
@@ -228,7 +228,7 @@ int mastodont_list_add_accounts(mastodont_t* api,
         },
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -239,10 +239,10 @@ int mastodont_list_add_accounts(mastodont_t* api,
         NULL,
     };
 
-    return mastodont_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args);
 }
 
-int mastodont_list_remove_accounts(mastodont_t* api,
+int mstdnt_list_remove_accounts(mstdnt_t* api,
                                    struct mstdnt_args* m_args,
                                    char* id,
                                    char** account_ids,
@@ -261,7 +261,7 @@ int mastodont_list_remove_accounts(mastodont_t* api,
         },
     };
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -272,10 +272,10 @@ int mastodont_list_remove_accounts(mastodont_t* api,
         NULL,
     };
 
-    return mastodont_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args);
 }
 
-int mastodont_list_get_accounts(mastodont_t* data,
+int mstdnt_list_get_accounts(mstdnt_t* data,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 struct mstdnt_account_args* args,
@@ -299,7 +299,7 @@ int mastodont_list_get_accounts(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "with_relationships", { .i = args->with_relationships } },
     };
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         params, _mstdnt_arr_len(params),
@@ -310,7 +310,7 @@ int mastodont_list_get_accounts(mastodont_t* data,
         mstdnt_accounts_json_callback,
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
 void mstdnt_cleanup_lists(struct mstdnt_list* lists)

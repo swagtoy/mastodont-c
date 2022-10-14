@@ -16,7 +16,7 @@
 #include <mastodont_uri.h>
 #include <string.h>
 
-struct mstdnt_uri mastodont_uristr_to_uri(char* uri, size_t len)
+struct mstdnt_uri mstdnt_uristr_to_uri(char* uri, size_t len)
 {
     int i;
     struct mstdnt_uri ret;

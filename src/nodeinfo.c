@@ -94,7 +94,7 @@ int mstdnt_nodeinfo_json_callback(cJSON* json, void* nodeinfo)
     return mstdnt_nodeinfo_json(nodeinfo, json);
 }
 
-int mastodont_get_nodeinfo(mastodont_t* api,
+int mstdnt_get_nodeinfo(mstdnt_t* api,
                            struct mstdnt_args* m_args,
                            char* version,
                            struct mstdnt_storage* storage,
@@ -103,7 +103,7 @@ int mastodont_get_nodeinfo(mastodont_t* api,
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "nodeinfo/%s.json", version ? version : "2.1");
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         url,
         NULL, 0,
@@ -114,7 +114,7 @@ int mastodont_get_nodeinfo(mastodont_t* api,
         mstdnt_nodeinfo_json_callback
     };
 
-    return mastodont_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args);
 }
 
 void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)

@@ -104,7 +104,7 @@ static int mstdnt_messages_json_callback(cJSON* json, void* _args)
     return mstdnt_messages_json(args->messages, args->messages_len, json);
 }
 
-int mastodont_get_chats_v2(mastodont_t* data,
+int mstdnt_get_chats_v2(mstdnt_t* data,
                            struct mstdnt_args* m_args,
                            struct mstdnt_chats_args* args,
                            struct mstdnt_storage* storage,
@@ -121,7 +121,7 @@ int mastodont_get_chats_v2(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
     };
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         .storage = storage,
         .url = "api/v2/pleroma/chats",
         .params_query = params,
@@ -134,10 +134,10 @@ int mastodont_get_chats_v2(mastodont_t* data,
         .callback = mstdnt_chats_json_callback,
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
-int mastodont_get_chat_messages(mastodont_t* data,
+int mstdnt_get_chat_messages(mstdnt_t* data,
                                 struct mstdnt_args* m_args,
                                 char* chat_id,
                                 struct mstdnt_chats_args* args,
@@ -158,7 +158,7 @@ int mastodont_get_chat_messages(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
     };
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         .storage = storage,
         .url = url,
         .params_query = params,
@@ -171,10 +171,10 @@ int mastodont_get_chat_messages(mastodont_t* data,
         .callback = mstdnt_messages_json_callback,
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
-int mastodont_get_chat(mastodont_t* data,
+int mstdnt_get_chat(mstdnt_t* data,
                        struct mstdnt_args* m_args,
                        char* chat_id,
                        struct mstdnt_storage* storage,
@@ -183,7 +183,7 @@ int mastodont_get_chat(mastodont_t* data,
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/chats/%s", chat_id);
     
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         .storage = storage,
         .url = url,
         .params_query = NULL,
@@ -196,7 +196,7 @@ int mastodont_get_chat(mastodont_t* data,
         .callback = mstdnt_chat_json_callback,
     };
 
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
 void mstdnt_cleanup_chat(struct mstdnt_chat* chat)

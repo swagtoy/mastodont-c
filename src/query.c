@@ -20,7 +20,7 @@
 #define CONV_SIZE 64
 
 /* TODO audit this function for overflows */
-char* _mstdnt_query_string(mastodont_t* data,
+char* _mstdnt_query_string(mstdnt_t* data,
                            struct mstdnt_args* args,
                            char* src,
                            struct _mstdnt_query_param* params,

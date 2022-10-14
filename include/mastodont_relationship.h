@@ -52,7 +52,7 @@ int mstdnt_relationships_json(struct mstdnt_relationship* relationships[],
 
 int mstdnt_relationships_json_callback(cJSON* json, void* _args);
 
-int mastodont_get_relationships(mastodont_t* data, struct mstdnt_args* args,
+int mstdnt_get_relationships(mstdnt_t* data, struct mstdnt_args* args,
                                 char** ids,
                                 size_t ids_len,
                                 struct mstdnt_storage* storage,

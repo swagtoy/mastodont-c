@@ -33,10 +33,10 @@ typedef int8_t mstdnt_bool;
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
-typedef struct mastodont
+typedef struct mstdnt
 {
     CURLM* curl;
-} mastodont_t;
+} mstdnt_t;
 
 struct mstdnt_storage
 {

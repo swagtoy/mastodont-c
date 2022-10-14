@@ -20,7 +20,7 @@
 #include "mastodont_fetch.h"
 #include "mastodont_query.h"
 
-struct mastodont_request_args
+struct mstdnt_request_args
 {
     struct mstdnt_storage* storage;
     char* url;
@@ -34,8 +34,8 @@ struct mastodont_request_args
     int (*callback)(cJSON*, void*);
 };
 
-int mastodont_request(mastodont_t* data,
+int mstdnt_request(mstdnt_t* data,
                       struct mstdnt_args* m_args,
-                      struct mastodont_request_args* args);
+                      struct mstdnt_request_args* args);
 
 #endif /* MASTODONT_REQUEST_H */

@@ -25,6 +25,6 @@ struct mstdnt_uri
     char storage[MSTDNT_URISIZE];
 };
 
-struct mstdnt_uri mastodont_uristr_to_uri(char* uri, size_t len);
+struct mstdnt_uri mstdnt_uristr_to_uri(char* uri, size_t len);
 
 #endif /* MASTODONT_URI_H */

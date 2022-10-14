@@ -39,13 +39,13 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     return size;
 }
 
-void mastodont_fetch_results_cleanup(struct mstdnt_fetch_results* res)
+void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 {
     free(res->response);
 }
 
 #define TOKEN_STR_SIZE 512
-int mastodont_fetch_curl(mastodont_t* mstdnt,
+int mstdnt_fetch_curl(mstdnt_t* mstdnt,
                          CURL* curl,
                          struct mstdnt_args* m_args,
                          char* _url,

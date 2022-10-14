@@ -61,7 +61,7 @@ int mstdnt_search_json_callback(cJSON* json, void* _args)
     return mstdnt_search_json(_args, json);
 }
 
-int mastodont_search(mastodont_t* data,
+int mstdnt_search(mstdnt_t* data,
                      struct mstdnt_args* m_args,
                      char* query,
                      struct mstdnt_storage* storage,
@@ -82,7 +82,7 @@ int mastodont_search(mastodont_t* data,
         { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
     };
 
-    struct mastodont_request_args req_args = {
+    struct mstdnt_request_args req_args = {
         storage,
         "api/v2/search",
         params, _mstdnt_arr_len(params),
@@ -93,7 +93,7 @@ int mastodont_search(mastodont_t* data,
         mstdnt_search_json_callback
     };
     
-    return mastodont_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args);
 }
 
 void mstdnt_cleanup_search_results(struct mstdnt_search_results* res)

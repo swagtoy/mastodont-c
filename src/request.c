@@ -70,9 +70,9 @@ static void mime_params_post(curl_mime* mime,
     
 }
 
-int mastodont_request(mastodont_t* data,
+int mstdnt_request(mstdnt_t* data,
                       struct mstdnt_args* m_args,
-                      struct mastodont_request_args* args)
+                      struct mstdnt_request_args* args)
 {
     int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
@@ -113,7 +113,7 @@ int mastodont_request(mastodont_t* data,
     else if (args->request_type == CURLOPT_POST)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 
-    curlerror = mastodont_fetch_curl(data,
+    curlerror = mstdnt_fetch_curl(data,
                                      curl,
                                      m_args,
                                      url_query,
@@ -147,7 +147,7 @@ int mastodont_request(mastodont_t* data,
         res = 1;
 
 cleanup_res:
-    mastodont_fetch_results_cleanup(&results);
+    mstdnt_fetch_results_cleanup(&results);
 cleanup:
     // Note: the fetch removed the handle from our multi handle
     curl_easy_cleanup(curl);
