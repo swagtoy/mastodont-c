@@ -14,11 +14,24 @@
  */
 
 #include <stdlib.h>
+#include <cjson/cJSON.h>
 #include <mastodont_hooks.h>
 
-struct _mstdnt_hooks _mstdnt_hooks_def = {
+struct mstdnt_hooks _mstdnt_hooks_def = {
     .malloc = malloc,
     .free = free,
     .calloc = calloc,
     .realloc = realloc,
 };
+
+void mstdnt_set_hooks(struct mstdnt_hooks* hooks)
+{
+    cJSON_Hooks cjson_hooks = {
+        .malloc_fn = hooks->malloc,
+        .free_fn = hooks->free,
+    };
+    cJSON_InitHooks(&hooks);
+
+    _mstdnt_hooks_def = *hooks;
+}
+

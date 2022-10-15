@@ -22,7 +22,7 @@
 #define mstdnt_calloc (*_mstdnt_hooks_def.calloc)
 #define mstdnt_realloc (*_mstdnt_hooks_def.realloc)
 
-struct _mstdnt_hooks
+struct mstdnt_hooks
 {
     void* (*malloc)(size_t size);
     void  (*free)(void* ptr);
@@ -30,7 +30,14 @@ struct _mstdnt_hooks
     void* (*realloc)(void* ptr, size_t size);
 };
 
+/**
+ * Sets up mstdnt_hooks (and cJSON hooks)
+ *
+ * @param data Pointer to the mstdnt data
+ */
+void mstdnt_set_hooks(struct mstdnt_hooks* data);
+
 /** Hooks for Mastodont functions */
-extern struct _mstdnt_hooks _mstdnt_hooks_def;
+extern struct mstdnt_hooks _mstdnt_hooks_def;
 
 #endif // MASTODONT_HOOKS_H

@@ -15,6 +15,7 @@
 
 #ifndef MASTODONT_H
 #define MASTODONT_H
+#include <mastodont_hooks.h>
 #include <mastodont_types.h>
 #include <mastodont_timeline.h>
 #include <mastodont_list.h>
@@ -48,9 +49,6 @@ int mstdnt_init(mstdnt_t* data);
  * \param data Pointer to the mstdnt data
  */
 void mstdnt_cleanup(mstdnt_t* data);
-
-//! Call's free() or a library derivative
-void mstdnt_free(void*);
 
 /*!
  * Cleans up a storage struct.
