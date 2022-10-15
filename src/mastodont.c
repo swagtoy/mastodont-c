@@ -25,11 +25,6 @@ void mstdnt_cleanup(mstdnt_t* data)
     curl_multi_cleanup(data->curl);
 }
 
-void mstdnt_free(void* ptr)
-{
-    free(ptr);
-}
-
 void mstdnt_storage_cleanup(struct mstdnt_storage* storage)
 {
     if (storage->needs_cleanup)

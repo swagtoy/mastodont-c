@@ -16,7 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
-#include "mastodont_fetch.h"
+#include <mastodont_hooks.h>
+#include <mastodont_fetch.h>
 
 /* For use with libcurl */
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
@@ -25,7 +26,7 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     struct mstdnt_fetch_results* res = _content; /* Cast */
     char* data;
  
-    if ((data = realloc(res->response, res->size + size + 1)) == NULL)
+    if ((data = mstdnt_realloc(res->response, res->size + size + 1)) == NULL)
     {
         perror("realloc");
         return 0;
@@ -41,7 +42,7 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
 
 void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 {
-    free(res->response);
+    mstdnt_free(res->response);
 }
 
 #define TOKEN_STR_SIZE 512

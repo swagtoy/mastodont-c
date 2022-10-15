@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_chats.h>
 #include <mastodont_fetch.h>
 #include <mastodont_query.h>
@@ -210,7 +211,7 @@ void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t len)
     if (!chats) return;
     for (size_t i = 0; i < len; ++i)
         mstdnt_cleanup_chat(chats + i);
-    free(chats);
+    mstdnt_free(chats);
 }
 
 void mstdnt_cleanup_messages(struct mstdnt_message* messages)

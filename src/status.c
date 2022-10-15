@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_status.h>
 #include <mastodont_account.h>
@@ -39,7 +40,7 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
     if (!(v->child))
         return;
 
-    *type = calloc(1, sizeof(struct mstdnt_status));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_status));
     
     if (*type)
         mstdnt_status_json(*type, v->child);
@@ -364,7 +365,7 @@ int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
             if (cJSON_GetArraySize(v) <= 0)
                 continue;
 
-            *stat_ptr = calloc(1, cJSON_GetArraySize(v) * sizeof(struct mstdnt_status));
+            *stat_ptr = mstdnt_calloc(1, cJSON_GetArraySize(v) * sizeof(struct mstdnt_status));
             if (*stat_ptr == NULL)
                 return 1;
             
@@ -569,9 +570,9 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
     if (status->reblog)
     {
         mstdnt_cleanup_status(status->reblog);
-        free(status->reblog);
+        mstdnt_free(status->reblog);
     }
-    free(status->application);
+    mstdnt_free(status->application);
 }
 
 void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
@@ -582,5 +583,5 @@ void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
     {
         mstdnt_cleanup_status(statuses + i);
     }
-    free(statuses);
+    mstdnt_free(statuses);
 }

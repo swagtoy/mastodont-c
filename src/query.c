@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_query.h>
 
 #define CONV_SIZE 64
@@ -48,7 +49,7 @@ char* _mstdnt_query_string(mstdnt_t* data,
         res_len = src_l+1;
     else
         res_len = 0;
-    char* result = malloc(res_len);
+    char* result = mstdnt_malloc(res_len);
     if (src_l)
         strcpy(result, src);
 
@@ -73,7 +74,7 @@ char* _mstdnt_query_string(mstdnt_t* data,
         if (params[i].type == _MSTDNT_QUERY_ARRAY && arr_ind == 0)
         {
             size_t str_s = strlen(params[i].key);
-            key_ptr = malloc(str_s+3); /* 2 "[]" + 1 \0 */
+            key_ptr = mstdnt_malloc(str_s+3); /* 2 "[]" + 1 \0 */
             strcpy(key_ptr, params[i].key);
             strcpy(key_ptr+str_s, "[]");
         }
@@ -134,7 +135,7 @@ char* _mstdnt_query_string(mstdnt_t* data,
             res_len += 1 + key_len +   1 + val_len;
 
 
-            result = realloc(result, res_len + 1); /* NULL terminator space */
+            result = mstdnt_realloc(result, res_len + 1); /* NULL terminator space */
             if (res_count - 1 != 0)
                 result[res_prev-1] = '&';
 
@@ -160,7 +161,7 @@ char* _mstdnt_query_string(mstdnt_t* data,
             if (arr_ind >= params[i].value.a.arr_len)
             {
                 arr_ind = 0;
-                free(key_ptr);
+                mstdnt_free(key_ptr);
             }
             else {
                 --i; /* Flip flop i */

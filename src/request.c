@@ -17,6 +17,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <mastodont_hooks.h>
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 #include <mastodont_error.h>
@@ -152,8 +153,8 @@ cleanup:
     // Note: the fetch removed the handle from our multi handle
     curl_easy_cleanup(curl);
     
-    if (args->params_post && args->request_type == CURLOPT_POST) free(post);
+    if (args->params_post && args->request_type == CURLOPT_POST) mstdnt_free(post);
     /* Only free if params_query set */
-    if (args->params_query) free(url_query);
+    if (args->params_query) mstdnt_free(url_query);
     return res;
 }

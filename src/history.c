@@ -14,6 +14,7 @@
  */
 
 #include <string.h>
+#include <mastodont_hooks.h>
 #include <mastodont_history.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_generate.h>
@@ -53,7 +54,7 @@ void _mstdnt_val_histories_call(cJSON* v, void* _type)
         return;
     }
 
-    *hist = calloc(1, sizeof(struct mstdnt_history) * size);
+    *hist = mstdnt_calloc(1, sizeof(struct mstdnt_history) * size);
     if (*hist == NULL)
         return;
 

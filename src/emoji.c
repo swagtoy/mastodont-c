@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_emoji.h>
 
@@ -72,7 +73,7 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type)
         return;
     }
 
-    *emos = calloc(1, sizeof(struct mstdnt_emoji_reaction) * size);
+    *emos = mstdnt_calloc(1, sizeof(struct mstdnt_emoji_reaction) * size);
     if (*emos == NULL)
         return;
 
@@ -100,7 +101,7 @@ void _mstdnt_val_emojis_call(cJSON* v, void* _type)
         return;
     }
 
-    *emos = calloc(1, sizeof(struct mstdnt_emoji) * size);
+    *emos = mstdnt_calloc(1, sizeof(struct mstdnt_emoji) * size);
     if (*emos == NULL)
         return;
 
@@ -124,11 +125,11 @@ void mstdnt_cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, siz
     if (!reactions) return;
     for (i = 0; i < s; ++i)
         mstdnt_cleanup_emoji_reaction(reactions + s);
-    free(reactions);
+    mstdnt_free(reactions);
 }
 
 void mstdnt_cleanup_emojis(struct mstdnt_emoji* emo)
 {
     if (!emo) return;
-    free(emo);
+    mstdnt_free(emo);
 }

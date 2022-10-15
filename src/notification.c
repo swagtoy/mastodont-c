@@ -15,6 +15,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <mastodont_hooks.h>
 #include <mastodont_notification.h>
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
@@ -49,7 +50,7 @@ static void _mstdnt_val_malloc_notification_pleroma_call(cJSON* v, void* _type)
 {
     struct mstdnt_notification_pleroma** type = _type;
 
-    *type = calloc(1, sizeof(struct mstdnt_notification_pleroma));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_notification_pleroma));
 
     if (*type)
         mstdnt_notification_pleroma_json(*type, v->child);
@@ -231,7 +232,7 @@ void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t not
     for (i = 0; i < notifs_len; ++i)
         mstdnt_cleanup_notification(notifs + i);
 
-    free(notifs);
+    mstdnt_free(notifs);
 }
 
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
@@ -239,14 +240,14 @@ void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
     if (notif->account)
     {
         mstdnt_cleanup_account(notif->account);
-        free(notif->account);
+        mstdnt_free(notif->account);
     }
     if (notif->status)
     {
         mstdnt_cleanup_status(notif->status);
-        free(notif->status);
+        mstdnt_free(notif->status);
     }
-    free(notif->pleroma);
+    mstdnt_free(notif->pleroma);
 }
 
 const char* mstdnt_notification_t_to_str(mstdnt_notification_t type)

@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_attachment.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_request.h>
@@ -81,7 +82,7 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
         return;
     }
 
-    *attachments = calloc(1, sizeof(struct mstdnt_attachment) * size);
+    *attachments = mstdnt_calloc(1, sizeof(struct mstdnt_attachment) * size);
     if (*attachments == NULL)
         return;
 
@@ -125,5 +126,5 @@ int mstdnt_upload_media(mstdnt_t* api,
 
 void mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment)
 {
-    if (attachment) free(attachment);
+    if (attachment) mstdnt_free(attachment);
 }

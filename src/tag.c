@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_tag.h>
 #include <mastodont_history.h>
 #include <mastodont_generate.h>
@@ -47,7 +48,7 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_tags_json, struct mstdnt_tag, mstdnt_tag_json)
 void mstdnt_cleanup_tag(struct mstdnt_tag* tag)
 {
     if (tag->history)
-        free(tag->history);
+        mstdnt_free(tag->history);
 }
 
 void mstdnt_cleanup_tags(struct mstdnt_tag* tags, size_t s)
@@ -57,5 +58,5 @@ void mstdnt_cleanup_tags(struct mstdnt_tag* tags, size_t s)
     {
         mstdnt_cleanup_tag(tags + i);
     }
-    free(tags);
+    mstdnt_free(tags);
 }

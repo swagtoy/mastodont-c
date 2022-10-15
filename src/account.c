@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_account.h>
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
@@ -32,7 +33,7 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type)
 {
     struct mstdnt_account** type = _type;
 
-    *type = calloc(1, sizeof(struct mstdnt_account));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_account));
 
     if (*type)
         mstdnt_account_json(*type, v->child);
@@ -282,6 +283,6 @@ void mstdnt_cleanup_accounts(struct mstdnt_account* accts, size_t len)
     if (!accts) return;
     for (int i = 0; i < len; ++i)
         mstdnt_cleanup_account(accts + i);
-    free(accts);
+    mstdnt_free(accts);
 }
 

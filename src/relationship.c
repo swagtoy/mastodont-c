@@ -14,6 +14,7 @@
  */
 
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_relationship.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
@@ -130,5 +131,5 @@ int mstdnt_get_relationships(mstdnt_t* data, struct mstdnt_args* m_args,
 void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels)
 {
     if (!rels) return;
-    free(rels);
+    mstdnt_free(rels);
 }

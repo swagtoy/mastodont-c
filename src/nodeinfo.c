@@ -13,9 +13,10 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <mastodont_nodeinfo.h>
 #include <stdlib.h>
 #include <string.h>
+#include <mastodont_nodeinfo.h>
+#include <mastodont_hooks.h>
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
 
@@ -23,7 +24,7 @@ static void _mstdnt_val_software_malloc_call(cJSON* v, void* _type)
 {
     struct mstdnt_nodeinfo_software** type = _type;
 
-    *type = calloc(1, sizeof(struct mstdnt_nodeinfo_software));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_nodeinfo_software));
 
     // Do json stuff in here, it's only done once
     if (*type)
@@ -49,7 +50,7 @@ static void _mstdnt_val_metadata_malloc_call(cJSON* v, void* _type)
 {
     struct mstdnt_nodeinfo_metadata** type = _type;
 
-    *type = calloc(1, sizeof(struct mstdnt_nodeinfo_metadata));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_nodeinfo_metadata));
 
     // Do json stuff in here, it's only done once
     if (*type)
@@ -120,6 +121,6 @@ int mstdnt_get_nodeinfo(mstdnt_t* api,
 void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)
 {
     if (!nodeinfo) return;
-    free(nodeinfo->software);
-    free(nodeinfo->metadata);
+    mstdnt_free(nodeinfo->software);
+    mstdnt_free(nodeinfo->metadata);
 }

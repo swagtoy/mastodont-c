@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_list.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_fetch.h>
@@ -315,5 +316,5 @@ int mstdnt_list_get_accounts(mstdnt_t* data,
 
 void mstdnt_cleanup_lists(struct mstdnt_list* lists)
 {
-    free(lists);
+    mstdnt_free(lists);
 }

@@ -15,6 +15,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_application.h>
 #include <mastodont_query.h>
@@ -80,7 +81,7 @@ void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
     }
 
 
-    *type = calloc(1, sizeof(struct mstdnt_app));
+    *type = mstdnt_calloc(1, sizeof(struct mstdnt_app));
 
     if (*type)
         mstdnt_app_json(v->child, *type);
