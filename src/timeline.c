@@ -20,7 +20,7 @@
 #include <mastodont_query.h>
 #include <mastodont_request.h>
 
-int mstdnt_timeline_list(mstdnt_t* data,
+int mstdnt_timeline_list(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             char* list_id,
                             struct mstdnt_timeline_args* args,
@@ -59,7 +59,7 @@ int mstdnt_timeline_list(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_timeline_tag(mstdnt_t* data,
+int mstdnt_timeline_tag(mastodont_t* data,
                            struct mstdnt_args* m_args,
                            char* hashtag,
                            struct mstdnt_timeline_args* args,
@@ -115,7 +115,7 @@ static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
     }
 }
 
-int mstdnt_timeline_public(mstdnt_t* data,
+int mstdnt_timeline_public(mastodont_t* data,
                               struct mstdnt_args* m_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
@@ -152,7 +152,7 @@ int mstdnt_timeline_public(mstdnt_t* data,
 }
 
 
-int mstdnt_timeline_direct(mstdnt_t* data,
+int mstdnt_timeline_direct(mastodont_t* data,
                               struct mstdnt_args* m_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
@@ -185,7 +185,7 @@ int mstdnt_timeline_direct(mstdnt_t* data,
 }
 
 
-int mstdnt_timeline_home(mstdnt_t* data,
+int mstdnt_timeline_home(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,

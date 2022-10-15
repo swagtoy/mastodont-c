@@ -16,7 +16,7 @@
 #include <mastodont_static.h>
 #include <mastodont_fetch.h>
 
-int mstdnt_instance_panel(mstdnt_t* api,
+int mstdnt_instance_panel(mastodont_t* api,
                              struct mstdnt_args* m_args,
                              struct mstdnt_fetch_results* html)
 {
@@ -32,7 +32,7 @@ int mstdnt_instance_panel(mstdnt_t* api,
     return status;
 }
 
-int mstdnt_terms_of_service(mstdnt_t* api,
+int mstdnt_terms_of_service(mastodont_t* api,
                                struct mstdnt_args* m_args,
                                struct mstdnt_fetch_results* html)
 {

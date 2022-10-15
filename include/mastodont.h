@@ -41,14 +41,14 @@ void mstdnt_global_curl_cleanup();
  * \param data Pointer to struct to fill in
  * \return Value of curl_easy_init(); either Zero or non-zero
  */
-int mstdnt_init(mstdnt_t* data);
+int mstdnt_init(mastodont_t* data);
 
 /*!
  * Cleans up the mstdnt struct
  *
  * \param data Pointer to the mstdnt data
  */
-void mstdnt_cleanup(mstdnt_t* data);
+void mstdnt_cleanup(mastodont_t* data);
 
 /*!
  * Cleans up a storage struct.

@@ -14,13 +14,13 @@ void mstdnt_global_curl_cleanup()
 }
 
 // Curl multi can still be used with single context's
-int mstdnt_init(mstdnt_t* data)
+int mstdnt_init(mastodont_t* data)
 {
     data->curl = curl_multi_init();
     return data->curl == NULL;
 }
 
-void mstdnt_cleanup(mstdnt_t* data)
+void mstdnt_cleanup(mastodont_t* data)
 {
     curl_multi_cleanup(data->curl);
 }

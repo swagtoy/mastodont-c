@@ -145,7 +145,7 @@ int mstdnt_statuses_json_callback(cJSON* json, void* _args)
     return mstdnt_statuses_json(args->statuses, args->size, json);
 }
 
-int mstdnt_get_account_statuses(mstdnt_t* data,
+int mstdnt_get_account_statuses(mastodont_t* data,
                                    struct mstdnt_args* m_args,
                                    char* id,
                                    struct mstdnt_account_statuses_args* args,
@@ -186,7 +186,7 @@ int mstdnt_get_account_statuses(mstdnt_t* data,
 }
 
 /* TODO Populate the arguments! */
-int mstdnt_create_status(mstdnt_t* data,
+int mstdnt_create_status(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             struct mstdnt_status_args* args,
                             struct mstdnt_storage* storage)
@@ -219,7 +219,7 @@ int mstdnt_create_status(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-static int mstdnt_status_action(mstdnt_t* data,
+static int mstdnt_status_action(mastodont_t* data,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 struct mstdnt_storage* storage,
@@ -289,7 +289,7 @@ MSTDNT_STATUS_ACTION_DECL(delete)
 }
 
 /* TODO Mutes can be timed */
-int mstdnt_mute_conversation(mstdnt_t* data,
+int mstdnt_mute_conversation(mastodont_t* data,
                                 struct mstdnt_args* m_args,
                                 char* id,
                                 struct mstdnt_storage* storage,
@@ -298,7 +298,7 @@ int mstdnt_mute_conversation(mstdnt_t* data,
     return mstdnt_status_action(data, m_args, id, storage, status, "api/v1/statuses/%s/mute");
 }
 
-int mstdnt_unmute_conversation(mstdnt_t* data,
+int mstdnt_unmute_conversation(mastodont_t* data,
                                   struct mstdnt_args* m_args,
                                   char* id,
                                   struct mstdnt_storage* storage,
@@ -307,7 +307,7 @@ int mstdnt_unmute_conversation(mstdnt_t* data,
     return mstdnt_status_action(data, m_args, id, storage, status, "api/v1/statuses/%s/unmute");
 }
 
-int mstdnt_get_status(mstdnt_t* data,
+int mstdnt_get_status(mastodont_t* data,
                          struct mstdnt_args* m_args,
                          char* id,
                          struct mstdnt_storage* storage,
@@ -389,7 +389,7 @@ int mstdnt_status_context_json_callback(cJSON* json, void* _args)
                                       json);
 }
 
-int mstdnt_get_status_context(mstdnt_t* data,
+int mstdnt_get_status_context(mastodont_t* data,
                                  struct mstdnt_args* m_args,
                                  char* id,
                                  struct mstdnt_storage* storage,
@@ -421,7 +421,7 @@ int mstdnt_get_status_context(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_status_favourited_by(mstdnt_t* data,
+int mstdnt_status_favourited_by(mastodont_t* data,
                                    struct mstdnt_args* m_args,
                                    char* id,
                                    struct mstdnt_storage* storage,
@@ -449,7 +449,7 @@ int mstdnt_status_favourited_by(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_status_reblogged_by(mstdnt_t* data,
+int mstdnt_status_reblogged_by(mastodont_t* data,
                                   struct mstdnt_args* m_args,
                                   char* id,
                                   struct mstdnt_storage* storage,
@@ -478,7 +478,7 @@ int mstdnt_status_reblogged_by(mstdnt_t* data,
 }
 
 
-int mstdnt_get_bookmarks(mstdnt_t* data,
+int mstdnt_get_bookmarks(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             struct mstdnt_bookmarks_args* args,
                             struct mstdnt_storage* storage,
@@ -508,7 +508,7 @@ int mstdnt_get_bookmarks(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_get_favourites(mstdnt_t* data,
+int mstdnt_get_favourites(mastodont_t* data,
                              struct mstdnt_args* m_args,
                              struct mstdnt_favourites_args* args,
                              struct mstdnt_storage* storage,
@@ -537,7 +537,7 @@ int mstdnt_get_favourites(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_status_emoji_react(mstdnt_t* api,
+int mstdnt_status_emoji_react(mastodont_t* api,
                                  struct mstdnt_args* m_args,
                                  char* id,
                                  char* emoji,

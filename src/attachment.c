@@ -99,7 +99,7 @@ static int mstdnt_attachment_json_callback(cJSON* json, void* _args)
     return mstdnt_attachment_json(json, _args);
 }
 
-int mstdnt_upload_media(mstdnt_t* api,
+int mstdnt_upload_media(mastodont_t* api,
                            struct mstdnt_args* m_args,
                            struct mstdnt_upload_media_args* args,
                            struct mstdnt_storage* storage,

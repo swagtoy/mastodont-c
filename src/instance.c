@@ -15,7 +15,7 @@
 
 #include <mastodont_instance.h>
 
-int mstdnt_instance(mstdnt_t* api, struct mstdnt_args* args,
+int mstdnt_instance(mastodont_t* api, struct mstdnt_args* args,
                        struct mstdnt_instance* inst)
 {
     return -1;

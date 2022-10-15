@@ -87,7 +87,7 @@ void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
         mstdnt_app_json(v->child, *type);
 }
 
-int mstdnt_register_app(mstdnt_t* data,
+int mstdnt_register_app(mastodont_t* data,
                            struct mstdnt_args* m_args,
                            struct mstdnt_application_args* args,
                            struct mstdnt_storage* storage,
@@ -114,7 +114,7 @@ int mstdnt_register_app(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_obtain_oauth_token(mstdnt_t* data,
+int mstdnt_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_args* m_args,
                                  struct mstdnt_application_args* args,
                                  struct mstdnt_storage* storage,

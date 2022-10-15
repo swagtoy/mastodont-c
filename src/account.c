@@ -55,7 +55,7 @@ int mstdnt_accounts_json_callback(cJSON* json, void* _args)
 }
 
 static int mstdnt_get_accounts_query(char* url,
-                                        mstdnt_t* data,
+                                        mastodont_t* data,
                                         struct mstdnt_args* m_args,
                                         struct mstdnt_account_args* args,
                                         struct mstdnt_storage* storage,
@@ -90,7 +90,7 @@ static int mstdnt_get_accounts_query(char* url,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_get_followers(mstdnt_t* data,
+int mstdnt_get_followers(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             char* id,
                             struct mstdnt_account_args* args,
@@ -103,7 +103,7 @@ int mstdnt_get_followers(mstdnt_t* data,
     return mstdnt_get_accounts_query(url, data, m_args, args, storage, accts, accts_len);
 }
 
-int mstdnt_get_following(mstdnt_t* data,
+int mstdnt_get_following(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             char* id,
                             struct mstdnt_account_args* args,
@@ -116,7 +116,7 @@ int mstdnt_get_following(mstdnt_t* data,
     return mstdnt_get_accounts_query(url, data, m_args, args, storage, accts, accts_len);
 }
 
-int mstdnt_get_blocks(mstdnt_t* data, struct mstdnt_args* m_args,
+int mstdnt_get_blocks(mastodont_t* data, struct mstdnt_args* m_args,
                          struct mstdnt_account_args* args,
                          struct mstdnt_storage* storage,
                          struct mstdnt_account* accts[],
@@ -125,7 +125,7 @@ int mstdnt_get_blocks(mstdnt_t* data, struct mstdnt_args* m_args,
     return mstdnt_get_accounts_query("api/v1/blocks", data, m_args, args, storage, accts, accts_len);
 }
 
-int mstdnt_get_mutes(mstdnt_t* data, struct mstdnt_args* m_args,
+int mstdnt_get_mutes(mastodont_t* data, struct mstdnt_args* m_args,
                         struct mstdnt_account_args* args,
                         struct mstdnt_storage* storage,
                         struct mstdnt_account* accts[],
@@ -134,7 +134,7 @@ int mstdnt_get_mutes(mstdnt_t* data, struct mstdnt_args* m_args,
     return mstdnt_get_accounts_query("api/v1/mutes", data, m_args, args, storage, accts, accts_len);
 }
 
-int mstdnt_get_account(mstdnt_t* data,
+int mstdnt_get_account(mastodont_t* data,
                           struct mstdnt_args* m_args,
                           int lookup, /* TODO move into separate function for consistancy? */
                           char* id,
@@ -161,7 +161,7 @@ int mstdnt_get_account(mstdnt_t* data,
     return mstdnt_request(data, m_args, &req_args);
 }
 
-int mstdnt_verify_credentials(mstdnt_t* data,
+int mstdnt_verify_credentials(mastodont_t* data,
                                  struct mstdnt_args* m_args,
                                  struct mstdnt_account* acct,
                                  struct mstdnt_storage* storage)
@@ -223,7 +223,7 @@ int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
 }
 
 
-int mstdnt_account_action(mstdnt_t* data,
+int mstdnt_account_action(mastodont_t* data,
                           struct mstdnt_args* m_args,
                           char* id,
                           struct mstdnt_storage* storage,

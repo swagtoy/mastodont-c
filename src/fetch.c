@@ -46,7 +46,7 @@ void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 }
 
 #define TOKEN_STR_SIZE 512
-int mstdnt_fetch_curl(mstdnt_t* mstdnt,
+int mstdnt_fetch_curl(mastodont_t* mstdnt,
                          CURL* curl,
                          struct mstdnt_args* m_args,
                          char* _url,

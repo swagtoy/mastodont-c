@@ -61,7 +61,7 @@ int mstdnt_search_json_callback(cJSON* json, void* _args)
     return mstdnt_search_json(_args, json);
 }
 
-int mstdnt_search(mstdnt_t* data,
+int mstdnt_search(mastodont_t* data,
                      struct mstdnt_args* m_args,
                      char* query,
                      struct mstdnt_storage* storage,

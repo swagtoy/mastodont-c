@@ -52,7 +52,7 @@ int mstdnt_scrobbles_json_callback(cJSON* json, void* _args)
     return mstdnt_scrobbles_json(args->scrobbles, args->size, json);
 }
 
-int mstdnt_get_scrobbles(mstdnt_t* data,
+int mstdnt_get_scrobbles(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             char* id,
                             struct mstdnt_get_scrobbles_args* args,

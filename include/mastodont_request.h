@@ -34,7 +34,7 @@ struct mstdnt_request_args
     int (*callback)(cJSON*, void*);
 };
 
-int mstdnt_request(mstdnt_t* data,
+int mstdnt_request(mastodont_t* data,
                       struct mstdnt_args* m_args,
                       struct mstdnt_request_args* args);
 

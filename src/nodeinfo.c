@@ -95,7 +95,7 @@ int mstdnt_nodeinfo_json_callback(cJSON* json, void* nodeinfo)
     return mstdnt_nodeinfo_json(nodeinfo, json);
 }
 
-int mstdnt_get_nodeinfo(mstdnt_t* api,
+int mstdnt_get_nodeinfo(mastodont_t* api,
                            struct mstdnt_args* m_args,
                            char* version,
                            struct mstdnt_storage* storage,
