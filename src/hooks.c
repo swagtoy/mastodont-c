@@ -30,7 +30,7 @@ void mstdnt_set_hooks(struct mstdnt_hooks* hooks)
         .malloc_fn = hooks->malloc,
         .free_fn = hooks->free,
     };
-    cJSON_InitHooks(&hooks);
+    cJSON_InitHooks(&cjson_hooks);
 
     _mstdnt_hooks_def = *hooks;
 }
