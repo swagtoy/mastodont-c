@@ -75,6 +75,8 @@ static int mstdnt_lists_json_callback(cJSON* json, void* _args)
 
 int mstdnt_get_lists(mastodont_t* data,
                         struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                         struct mstdnt_storage* storage,
                         struct mstdnt_list* lists[],
                         size_t* size)
@@ -100,6 +102,8 @@ int mstdnt_get_lists(mastodont_t* data,
 
 int mstdnt_get_list(mastodont_t* data,
                        struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                        char* id,
                        struct mstdnt_storage* storage,
                        struct mstdnt_list* list)
@@ -136,6 +140,8 @@ static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
 }
 
 int mstdnt_create_list(mastodont_t* data, struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                           struct mstdnt_list_args* args,
                           struct mstdnt_storage* storage,
                           struct mstdnt_list* list)
@@ -161,6 +167,8 @@ int mstdnt_create_list(mastodont_t* data, struct mstdnt_args* m_args,
 
 int mstdnt_update_list(mastodont_t* data,
                           struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                           char* id,
                           struct mstdnt_list_args* args,
                           struct mstdnt_storage* storage,
@@ -190,6 +198,8 @@ int mstdnt_update_list(mastodont_t* data,
 
 int mstdnt_delete_list(mastodont_t* api,
                           struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                           char* id,
                           struct mstdnt_storage* storage)
 {
@@ -207,11 +217,13 @@ int mstdnt_delete_list(mastodont_t* api,
         NULL,
     };
 
-    return mstdnt_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
 }
 
 int mstdnt_list_add_accounts(mastodont_t* api,
                                 struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                 char* id,
                                 char** account_ids,
                                 size_t account_ids_len,
@@ -240,11 +252,13 @@ int mstdnt_list_add_accounts(mastodont_t* api,
         NULL,
     };
 
-    return mstdnt_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
 }
 
 int mstdnt_list_remove_accounts(mastodont_t* api,
                                    struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                    char* id,
                                    char** account_ids,
                                    size_t account_ids_len,
@@ -273,11 +287,13 @@ int mstdnt_list_remove_accounts(mastodont_t* api,
         NULL,
     };
 
-    return mstdnt_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
 }
 
 int mstdnt_list_get_accounts(mastodont_t* data,
                                 struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                 char* id,
                                 struct mstdnt_account_args* args,
                                 struct mstdnt_storage* storage,

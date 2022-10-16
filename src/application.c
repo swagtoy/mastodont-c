@@ -89,6 +89,8 @@ void _mstdnt_val_malloc_application_call(cJSON* v, void* _type)
 
 int mstdnt_register_app(mastodont_t* data,
                            struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                            struct mstdnt_application_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_app* app)
@@ -116,6 +118,8 @@ int mstdnt_register_app(mastodont_t* data,
 
 int mstdnt_obtain_oauth_token(mastodont_t* data,
                                  struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                  struct mstdnt_application_args* args,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_oauth_token* token)

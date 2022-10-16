@@ -49,6 +49,8 @@ void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res)
 int mstdnt_fetch_curl(mastodont_t* mstdnt,
                          CURL* curl,
                          struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                          char* _url,
                          struct mstdnt_fetch_results* results,
                          CURLoption request_t,

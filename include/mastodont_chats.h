@@ -60,6 +60,8 @@ int mstdnt_messages_json(struct mstdnt_message* message[], size_t* size, cJSON* 
 
 int mstdnt_get_chats_v2(mastodont_t* data,
                            struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                            struct mstdnt_chats_args* args,
                            struct mstdnt_storage* storage,
                            struct mstdnt_chat* chats[],
@@ -67,6 +69,8 @@ int mstdnt_get_chats_v2(mastodont_t* data,
 
 int mstdnt_get_chat_messages(mastodont_t* data,
                                 struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                 char* chat_id,
                                 struct mstdnt_chats_args* args,
                                 struct mstdnt_storage* storage,
@@ -75,6 +79,8 @@ int mstdnt_get_chat_messages(mastodont_t* data,
 
 int mstdnt_get_chat(mastodont_t* data,
                        struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                        char* chat_id,
                        struct mstdnt_storage* storage,
                        struct mstdnt_chat* chat);

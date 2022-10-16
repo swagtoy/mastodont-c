@@ -63,6 +63,8 @@ int mstdnt_search_json_callback(cJSON* json, void* _args)
 
 int mstdnt_search(mastodont_t* data,
                      struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                      char* query,
                      struct mstdnt_storage* storage,
                      struct mstdnt_search_args* args,

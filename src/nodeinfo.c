@@ -97,6 +97,8 @@ int mstdnt_nodeinfo_json_callback(cJSON* json, void* nodeinfo)
 
 int mstdnt_get_nodeinfo(mastodont_t* api,
                            struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                            char* version,
                            struct mstdnt_storage* storage,
                            struct mstdnt_nodeinfo* nodeinfo)
@@ -115,7 +117,7 @@ int mstdnt_get_nodeinfo(mastodont_t* api,
         mstdnt_nodeinfo_json_callback
     };
 
-    return mstdnt_request(api, m_args, &req_args);
+    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
 }
 
 void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)

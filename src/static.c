@@ -18,6 +18,8 @@
 
 int mstdnt_instance_panel(mastodont_t* api,
                              struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                              struct mstdnt_fetch_results* html)
 {
     CURL* curl = curl_easy_init();
@@ -34,6 +36,8 @@ int mstdnt_instance_panel(mastodont_t* api,
 
 int mstdnt_terms_of_service(mastodont_t* api,
                                struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                struct mstdnt_fetch_results* html)
 {
     CURL* curl = curl_easy_init();

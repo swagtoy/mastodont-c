@@ -36,6 +36,8 @@ struct mstdnt_request_args
 
 int mstdnt_request(mastodont_t* data,
                       struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                       struct mstdnt_request_args* args);
 
 #endif /* MASTODONT_REQUEST_H */

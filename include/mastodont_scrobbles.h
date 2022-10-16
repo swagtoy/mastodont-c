@@ -48,6 +48,8 @@ struct _mstdnt_scrobbles_cb_args
 
 int mstdnt_get_scrobbles(mastodont_t* data,
                             struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                             char* id,
                             struct mstdnt_get_scrobbles_args* args,
                             struct mstdnt_storage* storage,

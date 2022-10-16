@@ -22,6 +22,8 @@
 
 int mstdnt_timeline_list(mastodont_t* data,
                             struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                             char* list_id,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
@@ -56,11 +58,13 @@ int mstdnt_timeline_list(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
 }
 
 int mstdnt_timeline_tag(mastodont_t* data,
                            struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                            char* hashtag,
                            struct mstdnt_timeline_args* args,
                            struct mstdnt_storage* storage,
@@ -98,7 +102,7 @@ int mstdnt_timeline_tag(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
 }
 
 static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
@@ -117,6 +121,8 @@ static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
 
 int mstdnt_timeline_public(mastodont_t* data,
                               struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
@@ -148,12 +154,14 @@ int mstdnt_timeline_public(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
 }
 
 
 int mstdnt_timeline_direct(mastodont_t* data,
                               struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                               struct mstdnt_timeline_args* args,
                               struct mstdnt_storage* storage,
                               struct mstdnt_status* statuses[],
@@ -181,12 +189,14 @@ int mstdnt_timeline_direct(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
 }
 
 
 int mstdnt_timeline_home(mastodont_t* data,
                             struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                             struct mstdnt_timeline_args* args,
                             struct mstdnt_storage* storage,
                             struct mstdnt_status* statuses[],
@@ -219,6 +229,6 @@ int mstdnt_timeline_home(mastodont_t* data,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
 }
 

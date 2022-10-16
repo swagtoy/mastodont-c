@@ -73,6 +73,8 @@ int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, 
 
 int mstdnt_get_notifications(mastodont_t* data,
                                 struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                 struct mstdnt_notifications_args* args,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_notification** notifs,
@@ -80,16 +82,22 @@ int mstdnt_get_notifications(mastodont_t* data,
 
 int mstdnt_notifications_clear(mastodont_t* data,
                                   struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                   struct mstdnt_storage* storage);
 
 int mstdnt_notifications_read(mastodont_t* data,
                                  struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                  struct mstdnt_notifications_args* args,
                                  struct mstdnt_storage* storage,
                                  struct mstdnt_notification* notification);
 
 int mstdnt_notification_dismiss(mastodont_t* data,
                                    struct mstdnt_args* m_args,
+mstdnt_request_cb_t cb_request,
+void* cb_args,
                                    struct mstdnt_storage* storage,
                                    char* id);
 
