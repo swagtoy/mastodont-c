@@ -71,16 +71,66 @@ static void mime_params_post(curl_mime* mime,
     
 }
 
+static mstdnt_sync_request(mastodont_t* data,
+                           struct mstdnt_args* m_args,
+                           struct mstdnt_request_args* args,
+                           struct mstdnt_storage* storage,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args,
+                           CURL* curl,
+                           char* url_query)
+{
+    
+    int res = 0, curlerror = 0;
+    cJSON* root;
+    struct mstdnt_fetch_results results = { 0 };
+    curlerror = mstdnt_fetch_curl(data,
+                                  curl,
+                                  m_args,
+                                  url_query,
+                                  &results,
+                                  args->request_type,
+                                  args->request_type_custom);
+
+    if (curlerror != CURLE_OK)
+    {
+        res = 1;
+        storage->error = (char*)curl_easy_strerror(curlerror);
+        goto cleanup;
+    }
+
+    // Create json structure
+    if (_mstdnt_json_init(&root, &results, storage))
+    {
+        res = 1;
+        goto cleanup_res;
+    }
+
+    // Make sure there is no error
+    if (!mstdnt_check_error(storage))
+    {
+        /* Call our callback and do the large work */
+        if (args->callback) res = args->callback(storage->root, args->args);
+    }
+    else
+        res = 1;
+
+cleanup_res:
+    mstdnt_fetch_results_cleanup(&results);
+cleanup:
+    // Note: the fetch removed the handle from our multi handle
+    curl_easy_cleanup(curl);
+    return res;
+}
+
 int mstdnt_request(mastodont_t* data,
-                      struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                      struct mstdnt_request_args* args)
+                   struct mstdnt_args* m_args,
+                   struct mstdnt_request_args* args,
+                   mstdnt_request_cb_t cb_request,
+                   void* cb_args)
 {
     int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
-    struct mstdnt_fetch_results results = { 0 };
-    cJSON* root;
     curl_mime* mime = NULL;
     char* post;
     // TODO debug me
@@ -116,45 +166,15 @@ void* cb_args,
     else if (args->request_type == CURLOPT_POST)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 
-    curlerror = mstdnt_fetch_curl(data,
-                                     curl,
-                                     m_args,
-                                     url_query,
-                                     &results,
-                                     args->request_type,
-                                     args->request_type_custom);
-
-    if (mime) curl_mime_free(mime);
-
-    if (curlerror != CURLE_OK)
+    if (MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SYNC))
     {
-        res = 1;
-        storage->error = (char*)curl_easy_strerror(curlerror);
-        goto cleanup;
+        res = mstdnt_sync_request(data, m_args, args, storage, cb_request, cb_args, curl, url_query);
     }
-
-    // Create json structure
-    if (_mstdnt_json_init(&root, &results, storage))
-    {
-        res = 1;
-        goto cleanup_res;
+    else { // Async request
+        mstdnt_async_request();
     }
-
-    // Make sure there is no error
-    if (!mstdnt_check_error(storage))
-    {
-        /* Call our callback and do the large work */
-        if (args->callback) res = args->callback(storage->root, args->args);
-    }
-    else
-        res = 1;
-
-cleanup_res:
-    mstdnt_fetch_results_cleanup(&results);
-cleanup:
-    // Note: the fetch removed the handle from our multi handle
-    curl_easy_cleanup(curl);
     
+    if (mime) curl_mime_free(mime);
     if (args->params_post && args->request_type == CURLOPT_POST) mstdnt_free(post);
     /* Only free if params_query set */
     if (args->params_query) mstdnt_free(url_query);
