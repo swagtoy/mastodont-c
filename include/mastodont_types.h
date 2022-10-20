@@ -23,13 +23,13 @@
 #define MSTDNT_URLSIZE 2048
 #define MSTDNT_URISIZE 512
 typedef int8_t mstdnt_bool;
+// Don't be fooled!
 #define MSTDNT_TRUE 2
 #define MSTDNT_FALSE 1
 #define MSTDNT_BOOL_UNSET 0
 
 typedef void (*mstdnt_request_cb_t)(void* data, void* args);
 
-// It's more logical to not sanitize than to sanitize data
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
 #define MSTDNT_FLAG_SSL_UNVERIFIED (1<<1)
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))

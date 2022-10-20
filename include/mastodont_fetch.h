@@ -19,20 +19,42 @@
 #include <mastodont_types.h>
 #include <curl/curl.h>
 
-struct mstdnt_fetch_results
+/** Used to store the response from CURL */
+struct mstdnt_fetch_data
 {
     char* response;
     size_t size;
+
+    // Callback from user
+    mstdnt_request_cb_t callback;
+    void* callback_args;
+};
+
+enum mstdnt_fetch_await
+{
+    MSTDNT_AWAIT_ALL,
+    MSTDNT_AWAIT_ONCE,
 };
 
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content);
-void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res);
-int mstdnt_fetch_curl(mastodont_t* mstdnt,
-                         CURL* curl,
-                         struct mstdnt_args* args,
-                         char* url,
-                         struct mstdnt_fetch_results* results,
-                         CURLoption request_t,
-                         char* request_t_custom);
+void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res);
+
+/**
+ * @brief Attempts to fetch, async or blocking.
+ *
+ * @param mstdnt Mastodont struct
+ * @param curl curl API
+ * @param args Mastodont General args passed
+ * @param url URL of request
+ * @param results Results from response
+ */
+int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
+                            CURL* curl,
+                            struct mstdnt_args* args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* url,
+                            CURLoption request_t,
+                            char* request_t_custom);
 
 #endif /* MASTODONT_FETCH_H */

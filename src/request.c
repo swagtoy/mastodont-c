@@ -72,18 +72,16 @@ static void mime_params_post(curl_mime* mime,
 }
 
 int mstdnt_request(mastodont_t* data,
-                      struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                      struct mstdnt_request_args* args)
+                   struct mstdnt_args* m_args,
+                   mstdnt_request_cb_t cb_request,
+                   void* cb_args,
+                   struct mstdnt_request_args* args)
 {
     int res = 0, curlerror = 0;
     struct mstdnt_storage* storage = args->storage;
-    struct mstdnt_fetch_results results = { 0 };
     cJSON* root;
     curl_mime* mime = NULL;
     char* post;
-    // TODO debug me
     char* url_query = args->params_query ?
         _mstdnt_query_string(data, m_args, args->url, args->params_query, args->params_query_len) :
         args->url;
@@ -116,14 +114,17 @@ void* cb_args,
     else if (args->request_type == CURLOPT_POST)
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, "");
 
-    curlerror = mstdnt_fetch_curl(data,
-                                     curl,
-                                     m_args,
-                                     url_query,
-                                     &results,
-                                     args->request_type,
-                                     args->request_type_custom);
+    curlerror = mstdnt_fetch_curl_async(
+        data,
+        curl,
+        m_args,
+        cb_request,
+        cb_args,
+        url_query,
+        args->request_type,
+        args->request_type_custom);
 
+    // Mime already used, free it early
     if (mime) curl_mime_free(mime);
 
     if (curlerror != CURLE_OK)
@@ -134,6 +135,7 @@ void* cb_args,
     }
 
     // Create json structure
+#if 0
     if (_mstdnt_json_init(&root, &results, storage))
     {
         res = 1;
@@ -148,14 +150,14 @@ void* cb_args,
     }
     else
         res = 1;
+#endif
 
 cleanup_res:
-    mstdnt_fetch_results_cleanup(&results);
+
 cleanup:
-    // Note: the fetch removed the handle from our multi handle
-    curl_easy_cleanup(curl);
+    if (args->params_post && args->request_type == CURLOPT_POST)
+        mstdnt_free(post);
     
-    if (args->params_post && args->request_type == CURLOPT_POST) mstdnt_free(post);
     /* Only free if params_query set */
     if (args->params_query) mstdnt_free(url_query);
     return res;

@@ -23,7 +23,7 @@
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
 {
     size_t size = nmemb * _size; /* Mostly pointless, but portable */
-    struct mstdnt_fetch_results* res = _content; /* Cast */
+    struct mstdnt_fetch_data* res = _content; /* Cast */
     char* data;
  
     if ((data = mstdnt_realloc(res->response, res->size + size + 1)) == NULL)
@@ -40,36 +40,33 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     return size;
 }
 
-void mstdnt_fetch_results_cleanup(struct mstdnt_fetch_results* res)
+void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res)
 {
     mstdnt_free(res->response);
 }
 
 #define TOKEN_STR_SIZE 512
-int mstdnt_fetch_curl(mastodont_t* mstdnt,
-                         CURL* curl,
-                         struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                         char* _url,
-                         struct mstdnt_fetch_results* results,
-                         CURLoption request_t,
-                         char* request_t_custom)
+int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
+                            CURL* curl,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* _url,
+                            CURLoption request_t,
+                            char* request_t_custom)
 {
 #define is_custom request_t_custom && request_t == CURLOPT_CUSTOMREQUEST
+    struct mstdnt_fetch_data* results = NULL;
     CURLMcode res = 3;
-    int status = 0;
-    CURLMsg* msg;
-    int running = 1;
     char token[TOKEN_STR_SIZE] = { 0 };
     struct curl_slist* list = NULL;
 
-    /* Setup URL */
+    // Setup URL
     char url[MSTDNT_URLSIZE] = { 0 };
     strncpy(url, m_args->url, MSTDNT_URLSIZE-1);
     strncat(url, _url, MSTDNT_URLSIZE-1);
 
-    /* Setup token */
+    // Setup token
     if (m_args->token)
     {
         snprintf(token, TOKEN_STR_SIZE, "Authorization: Bearer %s",
@@ -78,81 +75,74 @@ void* cb_args,
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
     }
 
-    /* Set options */
+    // Setup data to pass into results
+    results = calloc(1, sizeof(struct mstdnt_fetch_data));
+    results.callback = cb_request;
+    results.callback_args = cb_args;
+
+    // Set options
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, mstdnt_curl_write_callback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, results);
+    /* Copy into private pointer value
+     * A little stupid, but we can let CURL hold our values for us.
+     * Curl won't let us get the WRITEDATA opt pointer back sadly, so this has to be done */
+    curl_easy_setopt(curl, CURLOPT_PRIVATE, results);
     /* Should we verify the peer's SSL cert? */
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER,
                      !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
     curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST,
                      !MSTDNT_T_FLAG_ISSET(m_args, MSTDNT_FLAG_SSL_UNVERIFIED));
-    /* PUT, POST, GET, Custom */
-    /* Mimes are expected to be set beforehand manually */
+    // PUT, POST, GET, Custom
+    // Mimes are expected to be set beforehand manually
     if (is_custom)
         curl_easy_setopt(curl, request_t, request_t_custom);
     else if (request_t != CURLOPT_MIMEPOST)
         curl_easy_setopt(curl, request_t, 1);
 
-    // Add curl handle to multi, then run and block
-#ifndef THREAD_UNSAFE
-    static pthread_mutex_t multi_mutex = PTHREAD_MUTEX_INITIALIZER;
-#endif
-
-#ifndef THREAD_UNSAFE
-    pthread_mutex_lock(&multi_mutex);
-#endif
+    // Add curl handle to multi, then run
     curl_multi_add_handle(mstdnt->curl, curl);
-#ifndef THREAD_UNSAFE
-    pthread_mutex_unlock(&multi_mutex);
-#endif
+    
+    res = curl_multi_perform(mstdnt->curl, &running);
 
-    int msgs_left;
-    while (running)
+    
+
+    
+    if (list) curl_slist_free_all(list);
+    return res;
+}
+
+int mstdnt_await(enum mstdnt_fetch_await opt)
+{
+    CURLMsg* msg;
+    int msgs_left = 1;
+    struct mstdnt_fetch_data* data;
+    
+    // TODO
+    //curl_easy_getinfo(curl, CURLINFO_PRIVATE, &data);
+    
+    do
     {
-#ifndef THREAD_UNSAFE
-        pthread_mutex_lock(&multi_mutex);
-#endif
-        res = curl_multi_perform(mstdnt->curl, &running);
-#ifndef THREAD_UNSAFE
-        pthread_mutex_unlock(&multi_mutex);
-#endif
-
-        if (running)
-            res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
+        res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
 
         // Check if our socket is done
-#ifndef THREAD_UNSAEF
-        pthread_mutex_lock(&multi_mutex);
-#endif
         while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
         {
             if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
             {
                 status = msg->data.result;
-#ifndef THREAD_UNSAFE
-                pthread_mutex_unlock(&multi_mutex);
-#endif
                 goto out;
             }
         }
-#ifndef THREAD_UNSAFE
-        pthread_mutex_unlock(&multi_mutex);
-#endif
 
         if (res) break;
     }
-    
-out:
-#ifndef THREAD_UNSAFE
-    pthread_mutex_lock(&multi_mutex);
-#endif
-    // Looks like we're done here
-    curl_multi_remove_handle(mstdnt->curl, curl);
-    #ifndef THREAD_UNSAFE
-    pthread_mutex_unlock(&multi_mutex);
-#endif
-    
-    if (list) curl_slist_free_all(list);
-    return status;
+    while (opt == MSTDNT_AWAIT_ALL && msgs_left);
+
+    //mstdnt_fetch_data_cleanup(&results);
+    // Note: the fetch removed the handle from our multi handle
+    out:
+    /* // Looks like we're done here */
+    /* curl_multi_remove_handle(mstdnt->curl, curl); */
+    //curl_easy_cleanup(curl);
 }

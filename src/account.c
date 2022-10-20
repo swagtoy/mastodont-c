@@ -89,7 +89,7 @@ void* cb_args,
         mstdnt_accounts_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, &req_args, );
 }
 
 int mstdnt_get_followers(mastodont_t* data,
