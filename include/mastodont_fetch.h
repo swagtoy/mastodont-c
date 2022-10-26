@@ -47,7 +47,7 @@ void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res);
  * @param args Mastodont General args passed
  * @param url URL of request
  * @param results Results from response
- * @return Number of connections in progress
+ * @return Number of connections in progress, or -1 on error
  */
 int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
                             CURL* curl,
@@ -66,8 +66,8 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
  * @param mstdnt Mastodont struct
  * @param opt Option, MSTDNT_AWAIT_ALL means it will keep going until
  *  there are no more transfers. MSTDNT_AWAIT_ONCE will run
-int mstdnt_await(mstdnt_t* mstdnt, enum mstdnt_fetch_await opt)
-{
-}
+ * @return 1 on error
+ */
+int mstdnt_await(mastodont_t* mstdnt, enum mstdnt_fetch_await opt);
 
 #endif /* MASTODONT_FETCH_H */

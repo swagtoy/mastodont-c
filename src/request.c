@@ -83,7 +83,7 @@ static mstdnt_sync_request(mastodont_t* data,
     
     int res = 0, curlerror = 0;
     cJSON* root;
-    struct mstdnt_fetch_results results = { 0 };
+    struct mstdnt_fetch_data results = { 0 };
     curlerror = mstdnt_fetch_curl(data,
                                   curl,
                                   m_args,

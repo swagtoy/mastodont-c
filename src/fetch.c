@@ -131,14 +131,14 @@ int mstdnt_await(mastodont_t* mstdnt, enum mstdnt_fetch_await opt)
     // Check if our socket is done
     while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
     {
-        if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
+        if (msg->msg == CURLMSG_DONE)
         {
             // Get easy info
-            curl_easy_getinfo(msg->curl, CURLINFO_PRIVATE, &data);
-            mstdnt_fetch_data_cleanup(&data);
+            curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
+            mstdnt_fetch_data_cleanup(data);
 
-            curl_multi_remove_handle(mstdnt->curl, curl);
-            curl_easy_cleanup(curl);
+            curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
+            curl_easy_cleanup(msg->easy_handle);
         }
     }
     while (opt == MSTDNT_AWAIT_ALL && msgs_left);

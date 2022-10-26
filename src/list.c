@@ -162,7 +162,7 @@ void* cb_args,
         mstdnt_list_json_callback
     };
 
-    return mstdnt_request(data, m_args,&req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_update_list(mastodont_t* data,

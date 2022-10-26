@@ -19,11 +19,11 @@
 #include "mastodont_fetch.h"
 
 int mstdnt_instance_panel(mastodont_t* api,
-                             struct mstdnt_args* args,
-                             struct mstdnt_fetch_results* html);
+                          struct mstdnt_args* args,
+                          struct mstdnt_fetch_data* html);
 
 int mstdnt_terms_of_service(mastodont_t* api,
-                               struct mstdnt_args* args,
-                               struct mstdnt_fetch_results* html);
+                            struct mstdnt_args* args,
+                            struct mstdnt_fetch_data* html);
 
 #endif /* MSTDNT_STATIC_H */

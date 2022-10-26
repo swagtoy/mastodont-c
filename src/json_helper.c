@@ -24,7 +24,7 @@
 #define TIMESTAMP_LEN 16
 
 int _mstdnt_json_init(cJSON** root,
-                      struct mstdnt_fetch_results* results,
+                      struct mstdnt_fetch_data* results,
                       struct mstdnt_storage* storage)
 {
     *root = cJSON_ParseWithLengthOpts(results->response, results->size, NULL, 0);
