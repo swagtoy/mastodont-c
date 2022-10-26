@@ -78,6 +78,8 @@ struct mstdnt_account_args
 
 int mstdnt_account_action(mastodont_t* data,
                           struct mstdnt_args* args,
+                          mstdnt_request_cb_t cb_request,
+                          void* cb_args,
                           char* id,
                           struct mstdnt_storage* storage,
                           struct mstdnt_relationship* rel,
@@ -87,9 +89,9 @@ int mstdnt_accounts_json(struct mstdnt_account* accounts[],
                          size_t* size,
                          cJSON* js);
 
-#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mstdnt_##type##_account(mastodont_t* data, struct mstdnt_args* args, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
-#define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) { \
-        return mstdnt_account_action(data, args, id, storage, relationship, "api/v1/accounts/%s/" action); \
+#define MSTDNT_ACCOUNT_ACTION_DECL(type) int mstdnt_##type##_account(mastodont_t* data, struct mstdnt_args* args, mstdnt_request_cb_t cb_request, void* cb_args, char* id, struct mstdnt_storage* storage, struct mstdnt_relationship* relationship)
+#define MSTDNT_ACCOUNT_ACTION_FUNC_URL(action) {                        \
+        return mstdnt_account_action(data, args, cb_request, cb_args, id, storage, relationship, "api/v1/accounts/%s/" action); \
     }
 
 MSTDNT_ACCOUNT_ACTION_DECL(follow);
@@ -102,58 +104,58 @@ MSTDNT_ACCOUNT_ACTION_DECL(subscribe);
 MSTDNT_ACCOUNT_ACTION_DECL(unsubscribe);
 
 int mstdnt_verify_credentials(mastodont_t* data,
-                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                 struct mstdnt_account* acct,
-                                 struct mstdnt_storage* storage);
+                              struct mstdnt_args* m_args,
+                              mstdnt_request_cb_t cb_request,
+                              void* cb_args,
+                              struct mstdnt_account* acct,
+                              struct mstdnt_storage* storage);
 
 int mstdnt_get_account(mastodont_t* data,
-                          struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                          int lookup_type,
-                          char* id,
-                          struct mstdnt_account* acct,
-                          struct mstdnt_storage* storage);
+                       struct mstdnt_args* m_args,
+                       mstdnt_request_cb_t cb_request,
+                       void* cb_args,
+                       int lookup_type,
+                       char* id,
+                       struct mstdnt_account* acct,
+                       struct mstdnt_storage* storage);
 
 int mstdnt_get_blocks(mastodont_t* data,
+                      struct mstdnt_args* m_args,
+                      mstdnt_request_cb_t cb_request,
+                      void* cb_args,
+                      struct mstdnt_account_args* args,
+                      struct mstdnt_storage* storage,
+                      struct mstdnt_account* accts[],
+                      size_t* accts_len);
+
+int mstdnt_get_mutes(mastodont_t* data,
+                     struct mstdnt_args* m_args,
+                     mstdnt_request_cb_t cb_request,
+                     void* cb_args,
+                     struct mstdnt_account_args* args,
+                     struct mstdnt_storage* storage,
+                     struct mstdnt_account* accts[],
+                     size_t* accts_len);
+
+int mstdnt_get_followers(mastodont_t* data,
                          struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* id,
                          struct mstdnt_account_args* args,
                          struct mstdnt_storage* storage,
                          struct mstdnt_account* accts[],
                          size_t* accts_len);
 
-int mstdnt_get_mutes(mastodont_t* data,
-                        struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                        struct mstdnt_account_args* args,
-                        struct mstdnt_storage* storage,
-                        struct mstdnt_account* accts[],
-                        size_t* accts_len);
-
-int mstdnt_get_followers(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            char* id,
-                            struct mstdnt_account_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_account* accts[],
-                            size_t* accts_len);
-
 int mstdnt_get_following(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            char* id,
-                            struct mstdnt_account_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_account* accts[],
-                            size_t* accts_len);
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* id,
+                         struct mstdnt_account_args* args,
+                         struct mstdnt_storage* storage,
+                         struct mstdnt_account* accts[],
+                         size_t* accts_len);
 
 int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js);
 int mstdnt_account_json_callback(cJSON* json, void* _args);

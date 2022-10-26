@@ -62,7 +62,7 @@ void* cb_args,
                             struct mstdnt_scrobble* scrobbles[],
                             size_t* size)
 {
-    struct _mstdnt_scrobbles_cb_args cb_args = { scrobbles, size };
+    struct _mstdnt_scrobbles_cb_args req_cb_args = { scrobbles, size };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/accounts/%s/scrobbles", id);
 
@@ -81,10 +81,10 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_scrobbles_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 

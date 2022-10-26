@@ -97,7 +97,7 @@ void* cb_args,
         mstdnt_lists_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_get_list(mastodont_t* data,
@@ -122,7 +122,7 @@ void* cb_args,
         mstdnt_list_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
@@ -193,7 +193,7 @@ void* cb_args,
         mstdnt_list_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_delete_list(mastodont_t* api,
@@ -327,7 +327,7 @@ void* cb_args,
         mstdnt_accounts_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 void mstdnt_cleanup_lists(struct mstdnt_list* lists)

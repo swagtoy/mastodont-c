@@ -57,7 +57,7 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
 {
 #define is_custom request_t_custom && request_t == CURLOPT_CUSTOMREQUEST
     struct mstdnt_fetch_data* results = NULL;
-    CURLMcode res = 3;
+    CURLMcode res = 0;
     char token[TOKEN_STR_SIZE] = { 0 };
     struct curl_slist* list = NULL;
 
@@ -77,8 +77,13 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
 
     // Setup data to pass into results
     results = calloc(1, sizeof(struct mstdnt_fetch_data));
-    results.callback = cb_request;
-    results.callback_args = cb_args;
+    if (!results)
+    {
+        perror("calloc");
+        return -1;
+    }
+    results->callback = cb_request;
+    results->callback_args = cb_args;
 
     // Set options
     curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -102,47 +107,41 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
 
     // Add curl handle to multi, then run
     curl_multi_add_handle(mstdnt->curl, curl);
-    
+
+    // No docs on this?
+    int running;
     res = curl_multi_perform(mstdnt->curl, &running);
+    if (!res)
+        return -1;
 
-    
-
-    
-    if (list) curl_slist_free_all(list);
-    return res;
+    return running;
 }
 
-int mstdnt_await(enum mstdnt_fetch_await opt)
+int mstdnt_await(mastodont_t* mstdnt, enum mstdnt_fetch_await opt)
 {
     CURLMsg* msg;
     int msgs_left = 1;
     struct mstdnt_fetch_data* data;
+    int res;
     
     // TODO
-    //curl_easy_getinfo(curl, CURLINFO_PRIVATE, &data);
-    
-    do
+
+    res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
+
+    // Check if our socket is done
+    while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
     {
-        res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
-
-        // Check if our socket is done
-        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
+        if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
         {
-            if (msg->msg == CURLMSG_DONE && msg->easy_handle == curl)
-            {
-                status = msg->data.result;
-                goto out;
-            }
-        }
+            // Get easy info
+            curl_easy_getinfo(msg->curl, CURLINFO_PRIVATE, &data);
+            mstdnt_fetch_data_cleanup(&data);
 
-        if (res) break;
+            curl_multi_remove_handle(mstdnt->curl, curl);
+            curl_easy_cleanup(curl);
+        }
     }
     while (opt == MSTDNT_AWAIT_ALL && msgs_left);
 
-    //mstdnt_fetch_data_cleanup(&results);
-    // Note: the fetch removed the handle from our multi handle
-    out:
-    /* // Looks like we're done here */
-    /* curl_multi_remove_handle(mstdnt->curl, curl); */
-    //curl_easy_cleanup(curl);
+    return res;
 }

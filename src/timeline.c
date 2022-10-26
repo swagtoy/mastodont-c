@@ -30,7 +30,7 @@ void* cb_args,
                             struct mstdnt_status* statuses[],
                             size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/list/%s", list_id);
     
@@ -54,7 +54,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
 
@@ -71,7 +71,7 @@ void* cb_args,
                            struct mstdnt_status* statuses[],
                            size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/timelines/tag/%s", hashtag);
     
@@ -98,7 +98,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
 
@@ -128,7 +128,7 @@ void* cb_args,
                               struct mstdnt_status* statuses[],
                               size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_BOOL, "local", { .b = args->local } },
         { _MSTDNT_QUERY_STRING, "instance", { .s = args->instance } },
@@ -150,7 +150,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
     
@@ -167,7 +167,7 @@ void* cb_args,
                               struct mstdnt_status* statuses[],
                               size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
 
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
@@ -185,7 +185,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
     
@@ -202,7 +202,7 @@ void* cb_args,
                             struct mstdnt_status* statuses[],
                             size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
 
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_BOOL, "local", { .b = args->local } },
@@ -225,7 +225,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
     

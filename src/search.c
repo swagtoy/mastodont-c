@@ -95,7 +95,7 @@ void* cb_args,
         mstdnt_search_json_callback
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 void mstdnt_cleanup_search_results(struct mstdnt_search_results* res)

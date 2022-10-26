@@ -106,7 +106,7 @@ void* cb_args,
                                 struct mstdnt_relationship* relationships[],
                                 size_t* size)
 {
-    struct _mstdnt_relationships_cb_args cb_args = { relationships, size };
+    struct _mstdnt_relationships_cb_args req_cb_args = { relationships, size };
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_ARRAY, "id",
           {
@@ -123,7 +123,7 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_relationships_json_callback
     };
 

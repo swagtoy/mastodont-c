@@ -123,7 +123,7 @@ void* cb_args,
                                 struct mstdnt_notification** notifs,
                                 size_t* size)
 {
-    struct _mstdnt_notifications_result_cb_args cb_args = { notifs, size };
+    struct _mstdnt_notifications_result_cb_args req_cb_args = { notifs, size };
     
     union param_value u_exclude_types, u_account_id, u_exclude_visibilities,
         u_include_types, u_with_muted, u_max_id, u_min_id,
@@ -154,11 +154,11 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_notifications_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_notification_dismiss(mastodont_t* data,
@@ -182,7 +182,7 @@ void* cb_args,
         NULL,
     };
     
-    return mstdnt_request(data, m_args, &req_args);   
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);   
 }
 
 int mstdnt_notifications_clear(mastodont_t* data,
@@ -202,7 +202,7 @@ void* cb_args,
         NULL,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_notifications_read(mastodont_t* data,
@@ -229,7 +229,7 @@ void* cb_args,
         mstdnt_notification_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 

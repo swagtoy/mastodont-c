@@ -156,7 +156,7 @@ void* cb_args,
                                    size_t* size)
 {
     char url[MSTDNT_URLSIZE];
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
     struct _mstdnt_query_param params[] = {
@@ -180,11 +180,11 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 /* TODO Populate the arguments! */
@@ -220,7 +220,7 @@ void* cb_args,
                * (not sure if the api returns it or not) */
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 static int mstdnt_status_action(mastodont_t* data,
@@ -246,7 +246,7 @@ void* cb_args,
         mstdnt_status_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 /* These are all the same */
@@ -291,7 +291,7 @@ MSTDNT_STATUS_ACTION_DECL(delete)
         mstdnt_status_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 /* TODO Mutes can be timed */
@@ -339,7 +339,7 @@ void* cb_args,
         mstdnt_status_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
@@ -432,7 +432,7 @@ void* cb_args,
         mstdnt_status_context_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_status_favourited_by(mastodont_t* data,
@@ -462,7 +462,7 @@ void* cb_args,
         mstdnt_accounts_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_status_reblogged_by(mastodont_t* data,
@@ -492,7 +492,7 @@ void* cb_args,
         mstdnt_accounts_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 
@@ -505,7 +505,7 @@ void* cb_args,
                             struct mstdnt_status* statuses[],
                             size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
 
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
@@ -521,11 +521,11 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_get_favourites(mastodont_t* data,
@@ -537,7 +537,7 @@ void* cb_args,
                              struct mstdnt_status* statuses[],
                              size_t* size)
 {
-    struct _mstdnt_statuses_cb_args cb_args = { statuses, size };
+    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
 
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
@@ -552,11 +552,11 @@ void* cb_args,
         NULL, 0,
         CURLOPT_HTTPGET,
         NULL,
-        &cb_args,
+        &req_cb_args,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_status_emoji_react(mastodont_t* api,

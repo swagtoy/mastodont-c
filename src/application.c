@@ -113,7 +113,7 @@ void* cb_args,
         mstdnt_app_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_obtain_oauth_token(mastodont_t* data,
@@ -148,6 +148,6 @@ void* cb_args,
         mstdnt_token_json_callback
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 

@@ -114,7 +114,7 @@ void* cb_args,
                            struct mstdnt_chat* chats[],
                            size_t* size)
 {
-    struct _mstdnt_chats_cb_args cb_args = { chats, size };
+    struct _mstdnt_chats_cb_args req_cb_args = { chats, size };
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args->with_muted } },
         { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
@@ -133,11 +133,11 @@ void* cb_args,
         .params_post_len = 0,
         .request_type = CURLOPT_HTTPGET,
         .request_type_custom = NULL,
-        .args = &cb_args,
+        .args = &req_cb_args,
         .callback = mstdnt_chats_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_get_chat_messages(mastodont_t* data,
@@ -152,7 +152,7 @@ void* cb_args,
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/chats/%s/messages", chat_id);
-    struct _mstdnt_messages_cb_args cb_args = { messages, size };
+    struct _mstdnt_messages_cb_args req_cb_args = { messages, size };
     
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args->with_muted } },
@@ -172,11 +172,11 @@ void* cb_args,
         .params_post_len = 0,
         .request_type = CURLOPT_HTTPGET,
         .request_type_custom = NULL,
-        .args = &cb_args,
+        .args = &req_cb_args,
         .callback = mstdnt_messages_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_get_chat(mastodont_t* data,
@@ -203,7 +203,7 @@ void* cb_args,
         .callback = mstdnt_chat_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 void mstdnt_cleanup_chat(struct mstdnt_chat* chat)
