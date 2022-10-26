@@ -52,12 +52,15 @@ int mstdnt_relationships_json(struct mstdnt_relationship* relationships[],
 
 int mstdnt_relationships_json_callback(cJSON* json, void* _args);
 
-int mstdnt_get_relationships(mastodont_t* data, struct mstdnt_args* args,
-                                char** ids,
-                                size_t ids_len,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_relationship* relationships[],
-                                size_t* size);
+int mstdnt_get_relationships(mastodont_t* data,
+                             struct mstdnt_args* args,
+                             mstdnt_request_cb_t cb_request,
+                             void* cb_args,
+                             char** ids,
+                             size_t ids_len,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_relationship* relationships[],
+                             size_t* size);
 
 void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels);
 

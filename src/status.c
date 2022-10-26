@@ -225,8 +225,8 @@ void* cb_args,
 
 static int mstdnt_status_action(mastodont_t* data,
                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
+                                mstdnt_request_cb_t cb_request,
+                                void* cb_args,
                                 char* id,
                                 struct mstdnt_storage* storage,
                                 struct mstdnt_status* status,
@@ -296,34 +296,34 @@ MSTDNT_STATUS_ACTION_DECL(delete)
 
 /* TODO Mutes can be timed */
 int mstdnt_mute_conversation(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                char* id,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_status* status)
+                             struct mstdnt_args* m_args,
+                             mstdnt_request_cb_t cb_request,
+                             void* cb_args,
+                             char* id,
+                             struct mstdnt_storage* storage,
+                             struct mstdnt_status* status)
 {
-    return mstdnt_status_action(data, m_args, id, storage, status, "api/v1/statuses/%s/mute");
+    return mstdnt_status_action(data, m_args, cb_request, cb_args, id, storage, status, "api/v1/statuses/%s/mute");
 }
 
 int mstdnt_unmute_conversation(mastodont_t* data,
-                                  struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                  char* id,
-                                  struct mstdnt_storage* storage,
-                                  struct mstdnt_status* status)
+                               struct mstdnt_args* m_args,
+                               mstdnt_request_cb_t cb_request,
+                               void* cb_args,
+                               char* id,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_status* status)
 {
-    return mstdnt_status_action(data, m_args, id, storage, status, "api/v1/statuses/%s/unmute");
+    return mstdnt_status_action(data, m_args, cb_request, cb_args, id, storage, status, "api/v1/statuses/%s/unmute");
 }
 
 int mstdnt_get_status(mastodont_t* data,
-                         struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                         char* id,
-                         struct mstdnt_storage* storage,
-                         struct mstdnt_status* status)
+                      struct mstdnt_args* m_args,
+                      mstdnt_request_cb_t cb_request,
+                      void* cb_args,
+                      char* id,
+                      struct mstdnt_storage* storage,
+                      struct mstdnt_status* status)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
@@ -436,13 +436,13 @@ void* cb_args,
 }
 
 int mstdnt_status_favourited_by(mastodont_t* data,
-                                   struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                   char* id,
-                                   struct mstdnt_storage* storage,
-                                   struct mstdnt_account* accounts[],
-                                   size_t* accts_len)
+                                struct mstdnt_args* m_args,
+                                mstdnt_request_cb_t cb_request,
+                                void* cb_args,
+                                char* id,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_account* accounts[],
+                                size_t* accts_len)
 {
     struct _mstdnt_accounts_args args = {
         accounts,

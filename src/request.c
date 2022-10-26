@@ -71,26 +71,28 @@ static void mime_params_post(curl_mime* mime,
     
 }
 
-static mstdnt_sync_request(mastodont_t* data,
-                           struct mstdnt_args* m_args,
-                           struct mstdnt_request_args* args,
-                           struct mstdnt_storage* storage,
-                           mstdnt_request_cb_t cb_request,
-                           void* cb_args,
-                           CURL* curl,
-                           char* url_query)
+// TODO
+#if 0
+static int mstdnt_sync_request(mastodont_t* data,
+                               struct mstdnt_args* m_args,
+                               struct mstdnt_request_args* args,
+                               struct mstdnt_storage* storage,
+                               mstdnt_request_cb_t cb_request,
+                               void* cb_args,
+                               CURL* curl,
+                               char* url_query)
 {
     
     int res = 0, curlerror = 0;
     cJSON* root;
     struct mstdnt_fetch_data results = { 0 };
-    curlerror = mstdnt_fetch_curl(data,
-                                  curl,
-                                  m_args,
-                                  url_query,
-                                  &results,
-                                  args->request_type,
-                                  args->request_type_custom);
+    curlerror = mstdnt_fetch_curl_async(data,
+                                        curl,
+                                        m_args,
+                                        url_query,
+                                        &results,
+                                        args->request_type,
+                                        args->request_type_custom);
 
     if (curlerror != CURLE_OK)
     {
@@ -122,6 +124,7 @@ cleanup:
     curl_easy_cleanup(curl);
     return res;
 }
+#endif
 
 int mstdnt_request(mastodont_t* data,
                    struct mstdnt_args* m_args,

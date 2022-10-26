@@ -58,7 +58,7 @@ void* cb_args,
         mstdnt_statuses_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 int mstdnt_timeline_tag(mastodont_t* data,
@@ -102,7 +102,7 @@ void* cb_args,
         mstdnt_statuses_json_callback,
     };
 
-    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 static const char* reply_visibility_str(enum mstdnt_reply_visibility vis)
@@ -154,7 +154,7 @@ void* cb_args,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 
@@ -189,7 +189,7 @@ void* cb_args,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 
@@ -229,6 +229,6 @@ void* cb_args,
         mstdnt_statuses_json_callback,
     };
     
-    return mstdnt_request(data, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 

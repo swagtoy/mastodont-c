@@ -165,34 +165,38 @@ void* cb_args,
                                  size_t* size_before,
                                  size_t* size_after);
 
-int mstdnt_status_favourited_by(mastodont_t* data, struct mstdnt_args* args,
-                                   char* id,
-                                   struct mstdnt_storage* storage,
-                                   struct mstdnt_account* accounts[],
-                                   size_t* accts);
+int mstdnt_status_favourited_by(mastodont_t* data,
+                                struct mstdnt_args* args,
+                                mstdnt_request_cb_t cb_reqest,
+                                void* cb_args,
+                                char* id,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_account* accounts[],
+                                size_t* accts);
 
 int mstdnt_status_reblogged_by(mastodont_t* data,
-                                  struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                  char* id,
-                                  struct mstdnt_storage* storage,
-                                  struct mstdnt_account* accounts[],
-                                  size_t* accts);
+                               struct mstdnt_args* m_args,
+                               mstdnt_request_cb_t cb_request,
+                               void* cb_args,
+                               char* id,
+                               struct mstdnt_storage* storage,
+                               struct mstdnt_account* accounts[],
+                               size_t* accts);
 
 int mstdnt_create_status(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            struct mstdnt_status_args* args,
-                            struct mstdnt_storage* storage);
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         struct mstdnt_status_args* args,
+                         struct mstdnt_storage* storage);
 
 /* Generates do and undo functions */
-#define MSTDNT_STATUS_ACTION_DECL(type) int mstdnt_##type##_status(mastodont_t* data, struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args, char* id, struct mstdnt_storage* storage, struct mstdnt_status* status)
+#define MSTDNT_STATUS_ACTION_DECL(type) int mstdnt_##type##_status(mastodont_t* data, struct mstdnt_args* m_args, \
+                                                                   mstdnt_request_cb_t cb_request, void* cb_args, char* id, \
+                                                                   struct mstdnt_storage* storage, struct mstdnt_status* status)
+
 #define MSTDNT_STATUS_ACTION_FUNC_URL(action) {                         \
-        return mstdnt_status_action(data, m_args, id, storage, status, "api/v1/statuses/%s/" action); \
+        return mstdnt_status_action(data, m_args, cb_request, cb_args, id, storage, status, "api/v1/statuses/%s/" action); \
     }
 
 MSTDNT_STATUS_ACTION_DECL(favourite);
