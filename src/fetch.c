@@ -36,8 +36,6 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     memcpy(&(res->response[res->size]), ptr, size);
     res->size += size;
     res->response[res->size] = 0;
-
-    res->callback(NULL, res->callback_args);
  
     return size;
 }
@@ -122,14 +120,13 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     return running;
 }
 
-int mstdnt_poll(mastodont_t* mstdnt,
-                enum mstdnt_fetch_await opt,
-                struct mstdnt_fd extra_fds[],
-                size_t nfds)
+int mstdnt_await(mastodont_t* mstdnt,
+                 enum mstdnt_fetch_await opt,
+                 struct mstdnt_fd extra_fds[],
+                 size_t nfds)
 {
     CURLMsg* msg;
     int msgs_left = 1;
-    struct mstdnt_fetch_data* data;
     int res;
     struct curl_waitfd* fds = NULL;
 
@@ -146,6 +143,8 @@ int mstdnt_poll(mastodont_t* mstdnt,
     }
 
     res = curl_multi_poll(mstdnt->curl, fds, nfds, 0, NULL);
+    
+    struct mstdnt_fetch_data* data;
 
     // Check if our socket is done
     do
@@ -156,6 +155,7 @@ int mstdnt_poll(mastodont_t* mstdnt,
             {
                 // Get easy info
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
+                data->callback(NULL, data->callback_args);
                 mstdnt_fetch_data_cleanup(data);
 
                 curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);

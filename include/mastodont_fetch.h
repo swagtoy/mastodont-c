@@ -81,11 +81,14 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
  * @param mstdnt Mastodont struct
  * @param opt Option, MSTDNT_AWAIT_ALL means it will keep going until
  *  there are no more transfers. MSTDNT_AWAIT_ONCE will run
+ * @param extra_fds Set of file descriptors to poll alongside
+ *  the mastodont data.
+ * @param nfds Length of extra_fds
  * @return 1 on error
  */
-int mstdnt_poll(mastodont_t* mstdnt,
-                enum mstdnt_fetch_await opt,
-                struct mstdnt_fd extra_fds[],
-                size_t nfds);
+int mstdnt_await(mastodont_t* mstdnt,
+                 enum mstdnt_fetch_await opt,
+                 struct mstdnt_fd extra_fds[],
+                 size_t nfds);
 
 #endif /* MASTODONT_FETCH_H */
