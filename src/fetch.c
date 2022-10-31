@@ -36,6 +36,8 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     memcpy(&(res->response[res->size]), ptr, size);
     res->size += size;
     res->response[res->size] = 0;
+
+    res->callback(NULL, res->callback_args);
  
     return size;
 }
@@ -106,42 +108,64 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
         curl_easy_setopt(curl, request_t, 1);
 
     // Add curl handle to multi, then run
-    curl_multi_add_handle(mstdnt->curl, curl);
+    res = curl_multi_add_handle(mstdnt->curl, curl);
 
     // No docs on this?
     int running;
     res = curl_multi_perform(mstdnt->curl, &running);
-    if (!res)
+    if (res != CURLM_OK)
+    {
+        printf("error %s\n", curl_multi_strerror(res));
         return -1;
+    }
 
     return running;
 }
 
-int mstdnt_await(mastodont_t* mstdnt, enum mstdnt_fetch_await opt)
+int mstdnt_poll(mastodont_t* mstdnt,
+                enum mstdnt_fetch_await opt,
+                struct mstdnt_fd extra_fds[],
+                size_t nfds)
 {
     CURLMsg* msg;
     int msgs_left = 1;
     struct mstdnt_fetch_data* data;
     int res;
-    
-    // TODO
+    struct curl_waitfd* fds = NULL;
 
-    res = curl_multi_poll(mstdnt->curl, NULL, 0, 1000, NULL);
+    // Any other fds can go here
+    if (extra_fds)
+    {
+        fds = calloc(nfds, sizeof(struct curl_waitfd));
+        for (int i = 0; i < nfds; ++i)
+        {
+            fds[i].fd = extra_fds[i].fd;
+            fds[i].events = extra_fds[i].events;
+            fds[i].revents = extra_fds[i].revents;
+        }
+    }
+
+    res = curl_multi_poll(mstdnt->curl, fds, nfds, 0, NULL);
 
     // Check if our socket is done
-    while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
+    do
     {
-        if (msg->msg == CURLMSG_DONE)
+        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
         {
-            // Get easy info
-            curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
-            mstdnt_fetch_data_cleanup(data);
+            if (msg->msg == CURLMSG_DONE)
+            {
+                // Get easy info
+                curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
+                mstdnt_fetch_data_cleanup(data);
 
-            curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
-            curl_easy_cleanup(msg->easy_handle);
+                curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
+                curl_easy_cleanup(msg->easy_handle);
+            }
         }
     }
     while (opt == MSTDNT_AWAIT_ALL && msgs_left);
+
+    free(fds);
 
     return res;
 }

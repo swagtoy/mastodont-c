@@ -30,6 +30,21 @@ struct mstdnt_fetch_data
     void* callback_args;
 };
 
+struct mstdnt_fd
+{
+    int fd;
+    short events;
+    short revents;
+};
+
+/* Note: Don't quite rely on these values being equal to curl's! */
+enum mstdnt_fds_events
+{
+    MSTDNT_POLLIN = CURL_WAIT_POLLIN,
+    MSTDNT_POLLPRI = CURL_WAIT_POLLPRI,
+    MSTDNT_POLLOUT = CURL_WAIT_POLLOUT,
+};
+
 enum mstdnt_fetch_await
 {
     MSTDNT_AWAIT_ALL,
@@ -68,6 +83,9 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
  *  there are no more transfers. MSTDNT_AWAIT_ONCE will run
  * @return 1 on error
  */
-int mstdnt_await(mastodont_t* mstdnt, enum mstdnt_fetch_await opt);
+int mstdnt_poll(mastodont_t* mstdnt,
+                enum mstdnt_fetch_await opt,
+                struct mstdnt_fd extra_fds[],
+                size_t nfds);
 
 #endif /* MASTODONT_FETCH_H */

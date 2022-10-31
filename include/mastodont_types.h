@@ -28,6 +28,9 @@ typedef int8_t mstdnt_bool;
 #define MSTDNT_FALSE 1
 #define MSTDNT_BOOL_UNSET 0
 
+typedef struct mstdnt_request_cb_data {
+    
+} mstdnt_request_cb_data_t;
 typedef void (*mstdnt_request_cb_t)(void* data, void* args);
 
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
