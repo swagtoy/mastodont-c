@@ -96,32 +96,9 @@ static int mstdnt_sync_request(mastodont_t* data,
 
     if (curlerror != CURLE_OK)
     {
-        res = 1;
-        storage->error = (char*)curl_easy_strerror(curlerror);
         goto cleanup;
     }
 
-    // Create json structure
-    if (_mstdnt_json_init(&root, &results, storage))
-    {
-        res = 1;
-        goto cleanup_res;
-    }
-
-    // Make sure there is no error
-    if (!mstdnt_check_error(storage))
-    {
-        /* Call our callback and do the large work */
-        if (args->callback) res = args->callback(storage->root, args->args);
-    }
-    else
-        res = 1;
-
-cleanup_res:
-    mstdnt_fetch_results_cleanup(&results);
-cleanup:
-    // Note: the fetch removed the handle from our multi handle
-    curl_easy_cleanup(curl);
     return res;
 }
 #endif
@@ -181,32 +158,6 @@ int mstdnt_request(mastodont_t* data,
     // Mime already used, free it early
     if (mime) curl_mime_free(mime);
 
-    if (curlerror != CURLE_OK)
-    {
-        res = 1;
-        storage->error = (char*)curl_easy_strerror(curlerror);
-        goto cleanup;
-    }
-
-    // Create json structure
-#if 0
-    if (_mstdnt_json_init(&root, &results, storage))
-    {
-        res = 1;
-        goto cleanup_res;
-    }
-
-    // Make sure there is no error
-    if (!mstdnt_check_error(storage))
-    {
-        /* Call our callback and do the large work */
-        if (args->callback) res = args->callback(storage->root, args->args);
-    }
-    else
-        res = 1;
-#endif
-
-cleanup_res:
 
 cleanup:
     if (args->params_post && args->request_type == CURLOPT_POST)
