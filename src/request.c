@@ -165,5 +165,5 @@ cleanup:
     
     /* Only free if params_query set */
     if (args->params_query) mstdnt_free(url_query);
-    return res;
+    return 1;
 }

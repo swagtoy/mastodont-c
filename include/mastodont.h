@@ -58,6 +58,6 @@ void mstdnt_cleanup(mastodont_t* data);
  */
 void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
 
-void mstdnt_request_cb_cleanup(mstdnt_request_cb_t* data);
+void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
 
 #endif /* MASTODONT_H */
