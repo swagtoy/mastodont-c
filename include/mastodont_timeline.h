@@ -41,50 +41,35 @@ struct mstdnt_timeline_args
 };
 
 int mstdnt_timeline_home(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            struct mstdnt_timeline_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* statuses[],
-                            size_t* size);
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         struct mstdnt_timeline_args* args);
 
 int mstdnt_timeline_list(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            char* list_id,
-                            struct mstdnt_timeline_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* statuses[],
-                            size_t* size);
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* list_id,
+                         struct mstdnt_timeline_args* args);
 
 int mstdnt_timeline_public(mastodont_t* data,
-                              struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                              struct mstdnt_timeline_args* args,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* statuses[],
-                              size_t* statuses_size);
+                           struct mstdnt_args* m_args,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args,
+                           struct mstdnt_timeline_args* args);
 
 int mstdnt_timeline_direct(mastodont_t* data,
-                              struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                              struct mstdnt_timeline_args* args,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* statuses[],
-                              size_t* statuses_size);
+                           struct mstdnt_args* m_args,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args,
+                           struct mstdnt_timeline_args* args);
 
 int mstdnt_timeline_tag(mastodont_t* data,
-                           struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                           char* hashtag,
-                           struct mstdnt_timeline_args* args,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_status* statuses[],
-                           size_t* size);
+                        struct mstdnt_args* m_args,
+                        mstdnt_request_cb_t cb_request,
+                        void* cb_args,
+                        char* hashtag,
+                        struct mstdnt_timeline_args* args);
 
 #endif /* MASTODONT_TIMELINE_H */

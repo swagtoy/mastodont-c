@@ -25,9 +25,13 @@ struct mstdnt_fetch_data
     char* response;
     size_t size;
 
+    struct mstdnt_storage storage;
+
     // Callback from user
     mstdnt_request_cb_t callback;
     void* callback_args;
+    int (*json_cb)(cJSON*, void*);
+    void* json_args;
 };
 
 struct mstdnt_fd
@@ -69,6 +73,8 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
                             struct mstdnt_args* args,
                             mstdnt_request_cb_t cb_request,
                             void* cb_args,
+                            int (*json_cb)(cJSON*, void*),
+                            void* json_args,
                             char* url,
                             CURLoption request_t,
                             char* request_t_custom);

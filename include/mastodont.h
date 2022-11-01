@@ -29,33 +29,35 @@
 #include <mastodont_announcement.h>
 #include <mastodont_chats.h>
 
-//! Initializes libcurl
+/// Initializes libcurl
 void mstdnt_global_curl_init();
-//! Cleans up libcurl
+/// Cleans up libcurl
 void mstdnt_global_curl_cleanup();
 
-/*!
+/**
  * Initializes a mstdnt struct
  *
- * \param data Pointer to struct to fill in
- * \return Value of curl_easy_init(); either Zero or non-zero
+ * @param data Pointer to struct to fill in
+ * @return Value of curl_easy_init(); either Zero or non-zero
  */
 int mstdnt_init(mastodont_t* data);
 
-/*!
+/**
  * Cleans up the mstdnt struct
  *
- * \param data Pointer to the mstdnt data
+ * @param data Pointer to the mstdnt data
  */
 void mstdnt_cleanup(mastodont_t* data);
 
-/*!
+/**
  * Cleans up a storage struct.
  *
  * This contains information such as JSON information and errors.
  *
- * \param storage The storage block to cleanup
+ * @param storage The storage block to cleanup
  */
 void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
+
+void mstdnt_request_cb_cleanup(mstdnt_request_cb_t* data);
 
 #endif /* MASTODONT_H */

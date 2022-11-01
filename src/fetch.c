@@ -18,6 +18,7 @@
 #include <pthread.h>
 #include <mastodont_hooks.h>
 #include <mastodont_fetch.h>
+#include <mastodont_json_helper.h>
 
 /* For use with libcurl */
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
@@ -51,6 +52,8 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
                             struct mstdnt_args* m_args,
                             mstdnt_request_cb_t cb_request,
                             void* cb_args,
+                            int (*json_cb)(cJSON*, void*),
+                            void* json_args,
                             char* _url,
                             CURLoption request_t,
                             char* request_t_custom)
@@ -84,6 +87,8 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     }
     results->callback = cb_request;
     results->callback_args = cb_args;
+    results->json_cb = json_cb;
+    results->json_args = json_args;
 
     // Set options
     curl_easy_setopt(curl, CURLOPT_URL, url);
@@ -108,7 +113,6 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     // Add curl handle to multi, then run
     res = curl_multi_add_handle(mstdnt->curl, curl);
 
-    // No docs on this?
     int running;
     res = curl_multi_perform(mstdnt->curl, &running);
     if (res != CURLM_OK)
@@ -145,6 +149,9 @@ int mstdnt_await(mastodont_t* mstdnt,
     res = curl_multi_poll(mstdnt->curl, fds, nfds, 0, NULL);
     
     struct mstdnt_fetch_data* data;
+    cJSON* root;
+    struct mstdnt_storage storage = { 0 };
+    struct mstdnt_fetch_data results = { 0 };
 
     // Check if our socket is done
     do
@@ -155,9 +162,26 @@ int mstdnt_await(mastodont_t* mstdnt,
             {
                 // Get easy info
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
-                data->callback(NULL, data->callback_args);
-                mstdnt_fetch_data_cleanup(data);
+                /* Zero out */
+                memset(&(data->storage), 0, sizeof(struct mstdnt_storage));
+                data->storage.needs_cleanup = 0;
+                
+                // Get json
+                if (_mstdnt_json_init(&root, &results, &storage))
+                {
+                    res = 1;
+                    goto cleanup_res;
+                }
 
+                void** json_cb_res;
+                if (data->json_cb)
+                    res = data->json_cb(storage.root, data->json_args);
+                
+                data->callback(NULL, data->callback_args);
+
+            cleanup_res:
+                // Cleanup
+                mstdnt_fetch_data_cleanup(data);
                 curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
                 curl_easy_cleanup(msg->easy_handle);
             }

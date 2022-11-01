@@ -28,11 +28,17 @@ typedef int8_t mstdnt_bool;
 #define MSTDNT_FALSE 1
 #define MSTDNT_BOOL_UNSET 0
 
+struct mstdnt_storage;
+
+// Only god knows
 typedef struct mstdnt_request_cb_data {
-    
-} mstdnt_request_cb_data_t;
+    struct mstdnt_storage* storage;
+    void* data;
+    void (*data_free_cb)(void*);
+} mstdnt_request_cb_data;
 typedef void (*mstdnt_request_cb_t)(void* data, void* args);
 
+#define MSTDNT_CB_DATA(_data) (_data->data)
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
 #define MSTDNT_FLAG_SSL_UNVERIFIED (1<<1)
 #define MSTDNT_FLAG_SYNC (1<<2)

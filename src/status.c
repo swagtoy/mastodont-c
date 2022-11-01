@@ -13,6 +13,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <features.h>
 #include <string.h>
 #include <stdlib.h>
 #include <mastodont_hooks.h>
@@ -131,29 +132,32 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
     return 0;
 }
 
-int mstdnt_status_json_callback(cJSON* json, void* status)
+int mstdnt_status_json_callback(cJSON* json, void** _args)
 {
-    return mstdnt_status_json((struct mstdnt_status*)status, json->child);
+    struct mstdnt_status* status = malloc(sizeof(struct mstdnt_status));
+    *_args = status;
+    return mstdnt_status_json(status, json->child);
 }
 
 // GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_json)
 
-int mstdnt_statuses_json_callback(cJSON* json, void* _args)
+int mstdnt_statuses_json_callback(cJSON* json, void** _args)
 {
-    struct _mstdnt_statuses_cb_args* args = _args;
-    return mstdnt_statuses_json(args->statuses, args->size, json);
+    struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
+    *_args = statuses;
+    return mstdnt_statuses_json(&(statuses->statuses), &(statuses->size), json);
 }
 
 int mstdnt_get_account_statuses(mastodont_t* data,
-                                   struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                   char* id,
-                                   struct mstdnt_account_statuses_args* args,
-                                   struct mstdnt_storage* storage,
-                                   struct mstdnt_status* statuses[],
-                                   size_t* size)
+                                struct mstdnt_args* m_args,
+                                mstdnt_request_cb_t cb_request,
+                                void* cb_args,
+                                char* id,
+                                struct mstdnt_account_statuses_args* args,
+                                struct mstdnt_storage* storage,
+                                struct mstdnt_status* statuses[],
+                                size_t* size)
 {
     char url[MSTDNT_URLSIZE];
     struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
@@ -391,26 +395,27 @@ int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
     return 0;
 }
 
-int mstdnt_status_context_json_callback(cJSON* json, void* _args)
+int mstdnt_status_context_json_callback(cJSON* json, void** _args)
 {
-    struct _mstdnt_status_context_result_cb_args* args = _args;
-    return mstdnt_status_context_json(args->statuses_before,
-                                      args->statuses_after,
-                                      args->size_before,
-                                      args->size_after,
+    struct mstdnt_status_context* ctx = malloc(sizeof(struct mstdnt_status_context));
+    *_args = ctx;
+    return mstdnt_status_context_json(&(ctx->before.statuses),
+                                      &(ctx->after.statuses),
+                                      &(ctx->before.len),
+                                      &(ctx->after.len),
                                       json);
 }
 
 int mstdnt_get_status_context(mastodont_t* data,
-                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                 char* id,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_status* statuses_before[],
-                                 struct mstdnt_status* statuses_after[],
-                                 size_t* size_before,
-                                 size_t* size_after)
+                              struct mstdnt_args* m_args,
+                              mstdnt_request_cb_t cb_request,
+                              void* cb_args,
+                              char* id,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* statuses_before[],
+                              struct mstdnt_status* statuses_after[],
+                              size_t* size_before,
+                              size_t* size_after)
 {
     struct _mstdnt_status_context_result_cb_args args = {
         statuses_before,

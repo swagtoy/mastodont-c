@@ -144,9 +144,6 @@ int mstdnt_request(mastodont_t* data,
     // Create cURL single handle, we will run this later and then block
     CURL* curl = curl_easy_init();
 
-    /* Zero out */
-    memset(storage, 0, sizeof(struct mstdnt_storage));
-    storage->needs_cleanup = 0;
 
     if (args->params_post &&
         (args->request_type == CURLOPT_POST ||
@@ -175,6 +172,8 @@ int mstdnt_request(mastodont_t* data,
         m_args,
         cb_request,
         cb_args,
+        args->callback,
+        args->args,
         url_query,
         args->request_type,
         args->request_type_custom);
