@@ -146,7 +146,7 @@ int mstdnt_statuses_json_callback(cJSON* json, void** _args)
 {
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
     *_args = statuses;
-    return mstdnt_statuses_json(&(statuses->statuses), &(statuses->size), json);
+    return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
 
 int mstdnt_get_account_statuses(mastodont_t* data,
