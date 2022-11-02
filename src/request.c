@@ -121,7 +121,6 @@ int mstdnt_request(mastodont_t* data,
     // Create cURL single handle, we will run this later and then block
     CURL* curl = curl_easy_init();
 
-
     if (args->params_post &&
         (args->request_type == CURLOPT_POST ||
          args->request_type == CURLOPT_CUSTOMREQUEST))
@@ -156,14 +155,14 @@ int mstdnt_request(mastodont_t* data,
         args->request_type_custom);
 
     // Mime already used, free it early
-    if (mime) curl_mime_free(mime);
+    //if (mime) curl_mime_free(mime);
 
 
 cleanup:
-    if (args->params_post && args->request_type == CURLOPT_POST)
-        mstdnt_free(post);
+    /* if (args->params_post && args->request_type == CURLOPT_POST) */
+    /*     mstdnt_free(post); */
     
-    /* Only free if params_query set */
-    if (args->params_query) mstdnt_free(url_query);
+    /* /\* Only free if params_query set *\/ */
+    /* if (args->params_query) mstdnt_free(url_query); */
     return 1;
 }

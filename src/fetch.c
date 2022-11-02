@@ -112,16 +112,22 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
 
     // Add curl handle to multi, then run
     res = curl_multi_add_handle(mstdnt->curl, curl);
-
-    int running;
-    res = curl_multi_perform(mstdnt->curl, &running);
     if (res != CURLM_OK)
     {
         printf("error %s\n", curl_multi_strerror(res));
         return -1;
     }
 
-    return running;
+    
+    /* int running; */
+    /* res = curl_multi_perform(mstdnt->curl, &running); */
+    /* if (res != CURLM_OK) */
+    /* { */
+    /*     printf("error %s\n", curl_multi_strerror(res)); */
+    /*     return -1; */
+    /* } */
+
+    return 0;
 }
 
 int mstdnt_await(mastodont_t* mstdnt,
@@ -145,18 +151,22 @@ int mstdnt_await(mastodont_t* mstdnt,
             fds[i].revents = extra_fds[i].revents;
         }
     }
-
-    res = curl_multi_poll(mstdnt->curl, fds, nfds, 0, NULL);
     
     struct mstdnt_fetch_data* data;
     cJSON* root;
     struct mstdnt_storage storage = { 0 };
-    struct mstdnt_fetch_data results = { 0 };
+    struct mstdnt_fetch_data* results;
+    int numfds;
+    int running = 1;
 
     // Check if our socket is done
     do
     {
-        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)))
+        res = curl_multi_perform(mstdnt->curl, &running);
+        
+        res = curl_multi_poll(mstdnt->curl, fds, nfds, 1000, &numfds);
+        
+        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)) != NULL)
         {
             if (msg->msg == CURLMSG_DONE)
             {
@@ -167,7 +177,7 @@ int mstdnt_await(mastodont_t* mstdnt,
                 data->storage.needs_cleanup = 0;
                 
                 // Get json
-                if (_mstdnt_json_init(&root, &results, &storage))
+                if (_mstdnt_json_init(&root, data, &storage))
                 {
                     res = 1;
                     goto cleanup_res;
@@ -186,8 +196,10 @@ int mstdnt_await(mastodont_t* mstdnt,
                 curl_easy_cleanup(msg->easy_handle);
             }
         }
+
+        if (res) break;
     }
-    while (opt == MSTDNT_AWAIT_ALL && msgs_left);
+    while (/* opt == MSTDNT_AWAIT_ALL && msgs_left */ running);
 
     free(fds);
 
