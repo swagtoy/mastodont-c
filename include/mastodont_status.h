@@ -126,8 +126,8 @@ int mstdnt_statuses_json(struct mstdnt_status* statuses[],
                          size_t* size,
                          cJSON* js);
 
-void _mstdnt_val_status_call(cJSON* v, void* _type);
-void _mstdnt_val_malloc_status_call(cJSON* v, void* _type);
+void _mstdnt_val_status_call(cJSON* v, void* args, mstdnt_request_cb_data* data);
+void _mstdnt_val_malloc_status_call(cJSON* v, void* args, mstdnt_request_cb_data* data);
 
 int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
                                struct mstdnt_status* statuses_after[],

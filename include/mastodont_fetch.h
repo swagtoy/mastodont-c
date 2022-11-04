@@ -28,7 +28,7 @@ struct mstdnt_fetch_data
     // Callback from user
     mstdnt_request_cb_t callback;
     void* callback_args;
-    int (*json_cb)(cJSON*, void*);
+    int (*json_cb)(cJSON*, void*, mstdnt_request_cb_data*);
     void* json_args;
 };
 
