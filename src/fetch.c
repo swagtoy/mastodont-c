@@ -155,7 +155,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     struct mstdnt_fetch_data* data;
     cJSON* root;
     struct mstdnt_storage storage = { 0 };
-    struct mstdnt_fetch_data* results;
+    mstdnt_request_cb_data results = { 0 };
     int numfds;
     int running = 1;
 
@@ -172,9 +172,9 @@ int mstdnt_await(mastodont_t* mstdnt,
             {
                 // Get easy info
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
-                /* Zero out */
-                memset(&(data->storage), 0, sizeof(struct mstdnt_storage));
-                data->storage.needs_cleanup = 0;
+                // Setup
+                storage.needs_cleanup = 0;
+                // Fill in results
                 
                 // Get json
                 if (_mstdnt_json_init(&root, data, &storage))
@@ -183,9 +183,12 @@ int mstdnt_await(mastodont_t* mstdnt,
                     goto cleanup_res;
                 }
 
-                void** json_cb_res;
+                // Setup callback results
+                results.storage = &storage;
+
+                // Yeah, it's like that sometimes... :')
                 if (data->json_cb)
-                    res = data->json_cb(storage.root, data->json_args);
+                    res = data->json_cb(storage.root, data->json_args, &results);
                 
                 data->callback(NULL, data->callback_args);
 
@@ -200,6 +203,11 @@ int mstdnt_await(mastodont_t* mstdnt,
         if (res) break;
     }
     while (/* opt == MSTDNT_AWAIT_ALL && msgs_left */ running);
+
+    // Put revents back for callee
+    if (extra_fds)
+        for (int i = 0; i < nfds; ++i)
+            extra_fds[i].revents = fds[i].revents;
 
     free(fds);
 

@@ -132,10 +132,11 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
     return 0;
 }
 
-int mstdnt_status_json_callback(cJSON* json, void** _args)
+int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data data)
 {
+    // No arguments passed for statuses
+    (void)_args;
     struct mstdnt_status* status = malloc(sizeof(struct mstdnt_status));
-    *_args = status;
     return mstdnt_status_json(status, json->child);
 }
 
@@ -145,7 +146,7 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_stat
 int mstdnt_statuses_json_callback(cJSON* json, void** _args)
 {
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
-    *_args = statuses;
+    *_args = (void*)statuses;
     return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
 

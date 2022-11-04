@@ -25,8 +25,6 @@ struct mstdnt_fetch_data
     char* response;
     size_t size;
 
-    struct mstdnt_storage storage;
-
     // Callback from user
     mstdnt_request_cb_t callback;
     void* callback_args;

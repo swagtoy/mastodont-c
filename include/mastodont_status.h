@@ -290,7 +290,7 @@ int mstdnt_get_favourites(mastodont_t* data,
                           size_t* size);
 
 int mstdnt_statuses_json_callback(cJSON* json, void** _args);
-int mstdnt_status_json_callback(cJSON* json, void** status);
+int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* results);
 int mstdnt_status_context_json_callback(cJSON* json, void** _args);
 
 #endif /* MASTODONT_STATUS */
