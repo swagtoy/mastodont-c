@@ -33,10 +33,3 @@ void mstdnt_storage_cleanup(struct mstdnt_storage* storage)
         storage->needs_cleanup = 0;
     }
 }
-
-void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
-{
-    mstdnt_storage_cleanup(data->storage);
-    //data->data_free_cb(data->data, 0);
-    /* free(data); */
-}

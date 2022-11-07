@@ -87,6 +87,7 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     }
     results->callback = cb_request;
     results->callback_args = cb_args;
+
     results->json_cb = json_cb;
     results->json_args = json_args;
 
@@ -192,6 +193,7 @@ int mstdnt_await(mastodont_t* mstdnt,
                 data->callback(&(results), data->callback_args);
 
             cleanup_res:
+                mstdnt_request_cb_cleanup(&results);
                 // Cleanup
                 mstdnt_fetch_data_cleanup(data);
                 curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
@@ -211,4 +213,13 @@ int mstdnt_await(mastodont_t* mstdnt,
     free(fds);
 
     return res;
+}
+
+void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
+
+void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
+{
+    mstdnt_storage_cleanup(data->storage);
+    //data->data_free_cb(data->data, 0);
+    /* free(data); */
 }

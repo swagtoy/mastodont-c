@@ -95,4 +95,6 @@ int mstdnt_await(mastodont_t* mstdnt,
                  struct mstdnt_fd extra_fds[],
                  size_t nfds);
 
+void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
+
 #endif /* MASTODONT_FETCH_H */

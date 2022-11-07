@@ -149,6 +149,8 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_stat
 int mstdnt_statuses_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
 {
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
+    data->data = statuses;
+    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_statuses;
     return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
 
