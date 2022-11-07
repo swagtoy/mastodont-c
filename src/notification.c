@@ -252,7 +252,7 @@ void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
     }
     if (notif->status)
     {
-        mstdnt_cleanup_status(notif->status);
+        mstdnt_cleanup_status(notif->status, 0);
         mstdnt_free(notif->status);
     }
     mstdnt_free(notif->pleroma);

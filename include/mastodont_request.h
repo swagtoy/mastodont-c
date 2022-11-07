@@ -31,7 +31,7 @@ struct mstdnt_request_args
     CURLoption request_type;
     char* request_type_custom;
     void* args;
-    int (*callback)(cJSON*, void**);
+    int (*callback)(cJSON*, void*, mstdnt_request_cb_data*);
 };
 
 /**

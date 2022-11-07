@@ -134,9 +134,12 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 
 int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
 {
-    // No arguments passed for statuses
-    (void)_args;
+    // Unused
+    (void)args;
+    
     struct mstdnt_status* status = malloc(sizeof(struct mstdnt_status));
+    data->data = status;
+    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_status;
     return mstdnt_status_json(status, json->child);
 }
 
@@ -145,7 +148,6 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_stat
 
 int mstdnt_statuses_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
 {
-    // TODO
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
     return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
@@ -250,7 +252,7 @@ static int mstdnt_status_action(mastodont_t* data,
         status,
         mstdnt_status_json_callback
     };
-
+    
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
@@ -396,10 +398,10 @@ int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
     return 0;
 }
 
-int mstdnt_status_context_json_callback(cJSON* json, void** _args)
+int mstdnt_status_context_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
 {
     struct mstdnt_status_context* ctx = malloc(sizeof(struct mstdnt_status_context));
-    *_args = ctx;
+    data->data = ctx;
     return mstdnt_status_context_json(&(ctx->before.statuses),
                                       &(ctx->after.statuses),
                                       &(ctx->before.len),
@@ -454,6 +456,7 @@ int mstdnt_status_favourited_by(mastodont_t* data,
         accounts,
         accts_len,
     };
+    
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/favourited_by", id);
 
@@ -566,13 +569,13 @@ void* cb_args,
 }
 
 int mstdnt_status_emoji_react(mastodont_t* api,
-                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                 char* id,
-                                 char* emoji,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_status* status)
+                              struct mstdnt_args* m_args,
+                              mstdnt_request_cb_t cb_request,
+                              void* cb_args,
+                              char* id,
+                              char* emoji,
+                              struct mstdnt_storage* storage,
+                              struct mstdnt_status* status)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/statuses/%s/reactions/%s", id, emoji);
@@ -588,10 +591,10 @@ void* cb_args,
         mstdnt_status_json_callback
     };
     
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-void mstdnt_cleanup_status(struct mstdnt_status* status)
+void mstdnt_cleanup_status(struct mstdnt_status* status, size_t unused)
 {
     mstdnt_cleanup_attachments(status->media_attachments);
     mstdnt_cleanup_account(&(status->account));
@@ -599,7 +602,7 @@ void mstdnt_cleanup_status(struct mstdnt_status* status)
     mstdnt_cleanup_emojis(status->emojis);
     if (status->reblog)
     {
-        mstdnt_cleanup_status(status->reblog);
+        mstdnt_cleanup_status(status->reblog, 0);
         mstdnt_free(status->reblog);
     }
     mstdnt_free(status->application);
@@ -611,7 +614,7 @@ void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
     if (!statuses) return;
     for (i = 0; i < s; ++i)
     {
-        mstdnt_cleanup_status(statuses + i);
+        mstdnt_cleanup_status(statuses + i, 0);
     }
     mstdnt_free(statuses);
 }

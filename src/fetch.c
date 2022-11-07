@@ -118,7 +118,6 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
         return -1;
     }
 
-    
     /* int running; */
     /* res = curl_multi_perform(mstdnt->curl, &running); */
     /* if (res != CURLM_OK) */
@@ -190,7 +189,7 @@ int mstdnt_await(mastodont_t* mstdnt,
                 if (data->json_cb)
                     res = data->json_cb(storage.root, data->json_args, &results);
                 
-                data->callback(NULL, data->callback_args);
+                data->callback(&(results), data->callback_args);
 
             cleanup_res:
                 // Cleanup
