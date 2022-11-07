@@ -25,7 +25,8 @@
 #include <mastodont_request.h>
 #include <mastodont_generate.h>
 
-void _mstdnt_val_status_call(cJSON* v, void* _type)
+void
+_mstdnt_val_status_call(cJSON* v, void* _type)
 {
     struct mstdnt_status* type = _type;
 
@@ -33,7 +34,8 @@ void _mstdnt_val_status_call(cJSON* v, void* _type)
 }
 
 
-void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
+void
+_mstdnt_val_malloc_status_call(cJSON* v, void* _type)
 {
     struct mstdnt_status** type = _type;
 
@@ -48,7 +50,8 @@ void _mstdnt_val_malloc_status_call(cJSON* v, void* _type)
 }
 
 // Consider moving to mstdnt_visibility_types?
-static void _mstdnt_val_visibility_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_visibility_call(cJSON* v, void* _type)
 {
     enum mstdnt_visibility_type* type = _type;
 
@@ -76,7 +79,8 @@ static void _mstdnt_val_visibility_call(cJSON* v, void* _type)
         *type = MSTDNT_VISIBILITY_UNKNOWN;
 }
 
-int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
+int
+mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
 {
     cJSON* v;
 
@@ -132,7 +136,10 @@ int mstdnt_status_json(struct mstdnt_status* status, cJSON* js)
     return 0;
 }
 
-int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
+int
+mstdnt_status_json_callback(cJSON* json,
+                            void* args,
+                            mstdnt_request_cb_data* data)
 {
     // Unused
     (void)args;
@@ -146,7 +153,10 @@ int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data*
 // GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_statuses_json, struct mstdnt_status, mstdnt_status_json)
 
-int mstdnt_statuses_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
+int
+mstdnt_statuses_json_callback(cJSON* json,
+                              void* args,
+                              mstdnt_request_cb_data* data)
 {
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
     data->data = statuses;
@@ -154,105 +164,101 @@ int mstdnt_statuses_json_callback(cJSON* json, void* args, mstdnt_request_cb_dat
     return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
 
-int mstdnt_get_account_statuses(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-                                mstdnt_request_cb_t cb_request,
-                                void* cb_args,
-                                char* id,
-                                struct mstdnt_account_statuses_args* args,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_status* statuses[],
-                                size_t* size)
+int
+mstdnt_get_account_statuses(mastodont_t* data,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* id,
+                            struct mstdnt_account_statuses_args args)
 {
     char url[MSTDNT_URLSIZE];
-    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
     snprintf(url, MSTDNT_URLSIZE, "api/v1/accounts/%s/statuses", id);
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_INT, "pinned", { .i = args->pinned } },
-        { _MSTDNT_QUERY_STRING, "tagged", { .s = args->tagged } },
-        { _MSTDNT_QUERY_INT, "only_media", { .i = args->only_media } },
-        { _MSTDNT_QUERY_INT, "with_muted", { .i = args->with_muted } },
-        { _MSTDNT_QUERY_INT, "exclude_reblogs", { .i = args->exclude_reblogs } },
-        { _MSTDNT_QUERY_INT, "exclude_replies", { .i = args->exclude_replies } },
-        { _MSTDNT_QUERY_STRING, "max_id",  { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
-        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_INT, "pinned", { .i = args.pinned } },
+        { _MSTDNT_QUERY_STRING, "tagged", { .s = args.tagged } },
+        { _MSTDNT_QUERY_INT, "only_media", { .i = args.only_media } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args.with_muted } },
+        { _MSTDNT_QUERY_INT, "exclude_reblogs", { .i = args.exclude_reblogs } },
+        { _MSTDNT_QUERY_INT, "exclude_replies", { .i = args.exclude_replies } },
+        { _MSTDNT_QUERY_STRING, "max_id",  { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args.offset } },
     };
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &req_cb_args,
-        mstdnt_statuses_json_callback
+        .url = url,
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .params_post = NULL,
+        .params_post_len = 0,
+        .request_type = CURLOPT_HTTPGET,
+        .args = NULL,
+        .callback = mstdnt_statuses_json_callback
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-/* TODO Populate the arguments! */
-int mstdnt_create_status(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            struct mstdnt_status_args* args,
-                            struct mstdnt_storage* storage)
+int
+mstdnt_create_status(mastodont_t* data,
+                     struct mstdnt_args* m_args,
+                     mstdnt_request_cb_t cb_request,
+                     void* cb_args,
+                     struct mstdnt_status_args args)
 {
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "in_reply_to_id", { .s = args->in_reply_to_id } },
-        { _MSTDNT_QUERY_STRING, "content_type", { .s = args->content_type } },
-        { _MSTDNT_QUERY_STRING, "status", { .s = args->status } },
-        { _MSTDNT_QUERY_STRING, "visibility", { .s = args->visibility } },
+        { _MSTDNT_QUERY_STRING, "in_reply_to_id", { .s = args.in_reply_to_id } },
+        { _MSTDNT_QUERY_STRING, "content_type", { .s = args.content_type } },
+        { _MSTDNT_QUERY_STRING, "status", { .s = args.status } },
+        { _MSTDNT_QUERY_STRING, "visibility", { .s = args.visibility } },
         { _MSTDNT_QUERY_ARRAY, "media_ids",
           {
-              .a.arr = args->media_ids,
-              .a.arr_len = args->media_ids_len
+              .a.arr = args.media_ids,
+              .a.arr_len = args.media_ids_len
           }
         },
     };
 
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/statuses",
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_POST,
-        NULL,
-        NULL,
-        NULL, /* TODO populate the status back?
-               * (not sure if the api returns it or not) */
+        .url = "api/v1/statuses",
+        .params_query = NULL,
+        .params_query_len = 0,
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_POST,
+        .request_type_custom = NULL,
+        .args = NULL,
+        .callback = NULL, /* TODO populate the status back?
+                           * (not sure if the api returns it or not (it does)) */
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-static int mstdnt_status_action(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-                                mstdnt_request_cb_t cb_request,
-                                void* cb_args,
-                                char* id,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_status* status,
-                                char* url_str)
+static int
+mstdnt_status_action(mastodont_t* data,
+                     struct mstdnt_args* m_args,
+                     mstdnt_request_cb_t cb_request,
+                     void* cb_args,
+                     char* id,
+                     char* url_str)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, url_str, id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_POST,
-        NULL,
-        status,
-        mstdnt_status_json_callback
+        .url = url,
+        .params_query = NULL,
+        .params_query_len = 0,
+        .params_post = NULL,
+        .params_post_len = 0,
+        .request_type = CURLOPT_POST,
+        .args = NULL,
+        .callback = mstdnt_status_json_callback
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
@@ -260,27 +266,27 @@ static int mstdnt_status_action(mastodont_t* data,
 
 /* These are all the same */
 MSTDNT_STATUS_ACTION_DECL(favourite)
-    MSTDNT_STATUS_ACTION_FUNC_URL("favourite")
+MSTDNT_STATUS_ACTION_FUNC_URL("favourite")
 
-    MSTDNT_STATUS_ACTION_DECL(unfavourite)
-    MSTDNT_STATUS_ACTION_FUNC_URL("unfavourite")
+MSTDNT_STATUS_ACTION_DECL(unfavourite)
+MSTDNT_STATUS_ACTION_FUNC_URL("unfavourite")
 
-    MSTDNT_STATUS_ACTION_DECL(reblog)
-    MSTDNT_STATUS_ACTION_FUNC_URL("reblog")
+MSTDNT_STATUS_ACTION_DECL(reblog)
+MSTDNT_STATUS_ACTION_FUNC_URL("reblog")
 
-    MSTDNT_STATUS_ACTION_DECL(unreblog)
-    MSTDNT_STATUS_ACTION_FUNC_URL("unreblog")
+MSTDNT_STATUS_ACTION_DECL(unreblog)
+MSTDNT_STATUS_ACTION_FUNC_URL("unreblog")
     
-    MSTDNT_STATUS_ACTION_DECL(pin)
-    MSTDNT_STATUS_ACTION_FUNC_URL("pin")
+MSTDNT_STATUS_ACTION_DECL(pin)
+MSTDNT_STATUS_ACTION_FUNC_URL("pin")
 
-    MSTDNT_STATUS_ACTION_DECL(unpin)
-    MSTDNT_STATUS_ACTION_FUNC_URL("unpin")
+MSTDNT_STATUS_ACTION_DECL(unpin)
+MSTDNT_STATUS_ACTION_FUNC_URL("unpin")
 
-    MSTDNT_STATUS_ACTION_DECL(bookmark)
-    MSTDNT_STATUS_ACTION_FUNC_URL("bookmark")
+MSTDNT_STATUS_ACTION_DECL(bookmark)
+MSTDNT_STATUS_ACTION_FUNC_URL("bookmark")
 
-    MSTDNT_STATUS_ACTION_DECL(unbookmark)
+MSTDNT_STATUS_ACTION_DECL(unbookmark)
 MSTDNT_STATUS_ACTION_FUNC_URL("unbookmark")
 
 // Delete's use a delete method
@@ -290,14 +296,15 @@ MSTDNT_STATUS_ACTION_DECL(delete)
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_CUSTOMREQUEST,
-        "DELETE",
-        status,
-        mstdnt_status_json_callback
+        .url = url,
+        .params_query = NULL,
+        .params_query_len = 0,
+        .params_post = NULL,
+        .params_post_len = 0,
+        .request_type = CURLOPT_CUSTOMREQUEST,
+        .request_type_custom = "DELETE",
+        .args = NULL,
+        .callback = mstdnt_status_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
@@ -308,54 +315,53 @@ int mstdnt_mute_conversation(mastodont_t* data,
                              struct mstdnt_args* m_args,
                              mstdnt_request_cb_t cb_request,
                              void* cb_args,
-                             char* id,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_status* status)
+                             char* id)
 {
-    return mstdnt_status_action(data, m_args, cb_request, cb_args, id, storage, status, "api/v1/statuses/%s/mute");
+    return mstdnt_status_action(data,
+                                m_args,
+                                cb_request,
+                                cb_args,
+                                id,
+                                "api/v1/statuses/%s/mute");
 }
 
 int mstdnt_unmute_conversation(mastodont_t* data,
                                struct mstdnt_args* m_args,
                                mstdnt_request_cb_t cb_request,
                                void* cb_args,
-                               char* id,
-                               struct mstdnt_storage* storage,
-                               struct mstdnt_status* status)
+                               char* id)
 {
-    return mstdnt_status_action(data, m_args, cb_request, cb_args, id, storage, status, "api/v1/statuses/%s/unmute");
+    return mstdnt_status_action(data,
+                                m_args,
+                                cb_request, cb_args,
+                                id,
+                                "api/v1/statuses/%s/unmute");
 }
 
 int mstdnt_get_status(mastodont_t* data,
                       struct mstdnt_args* m_args,
                       mstdnt_request_cb_t cb_request,
                       void* cb_args,
-                      char* id,
-                      struct mstdnt_storage* storage,
-                      struct mstdnt_status* status)
+                      char* id)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s", id);
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        status,
-        mstdnt_status_json_callback,
+        .url = url,
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_status_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
-                               struct mstdnt_status* statuses_after[],
-                               size_t* size_before,
-                               size_t* size_after,
-                               cJSON* root)
+int
+mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
+                           struct mstdnt_status* statuses_after[],
+                           size_t* size_before,
+                           size_t* size_after,
+                           cJSON* root)
 {
     cJSON* v, *status_item;
     size_t* size_ptr = NULL;
@@ -400,10 +406,15 @@ int mstdnt_status_context_json(struct mstdnt_status* statuses_before[],
     return 0;
 }
 
-int mstdnt_status_context_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data)
+int
+mstdnt_status_context_json_callback(cJSON* json,
+                                    void* args,
+                                    mstdnt_request_cb_data* data)
 {
     struct mstdnt_status_context* ctx = malloc(sizeof(struct mstdnt_status_context));
     data->data = ctx;
+    // TODO URGENT
+    data->data_free_cb = NULL;
     return mstdnt_status_context_json(&(ctx->before.statuses),
                                       &(ctx->after.statuses),
                                       &(ctx->before.len),
@@ -411,192 +422,136 @@ int mstdnt_status_context_json_callback(cJSON* json, void* args, mstdnt_request_
                                       json);
 }
 
-int mstdnt_get_status_context(mastodont_t* data,
-                              struct mstdnt_args* m_args,
-                              mstdnt_request_cb_t cb_request,
-                              void* cb_args,
-                              char* id,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* statuses_before[],
-                              struct mstdnt_status* statuses_after[],
-                              size_t* size_before,
-                              size_t* size_after)
+int
+mstdnt_get_status_context(mastodont_t* data,
+                          struct mstdnt_args* m_args,
+                          mstdnt_request_cb_t cb_request,
+                          void* cb_args,
+                          char* id)
 {
-    struct _mstdnt_status_context_result_cb_args args = {
-        statuses_before,
-        statuses_after,
-        size_before,
-        size_after,
-    };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/context", id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &args,
-        mstdnt_status_context_json_callback,
+        .url = url,
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_status_context_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_status_favourited_by(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-                                mstdnt_request_cb_t cb_request,
-                                void* cb_args,
-                                char* id,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_account* accounts[],
-                                size_t* accts_len)
+int
+mstdnt_status_favourited_by(mastodont_t* data,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* id)
 {
-    struct _mstdnt_accounts_args args = {
-        accounts,
-        accts_len,
-    };
-    
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/favourited_by", id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &args,
-        mstdnt_accounts_json_callback,
+        .url = url,
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_accounts_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_status_reblogged_by(mastodont_t* data,
-                                  struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                  char* id,
-                                  struct mstdnt_storage* storage,
-                                  struct mstdnt_account* accounts[],
-                                  size_t* accts_len)
+int
+mstdnt_status_reblogged_by(mastodont_t* data,
+                           struct mstdnt_args* m_args,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args,
+                           char* id)
 {
-    struct _mstdnt_accounts_args args = {
-        accounts,
-        accts_len,
-    };
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/statuses/%s/reblogged_by", id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &args,
-        mstdnt_accounts_json_callback,
+        .url = url,
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_accounts_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
 
-int mstdnt_get_bookmarks(mastodont_t* data,
-                            struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                            struct mstdnt_bookmarks_args* args,
-                            struct mstdnt_storage* storage,
-                            struct mstdnt_status* statuses[],
-                            size_t* size)
+int
+mstdnt_get_bookmarks(mastodont_t* data,
+                     struct mstdnt_args* m_args,
+                     mstdnt_request_cb_t cb_request,
+                     void* cb_args,
+                     struct mstdnt_bookmarks_args args)
 {
-    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/bookmarks",
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &req_cb_args,
-        mstdnt_statuses_json_callback,
+        .url = "api/v1/bookmarks",
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_statuses_json_callback,
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_get_favourites(mastodont_t* data,
-                             struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                             struct mstdnt_favourites_args* args,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_status* statuses[],
-                             size_t* size)
+int
+mstdnt_get_favourites(mastodont_t* data,
+                      struct mstdnt_args* m_args,
+                      mstdnt_request_cb_t cb_request,
+                      void* cb_args,
+                      struct mstdnt_favourites_args args)
 {
-    struct _mstdnt_statuses_cb_args req_cb_args = { statuses, size };
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/favourites",
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &req_cb_args,
-        mstdnt_statuses_json_callback,
+        .url = "api/v1/favourites",
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_statuses_json_callback,
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_status_emoji_react(mastodont_t* api,
-                              struct mstdnt_args* m_args,
-                              mstdnt_request_cb_t cb_request,
-                              void* cb_args,
-                              char* id,
-                              char* emoji,
-                              struct mstdnt_storage* storage,
-                              struct mstdnt_status* status)
+int
+mstdnt_status_emoji_react(mastodont_t* api,
+                          struct mstdnt_args* m_args,
+                          mstdnt_request_cb_t cb_request,
+                          void* cb_args,
+                          char* id,
+                          char* emoji)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/statuses/%s/reactions/%s", id, emoji);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_PUT,
-        NULL,
-        status,
-        mstdnt_status_json_callback
+        .url = url,
+        .request_type = CURLOPT_PUT,
+        .callback = mstdnt_status_json_callback
     };
     
     return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-void mstdnt_cleanup_status(struct mstdnt_status* status, size_t unused)
+void
+mstdnt_cleanup_status(struct mstdnt_status* status,
+                      size_t unused)
 {
     mstdnt_cleanup_attachments(status->media_attachments);
     mstdnt_cleanup_account(&(status->account));
@@ -610,7 +565,9 @@ void mstdnt_cleanup_status(struct mstdnt_status* status, size_t unused)
     mstdnt_free(status->application);
 }
 
-void mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s)
+void
+mstdnt_cleanup_statuses(struct mstdnt_status* statuses,
+                        size_t s)
 {
     size_t i;
     if (!statuses) return;
