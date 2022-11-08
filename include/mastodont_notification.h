@@ -40,6 +40,12 @@ struct mstdnt_notification
     mstdnt_notification_t type;
 };
 
+struct mstdnt_notifications
+{
+    struct mstdnt_notification* notifs;
+    size_t len;
+};
+
 struct mstdnt_notifications_args
 {
     /* Bitmask */
@@ -65,43 +71,51 @@ struct _mstdnt_notifications_result_cb_args
 };
 
 // Callback helpers
-int mstdnt_notification_json_callback(cJSON* json, void* notif);
-int mstdnt_notifications_json_callback(cJSON* json, void* _args);
+int
+mstdnt_notification_json_callback(cJSON* json,
+                                  void* args,
+                                  mstdnt_request_cb_data* data);
 
-int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js);
-int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js);
+int
+mstdnt_notifications_json_callback(cJSON* json,
+                                   void* args,
+                                   mstdnt_request_cb_data* data);
 
-int mstdnt_get_notifications(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                struct mstdnt_notifications_args* args,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_notification** notifs,
-                                size_t* size);
+int
+mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js);
 
-int mstdnt_notifications_clear(mastodont_t* data,
-                                  struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                  struct mstdnt_storage* storage);
+int
+mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js);
 
-int mstdnt_notifications_read(mastodont_t* data,
-                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                 struct mstdnt_notifications_args* args,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_notification* notification);
+int
+mstdnt_get_notifications(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         struct mstdnt_notifications_args args);
 
-int mstdnt_notification_dismiss(mastodont_t* data,
-                                   struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                   struct mstdnt_storage* storage,
-                                   char* id);
+int
+mstdnt_notifications_clear(mastodont_t* data,
+                           struct mstdnt_args* m_args,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args);
 
-void mstdnt_cleanup_notifications(struct mstdnt_notification* notif, size_t notif_len);
+int
+mstdnt_notifications_read(mastodont_t* data,
+                          struct mstdnt_args* m_args,
+                          mstdnt_request_cb_t cb_request,
+                          void* cb_args,
+                          struct mstdnt_notifications_args args);
+
+int
+mstdnt_notification_dismiss(mastodont_t* data,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            struct mstdnt_storage* storage,
+                            char* id);
+
+void mstdnt_cleanup_notifications(struct mstdnt_notifications* notif);
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif);
 
 #endif /* MASTODONT_NOTIFICATION */
