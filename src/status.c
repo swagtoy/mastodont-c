@@ -550,8 +550,7 @@ mstdnt_status_emoji_react(mastodont_t* api,
 }
 
 void
-mstdnt_cleanup_status(struct mstdnt_status* status,
-                      size_t unused)
+mstdnt_cleanup_status(struct mstdnt_status* status)
 {
     mstdnt_cleanup_attachments(status->media_attachments);
     mstdnt_cleanup_account(&(status->account));
@@ -559,21 +558,18 @@ mstdnt_cleanup_status(struct mstdnt_status* status,
     mstdnt_cleanup_emojis(status->emojis);
     if (status->reblog)
     {
-        mstdnt_cleanup_status(status->reblog, 0);
+        mstdnt_cleanup_status(status->reblog);
         mstdnt_free(status->reblog);
     }
     mstdnt_free(status->application);
 }
 
 void
-mstdnt_cleanup_statuses(struct mstdnt_status* statuses,
-                        size_t s)
+mstdnt_cleanup_statuses(struct mstdnt_statuses* statuses)
 {
-    size_t i;
     if (!statuses) return;
-    for (i = 0; i < s; ++i)
-    {
-        mstdnt_cleanup_status(statuses + i, 0);
-    }
-    mstdnt_free(statuses);
+    for (size_t i = 0; i < statuses->len; ++i)
+        mstdnt_cleanup_status(statuses->statuses + i);
+    
+    mstdnt_free(statuses->statuses);
 }

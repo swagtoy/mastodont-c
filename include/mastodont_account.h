@@ -24,10 +24,17 @@
 #define MSTDNT_LOOKUP_ACCT 0
 #define MSTDNT_LOOKUP_ID 1
 
+// DEPRECATED
 struct _mstdnt_accounts_args
 {
     struct mstdnt_account** acct;
     size_t* size;
+};
+
+struct mstdnt_accounts
+{
+    struct mstdnt_account* accts;
+    size_t len;
 };
 
 struct mstdnt_account
@@ -158,14 +165,23 @@ mstdnt_get_following(mastodont_t* data,
                      char* id,
                      struct mstdnt_account_args args);
 
-int mstdnt_account_json(struct mstdnt_account* acct, cJSON* js);
-int mstdnt_account_json_callback(cJSON* json, void* _args);
-int mstdnt_accounts_json_callback(cJSON* json, void* _args);
+int
+mstdnt_account_json(struct mstdnt_account* acct,
+                    cJSON* js);
+
+int
+mstdnt_account_json_callback(cJSON* json,
+                             void* args,
+                             mstdnt_request_cb_data* data);
+int
+mstdnt_accounts_json_callback(cJSON* json,
+                             void* args,
+                             mstdnt_request_cb_data* data);
 void _mstdnt_val_account_call(cJSON* v, void* _type);
 void _mstdnt_val_malloc_account_call(cJSON* v, void* _type);
 
 // Cleanup
-void mstdnt_cleanup_account(struct mstdnt_account* acct, size_t unused);
-void mstdnt_cleanup_accounts(struct mstdnt_account* accts, size_t len);
+void mstdnt_cleanup_account(struct mstdnt_account* acct);
+void mstdnt_cleanup_accounts(struct mstdnt_accounts* accts);
 
 #endif /* MASTODONT_ACCOUNT */

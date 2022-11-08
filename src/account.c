@@ -50,16 +50,23 @@ mstdnt_account_json_callback(cJSON* json,
                              mstdnt_request_cb_data* data)
 {
     (void)args;
-    struct mstdnt_account* acct = malloc(sizeof(struct mstdnt_status));
+    struct mstdnt_account* acct = malloc(sizeof(struct mstdnt_account));
+    data->data = acct;
+    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_account;
     // Not sure why it expects it to be in the child
-    return mstdnt_account_json(_args, json->child);
+    return mstdnt_account_json(acct, json->child);
 }
 
 int
-mstdnt_accounts_json_callback(cJSON* json, void* _args)
+mstdnt_accounts_json_callback(cJSON* json,
+                              void* args,
+                              mstdnt_request_cb_data* data)
 {
-    struct _mstdnt_accounts_args* args = _args;
-    return mstdnt_accounts_json(args->acct, args->size, json);
+    (void)args;
+    struct mstdnt_accounts* accts = malloc(sizeof(struct mstdnt_accounts));
+    data->data = accts;
+    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_accounts;
+    return mstdnt_accounts_json(&(accts->accts), &(accts->len), json);
 }
 
 static int
@@ -238,12 +245,13 @@ mstdnt_account_json(struct mstdnt_account* acct, cJSON* js)
 }
 
 
-int mstdnt_account_action(mastodont_t* data,
-                          struct mstdnt_args* m_args,
-                          mstdnt_request_cb_t cb_request,
-                          void* cb_args,
-                          char* id,
-                          char* url_str)
+int
+mstdnt_account_action(mastodont_t* data,
+                      struct mstdnt_args* m_args,
+                      mstdnt_request_cb_t cb_request,
+                      void* cb_args,
+                      char* id,
+                      char* url_str)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, url_str, id);
@@ -288,11 +296,12 @@ void mstdnt_cleanup_account(struct mstdnt_account* acct)
     mstdnt_cleanup_emojis(acct->emojis);
 }
 
-void mstdnt_cleanup_accounts(struct mstdnt_account* accts, size_t len)
+void mstdnt_cleanup_accounts(struct mstdnt_accounts* accts)
 {
     if (!accts) return;
-    for (int i = 0; i < len; ++i)
-        mstdnt_cleanup_account(accts + i);
-    mstdnt_free(accts);
+    for (size_t i = 0; i < accts->len; ++i)
+        mstdnt_cleanup_account(accts->accts + i);
+    
+    mstdnt_free(accts->accts);
 }
 

@@ -107,13 +107,6 @@ struct mstdnt_status_args
     int media_ids_len;
 };
 
-// Cleanup
-void
-mstdnt_cleanup_statuses(struct mstdnt_status* statuses, size_t s);
-
-void
-mstdnt_cleanup_status(struct mstdnt_status* status, size_t unused);
-
 int
 mstdnt_status_json(struct mstdnt_status* status, cJSON* js);
 
@@ -292,5 +285,12 @@ mstdnt_get_favourites(mastodont_t* data,
 int mstdnt_statuses_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* data);
 int mstdnt_status_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* results);
 int mstdnt_status_context_json_callback(cJSON* json, void* args, mstdnt_request_cb_data* results);
+
+// Cleanup
+void
+mstdnt_cleanup_statuses(struct mstdnt_statuses* statuses);
+
+void
+mstdnt_cleanup_status(struct mstdnt_status* status);
 
 #endif /* MASTODONT_STATUS */
