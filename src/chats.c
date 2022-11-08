@@ -36,7 +36,8 @@ struct _mstdnt_messages_cb_args
     size_t* messages_len;
 };
 
-int mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js)
+int
+mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js)
 {
     memset(chat, 0, sizeof(struct mstdnt_chat));
 
@@ -52,7 +53,8 @@ int mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js)
     return 0;
 }
 
-int mstdnt_message_json(struct mstdnt_message* message, cJSON* js)
+int
+mstdnt_message_json(struct mstdnt_message* message, cJSON* js)
 {
     memset(message, 0, sizeof(struct mstdnt_message));
 
@@ -77,13 +79,25 @@ int mstdnt_message_json(struct mstdnt_message* message, cJSON* js)
     return 0;
 }
 
-int mstdnt_message_json_callback(cJSON* json, void* chat)
+int
+mstdnt_message_json_callback(cJSON* json,
+                             void* args,
+                             mstdnt_request_cb_data* data)
 {
-    return mstdnt_message_json(chat, json->child);
+    struct mstdnt_message* msg = malloc(sizeof(struct mstdnt_message));
+    data->data = msg;
+    data->data_free_cb = (mstdnt_request_cb_t)mstdnt_cleanup_message;
+    return mstdnt_message_json(msg, json->child);
 }
 
-int mstdnt_chat_json_callback(cJSON* json, void* chat)
+int
+mstdnt_chat_json_callback(cJSON* json,
+                          void* args,
+                          mstdnt_request_cb_data* data)
 {
+    struct mstdnt_chat* chat = malloc(sizeof(struct mstdnt_chat));
+    data->data = chat;
+    data->data_free_cb = (mstdnt_request_cb_t)mstdnt_cleanup_chats;
     return mstdnt_chat_json(chat, json->child);
 }
 
@@ -93,113 +107,91 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_chats_json, struct mstdnt_chat, mstdnt_chat_json
 // GENERATE mstdnt_messages_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_messages_json, struct mstdnt_message, mstdnt_message_json)
 
-static int mstdnt_chats_json_callback(cJSON* json, void* _args)
+static int
+mstdnt_chats_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_chats_cb_args* args = _args;
     return mstdnt_chats_json(args->chats, args->chats_len, json);
 }
 
-static int mstdnt_messages_json_callback(cJSON* json, void* _args)
+static int
+mstdnt_messages_json_callback(cJSON* json, void* _args)
 {
     struct _mstdnt_messages_cb_args* args = _args;
     return mstdnt_messages_json(args->messages, args->messages_len, json);
 }
 
-int mstdnt_get_chats_v2(mastodont_t* data,
-                           struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                           struct mstdnt_chats_args* args,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_chat* chats[],
-                           size_t* size)
+int
+mstdnt_get_chats_v2(mastodont_t* data,
+                    struct mstdnt_args* m_args,
+                    mstdnt_request_cb_t cb_request,
+                    void* cb_args,
+                    struct mstdnt_chats_args args)
 {
-    struct _mstdnt_chats_cb_args req_cb_args = { chats, size };
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args->with_muted } },
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
-        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args.with_muted } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args.offset } },
     };
 
     struct mstdnt_request_args req_args = {
-        .storage = storage,
         .url = "api/v2/pleroma/chats",
         .params_query = params,
         .params_query_len = _mstdnt_arr_len(params),
-        .params_post = NULL,
-        .params_post_len = 0,
         .request_type = CURLOPT_HTTPGET,
-        .request_type_custom = NULL,
-        .args = &req_cb_args,
         .callback = mstdnt_chats_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_get_chat_messages(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                char* chat_id,
-                                struct mstdnt_chats_args* args,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_message* messages[],
-                                size_t* size)
+int
+mstdnt_get_chat_messages(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* chat_id,
+                         struct mstdnt_chats_args args)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/chats/%s/messages", chat_id);
-    struct _mstdnt_messages_cb_args req_cb_args = { messages, size };
     
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args->with_muted } },
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
-        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
+        { _MSTDNT_QUERY_BOOL, "with_muted", { .b = args.with_muted } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args.offset } },
     };
 
     struct mstdnt_request_args req_args = {
-        .storage = storage,
         .url = url,
         .params_query = params,
         .params_query_len = _mstdnt_arr_len(params),
-        .params_post = NULL,
-        .params_post_len = 0,
         .request_type = CURLOPT_HTTPGET,
-        .request_type_custom = NULL,
-        .args = &req_cb_args,
         .callback = mstdnt_messages_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_get_chat(mastodont_t* data,
-                    struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                    char* chat_id,
-                    struct mstdnt_storage* storage,
-                    struct mstdnt_chat* chat)
+int
+mstdnt_get_chat(mastodont_t* data,
+                struct mstdnt_args* m_args,
+                mstdnt_request_cb_t cb_request,
+                void* cb_args,
+                char* chat_id)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/pleroma/chats/%s", chat_id);
     
     struct mstdnt_request_args req_args = {
-        .storage = storage,
         .url = url,
-        .params_query = NULL,
-        .params_query_len = 0,
-        .params_post = NULL,
-        .params_post_len = 0,
         .request_type = CURLOPT_HTTPGET,
-        .request_type_custom = NULL,
-        .args = chat,
         .callback = mstdnt_chat_json_callback,
     };
 
@@ -212,15 +204,15 @@ void mstdnt_cleanup_chat(struct mstdnt_chat* chat)
 }
 
 
-void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t len)
+void mstdnt_cleanup_chats(struct mstdnt_chats* chats)
 {
     if (!chats) return;
-    for (size_t i = 0; i < len; ++i)
-        mstdnt_cleanup_chat(chats + i);
-    mstdnt_free(chats);
+    for (size_t i = 0; i < chats->len; ++i)
+        mstdnt_cleanup_chat(chats->chats + i);
+    mstdnt_free(chats->chats);
 }
 
-void mstdnt_cleanup_messages(struct mstdnt_message* messages)
+void mstdnt_cleanup_message(struct mstdnt_message* messages)
 {
     if (!messages) return;
     mstdnt_cleanup_emojis(messages->emojis);

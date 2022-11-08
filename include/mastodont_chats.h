@@ -40,6 +40,12 @@ struct mstdnt_message
     mstdnt_bool unread;
 };
 
+struct mstdnt_chats
+{
+    struct mstdnt_chat* chats;
+    size_t len;
+};
+
 struct mstdnt_chats_args
 {
     mstdnt_bool with_muted;
@@ -50,43 +56,54 @@ struct mstdnt_chats_args
     int limit;
 };
 
-int mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js);
-int mstdnt_chats_json(struct mstdnt_chat* statuses[],
+int
+mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js);
+
+int
+mstdnt_chats_json(struct mstdnt_chat* statuses[],
                       size_t* size,
                       cJSON* js);
-int mstdnt_message_json(struct mstdnt_message* message, cJSON* js);
-int mstdnt_message_json_callback(cJSON* json, void* chat);
-int mstdnt_messages_json(struct mstdnt_message* message[], size_t* size, cJSON* js);
+int
+mstdnt_message_json(struct mstdnt_message* message, cJSON* js);
 
-int mstdnt_get_chats_v2(mastodont_t* data,
-                           struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                           struct mstdnt_chats_args* args,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_chat* chats[],
-                           size_t* chats_len);
+int
+mstdnt_message_json_callback(cJSON* json,
+                             void* chat,
+                             mstdnt_request_cb_data* data);
 
-int mstdnt_get_chat_messages(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                char* chat_id,
-                                struct mstdnt_chats_args* args,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_message* chats[],
-                                size_t* size);
+int
+mstdnt_chat_json_callback(cJSON* json,
+                          void* args,
+                          mstdnt_request_cb_data* data);
 
-int mstdnt_get_chat(mastodont_t* data,
-                       struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                       char* chat_id,
-                       struct mstdnt_storage* storage,
-                       struct mstdnt_chat* chat);
+int mstdnt_messages_json(struct mstdnt_message* message[],
+                         size_t* size,
+                         cJSON* js);
+
+int
+mstdnt_get_chats_v2(mastodont_t* data,
+                    struct mstdnt_args* m_args,
+                    mstdnt_request_cb_t cb_request,
+                    void* cb_args,
+                    struct mstdnt_chats_args args);
+
+int
+mstdnt_get_chat_messages(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* chat_id,
+                         struct mstdnt_chats_args args);
+
+int
+mstdnt_get_chat(mastodont_t* data,
+                struct mstdnt_args* m_args,
+                mstdnt_request_cb_t cb_request,
+                void* cb_args,
+                char* chat_id);
 
 void mstdnt_cleanup_chat(struct mstdnt_chat* chat);
-void mstdnt_cleanup_chats(struct mstdnt_chat* chats, size_t len);
-void mstdnt_cleanup_messages(struct mstdnt_message* chats);
+void mstdnt_cleanup_chats(struct mstdnt_chats* chats);
+void mstdnt_cleanup_message(struct mstdnt_message* chats);
 
 #endif // MASTODONT_CHATS_H
