@@ -21,7 +21,8 @@
 #include <mastodont_request.h>
 #include <mastodont_query.h>
 
-void _mstdnt_val_attachment_type_call(cJSON* v, void* _type)
+void
+_mstdnt_val_attachment_type_call(cJSON* v, void* _type)
 {
     enum mstdnt_attachment_type* type = _type;
     if (!cJSON_IsString(v))
@@ -42,7 +43,9 @@ void _mstdnt_val_attachment_type_call(cJSON* v, void* _type)
         *type = MSTDNT_ATTACHMENT_AUDIO;
 }
 
-int mstdnt_attachment_json(cJSON* att_json, struct mstdnt_attachment* att)
+int
+mstdnt_attachment_json(cJSON* att_json,
+                           struct mstdnt_attachment* att)
 {
     if (!att) return 1;
     
@@ -66,7 +69,8 @@ int mstdnt_attachment_json(cJSON* att_json, struct mstdnt_attachment* att)
     return 0;
 }
 
-void _mstdnt_val_attachments_call(cJSON* v, void* _type)
+void
+_mstdnt_val_attachments_call(cJSON* v, void* _type)
 {
     struct _mstdnt_generic_args* args = _type;
     struct mstdnt_attachment** attachments = args->arg;
@@ -94,39 +98,45 @@ void _mstdnt_val_attachments_call(cJSON* v, void* _type)
     }
 }
 
-static int mstdnt_attachment_json_callback(cJSON* json, void* _args)
+static int
+mstdnt_attachment_json_callback(cJSON* json,
+                                void* args,
+                                mstdnt_request_cb_data* data)
 {
-    return mstdnt_attachment_json(json, _args);
+    (void)args;
+
+    struct mstdnt_attachment* attachment = malloc(sizeof(struct mstdnt_attachment));
+    data->data = attachment;
+    // Intentionally not set
+    //data->data_free_cb
+    return mstdnt_attachment_json(json, attachment);
 }
 
-int mstdnt_upload_media(mastodont_t* api,
-                           struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                           struct mstdnt_upload_media_args* args,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_attachment* attachment)
+int
+mstdnt_upload_media(mastodont_t* api,
+                    struct mstdnt_args* m_args,
+                    mstdnt_request_cb_t cb_request,
+                    void* cb_args,
+                    struct mstdnt_upload_media_args args)
 {
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_FILE, "file", { .f = &(args->file) } },
-        { _MSTDNT_QUERY_FILE, "thumbnail", { .f = args->thumbnail } }
+        { _MSTDNT_QUERY_FILE, "file", { .f = &(args.file) } },
+        { _MSTDNT_QUERY_FILE, "thumbnail", { .f = args.thumbnail } }
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/media",
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_MIMEPOST,
-        NULL,
-        attachment,
-        mstdnt_attachment_json_callback,
+        .url = "api/v1/media",
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_MIMEPOST,
+        .callback = mstdnt_attachment_json_callback,
     };
 
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-void mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment)
+void
+mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment)
 {
     if (attachment) mstdnt_free(attachment);
 }
