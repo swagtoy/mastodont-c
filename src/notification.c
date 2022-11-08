@@ -23,7 +23,8 @@
 #include <mastodont_request.h>
 #include <mastodont_generate.h>
 
-static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_notif_type_call(cJSON* v, void* _type)
 {
     mstdnt_notification_t* type = _type;
 
@@ -46,7 +47,8 @@ static void _mstdnt_val_notif_type_call(cJSON* v, void* _type)
     else if (strcmp(v->valuestring, "pleroma:report") == 0) *type = MSTDNT_NOTIFICATION_REPORT;
 }
 
-static void _mstdnt_val_malloc_notification_pleroma_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_malloc_notification_pleroma_call(cJSON* v, void* _type)
 {
     struct mstdnt_notification_pleroma** type = _type;
 
@@ -56,7 +58,8 @@ static void _mstdnt_val_malloc_notification_pleroma_call(cJSON* v, void* _type)
         mstdnt_notification_pleroma_json(*type, v->child);
 }
 
-int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
+int
+mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
 {
     cJSON* v;
 
@@ -81,7 +84,8 @@ int mstdnt_notification_json(struct mstdnt_notification* notif, cJSON* js)
     return 0;
 }
 
-int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js)
+int
+mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, cJSON* js)
 {
     cJSON* v;
 
@@ -101,149 +105,129 @@ int mstdnt_notification_pleroma_json(struct mstdnt_notification_pleroma* notif, 
     return 0;
 }
 
-int mstdnt_notification_json_callback(cJSON* json, void* notif)
+int
+mstdnt_notification_json_callback(cJSON* json,
+                                  void* args,
+                                  mstdnt_request_cb_data* data)
 {
+    (void)args;
+    struct mstdnt_notification* notif = malloc(sizeof(struct mstdnt_notification));
+    data->data = notif;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_notification;
     return mstdnt_notification_json(notif, json->child);
 }
 
 GENERATE_JSON_ARRAY_FUNC(mstdnt_notifications_json, struct mstdnt_notification, mstdnt_notification_json)
 
-int mstdnt_notifications_json_callback(cJSON* json, void* _args)
+int
+mstdnt_notifications_json_callback(cJSON* json,
+                                   void* args,
+                                   mstdnt_request_cb_data* data)
 {
-    struct _mstdnt_notifications_result_cb_args* args = _args;
-    return mstdnt_notifications_json(args->notif, args->size, json);
+    (void)args;
+    struct mstdnt_notifications* notifs = malloc(sizeof(struct mstdnt_notifications));
+    data->data = notifs;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_notifications;
+    return mstdnt_notifications_json(&(notifs->notifs), &(notifs->len), json);
 }
 
-int mstdnt_get_notifications(mastodont_t* data,
-                             struct mstdnt_args* m_args,
-                             mstdnt_request_cb_t cb_request,
-                             void* cb_args,
-                             struct mstdnt_notifications_args* args,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_notification** notifs,
-                             size_t* size)
+int
+mstdnt_get_notifications(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         struct mstdnt_notifications_args args)
 {
-    struct _mstdnt_notifications_result_cb_args req_cb_args = { notifs, size };
-    
-    union param_value u_exclude_types, u_account_id, u_exclude_visibilities,
-        u_include_types, u_with_muted, u_max_id, u_min_id,
-        u_since_id, u_offset, u_limit;
-    /* TODO Arrays of excludes, includes */
-    u_account_id.s = args->account_id;
-    u_with_muted.i = args->with_muted;
-    u_max_id.s = args->max_id;
-    u_since_id.s = args->since_id;
-    u_min_id.s = args->min_id;
-    u_offset.i = args->offset;
-    u_limit.i = args->limit;
-
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "account_id", u_account_id },
-        { _MSTDNT_QUERY_INT, "with_muted", u_with_muted },
-        { _MSTDNT_QUERY_STRING, "max_id", u_max_id },
-        { _MSTDNT_QUERY_STRING, "since_id", u_since_id },
-        { _MSTDNT_QUERY_STRING, "min_id", u_min_id },
-        { _MSTDNT_QUERY_INT, "offset", u_offset },
-        { _MSTDNT_QUERY_INT, "limit", u_limit },
+        { _MSTDNT_QUERY_STRING, "account_id", { .s = args.account_id } },
+        { _MSTDNT_QUERY_INT, "with_muted", { .i = args.with_muted } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args.offset } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/notifications",
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &req_cb_args,
-        mstdnt_notifications_json_callback,
+        .url = "api/v1/notifications",
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_notifications_json_callback,
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_notification_dismiss(mastodont_t* data,
-                                   struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                   struct mstdnt_storage* storage,
-                                   char* id)
+int
+mstdnt_notification_dismiss(mastodont_t* data,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* id)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/notifications/%s/dismiss", id);
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_POST,
-        NULL,
-        NULL,
-        NULL,
+        .url = url,
+        .request_type = CURLOPT_POST,
+        // TODO?
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);   
 }
 
-int mstdnt_notifications_clear(mastodont_t* data,
-                                  struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                  struct mstdnt_storage* storage)
+int
+mstdnt_notifications_clear(mastodont_t* data,
+                           struct mstdnt_args* m_args,
+                           mstdnt_request_cb_t cb_request,
+                           void* cb_args)
 {
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/notifications/clear",
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_POST,
-        NULL,
-        NULL,
-        NULL,
+        .url = "api/v1/notifications/clear",
+        .request_type = CURLOPT_POST,
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_notifications_read(mastodont_t* data,
-                                 struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                 struct mstdnt_notifications_args* args,
-                                 struct mstdnt_storage* storage,
-                                 struct mstdnt_notification* notification)
+int
+mstdnt_notifications_read(mastodont_t* data,
+                          struct mstdnt_args* m_args,
+                          mstdnt_request_cb_t cb_request,
+                          void* cb_args,
+                          struct mstdnt_notifications_args args)
 {
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "id", { .s = args ? args->id : NULL } },
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args ? args->max_id : NULL } },
+        { _MSTDNT_QUERY_STRING, "id", { .s = args.id } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/pleroma/notifications/read",
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_POST,
-        NULL,
-        notification,
-        mstdnt_notification_json_callback,
+        .url = "api/v1/pleroma/notifications/read",
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_POST,
+        .callback = mstdnt_notification_json_callback,
     };
     
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-
-void mstdnt_cleanup_notifications(struct mstdnt_notification* notifs, size_t notifs_len)
+void
+mstdnt_cleanup_notifications(struct mstdnt_notifications* notifs)
 {
     size_t i;
     if (!notifs) return;
-    for (i = 0; i < notifs_len; ++i)
-        mstdnt_cleanup_notification(notifs + i);
+    for (i = 0; i < notifs->len; ++i)
+        mstdnt_cleanup_notification(notifs->notifs + i);
 
-    mstdnt_free(notifs);
+    mstdnt_free(notifs->notifs);
 }
 
-void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
+void
+mstdnt_cleanup_notification(struct mstdnt_notification* notif)
 {
     if (notif->account)
     {
@@ -252,13 +236,14 @@ void mstdnt_cleanup_notification(struct mstdnt_notification* notif)
     }
     if (notif->status)
     {
-        mstdnt_cleanup_status(notif->status, 0);
+        mstdnt_cleanup_status(notif->status);
         mstdnt_free(notif->status);
     }
     mstdnt_free(notif->pleroma);
 }
 
-const char* mstdnt_notification_t_to_str(mstdnt_notification_t type)
+const char*
+mstdnt_notification_t_to_str(mstdnt_notification_t type)
 {
     switch (type)
     {

@@ -112,7 +112,6 @@ mstdnt_notification_dismiss(mastodont_t* data,
                             struct mstdnt_args* m_args,
                             mstdnt_request_cb_t cb_request,
                             void* cb_args,
-                            struct mstdnt_storage* storage,
                             char* id);
 
 void mstdnt_cleanup_notifications(struct mstdnt_notifications* notif);

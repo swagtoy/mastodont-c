@@ -31,12 +31,12 @@ typedef int8_t mstdnt_bool;
 struct mstdnt_storage;
 
 // Only god knows
-typedef void (*data_free_cb_t)(void*, size_t);
+typedef void (*mstdnt_data_free_cb_t)(void*, size_t);
 typedef void (*mstdnt_request_cb_t)(void* data, void* args);
 typedef struct mstdnt_request_cb_data {
     struct mstdnt_storage* storage;
     void* data;
-    data_free_cb_t data_free_cb;
+    mstdnt_data_free_cb_t data_free_cb;
 } mstdnt_request_cb_data;
 
 #define MSTDNT_CB_DATA(_data) (_data->data)

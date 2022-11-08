@@ -42,26 +42,26 @@ struct mstdnt_search_args
 
 struct mstdnt_search_results
 {
-    struct mstdnt_account* accts;
-    size_t accts_len;
-    struct mstdnt_status* statuses;
-    size_t statuses_len;
-    struct mstdnt_tag* tags;
-    size_t tags_len;
+    struct mstdnt_accounts* accts;
+    struct mstdnt_statuses* statuses;
+    struct mstdnt_tags* tags;
 };
 
-int mstdnt_search_json_callback(cJSON* json, void* _args);
+int
+mstdnt_search_json_callback(cJSON* json,
+                            void* _args,
+                            mstdnt_request_cb_data* data);
 
-int mstdnt_search_json(struct mstdnt_search_results* search_results, cJSON* json);
+int
+mstdnt_search_json(struct mstdnt_search_results* search_results, cJSON* json);
 
-int mstdnt_search(mastodont_t* data,
-                     struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                     char* query,
-                     struct mstdnt_storage* storage,
-                     struct mstdnt_search_args* args,
-                     struct mstdnt_search_results* results);
+int
+mstdnt_search(mastodont_t* data,
+              struct mstdnt_args* m_args,
+              mstdnt_request_cb_t cb_request,
+              void* cb_args,
+              char* query,
+              struct mstdnt_search_args args);
 
 void mstdnt_cleanup_search_results(struct mstdnt_search_results* res);
 

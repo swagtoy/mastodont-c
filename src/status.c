@@ -146,7 +146,7 @@ mstdnt_status_json_callback(cJSON* json,
     
     struct mstdnt_status* status = malloc(sizeof(struct mstdnt_status));
     data->data = status;
-    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_status;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_status;
     return mstdnt_status_json(status, json->child);
 }
 
@@ -160,7 +160,7 @@ mstdnt_statuses_json_callback(cJSON* json,
 {
     struct mstdnt_statuses* statuses = malloc(sizeof(struct mstdnt_statuses));
     data->data = statuses;
-    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_statuses;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_statuses;
     return mstdnt_statuses_json(&(statuses->statuses), &(statuses->len), json);
 }
 

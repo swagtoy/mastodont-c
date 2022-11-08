@@ -52,7 +52,7 @@ mstdnt_account_json_callback(cJSON* json,
     (void)args;
     struct mstdnt_account* acct = malloc(sizeof(struct mstdnt_account));
     data->data = acct;
-    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_account;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_account;
     // Not sure why it expects it to be in the child
     return mstdnt_account_json(acct, json->child);
 }
@@ -65,7 +65,7 @@ mstdnt_accounts_json_callback(cJSON* json,
     (void)args;
     struct mstdnt_accounts* accts = malloc(sizeof(struct mstdnt_accounts));
     data->data = accts;
-    data->data_free_cb = (data_free_cb_t)mstdnt_cleanup_accounts;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_accounts;
     return mstdnt_accounts_json(&(accts->accts), &(accts->len), json);
 }
 
