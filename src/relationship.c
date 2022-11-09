@@ -34,14 +34,16 @@ struct _mstdnt_relationship_flags_args
     mstdnt_relationship_flag_t flag;
 };
 
-static void _mstdnt_val_relationship_flag_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_relationship_flag_call(cJSON* v, void* _type)
 {
     struct _mstdnt_relationship_flags_args* arg = _type;
     if (cJSON_IsTrue(v))
         *(arg->flags) |= arg->flag;
 }
 
-int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js)
+int
+mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js)
 {
     cJSON* v;
 
@@ -86,28 +88,37 @@ int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js
 // GENERATE mstdnt_statuses_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_relationships_json, struct mstdnt_relationship, mstdnt_relationship_json)
 
-int mstdnt_relationship_json_callback(cJSON* json, void* _args)
+int
+mstdnt_relationship_json_callback(cJSON* json,
+                                  void* args,
+                                  mstdnt_request_cb_data* data)
 {
-    return mstdnt_relationship_json((struct mstdnt_relationship*)_args, json);
+    (void)args;
+    mstdnt_relationship* rel = malloc(sizeof(mstdnt_relationship));
+    data->data = rel;
+    return mstdnt_relationship_json(rel, json);
 }
 
-int mstdnt_relationships_json_callback(cJSON* json, void* _args)
+int
+mstdnt_relationships_json_callback(cJSON* json,
+                                   void* args,
+                                   mstdnt_request_cb_data* data)
 {
-    struct _mstdnt_relationships_cb_args* args = _args;
-    return mstdnt_relationships_json(args->relationships, args->size, json);
+    (void)args;
+    mstdnt_relationships* rels = malloc(sizeof(mstdnt_relationship));
+    data->data = rels;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_relationships;
+    return mstdnt_relationships_json(&(rels->relationships), &(rels->len), json);
 }
 
-int mstdnt_get_relationships(mastodont_t* data,
-                             struct mstdnt_args* m_args,
-                             mstdnt_request_cb_t cb_request,
-                             void* cb_args,
-                             char** ids,
-                             size_t ids_len,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_relationship* relationships[],
-                             size_t* size)
+int
+mstdnt_get_relationships(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char** ids,
+                         size_t ids_len)
 {
-    struct _mstdnt_relationships_cb_args req_cb_args = { relationships, size };
     struct _mstdnt_query_param params[] = {
         { _MSTDNT_QUERY_ARRAY, "id",
           {
@@ -118,21 +129,19 @@ int mstdnt_get_relationships(mastodont_t* data,
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/accounts/relationships",
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &req_cb_args,
-        mstdnt_relationships_json_callback
+        .url = "api/v1/accounts/relationships",
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_relationships_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels)
+void
+mstdnt_cleanup_relationships(struct mstdnt_relationships* rels)
 {
     if (!rels) return;
-    mstdnt_free(rels);
+    mstdnt_free(rels->relationships);
 }

@@ -35,14 +35,23 @@ typedef uint16_t mstdnt_relationship_flag_t;
 #define MSTDNT_RELATIONSHIP_DOMAIN_BLOCKING (1<<9)
 #define MSTDNT_RELATIONSHIP_BLOCKED_BY (1<<10)
 
-struct mstdnt_relationship
+typedef struct mstdnt_relationship
 {
     char* id;
     mstdnt_relationship_flag_t flags;
     char* note;
-};
+} mstdnt_relationship;
 
-int mstdnt_relationship_json_callback(cJSON* json, void* _args);
+typedef struct mstdnt_relationships
+{
+    mstdnt_relationship* relationships;
+    size_t len;
+} mstdnt_relationships;
+
+int
+mstdnt_relationship_json_callback(cJSON* json,
+                                  void* args,
+                                  mstdnt_request_cb_data* data);
 
 int mstdnt_relationship_json(struct mstdnt_relationship* relationship, cJSON* js);
 
@@ -50,19 +59,20 @@ int mstdnt_relationships_json(struct mstdnt_relationship* relationships[],
                               size_t* size,
                               cJSON* json);
 
-int mstdnt_relationships_json_callback(cJSON* json, void* _args);
+int
+mstdnt_relationships_json_callback(cJSON* json,
+                                   void* args,
+                                   mstdnt_request_cb_data* data);
 
-int mstdnt_get_relationships(mastodont_t* data,
-                             struct mstdnt_args* args,
-                             mstdnt_request_cb_t cb_request,
-                             void* cb_args,
-                             char** ids,
-                             size_t ids_len,
-                             struct mstdnt_storage* storage,
-                             struct mstdnt_relationship* relationships[],
-                             size_t* size);
+int
+mstdnt_get_relationships(mastodont_t* data,
+                         struct mstdnt_args* args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char** ids,
+                         size_t ids_len);
 
-void mstdnt_cleanup_relationships(struct mstdnt_relationship* rels);
+void mstdnt_cleanup_relationships(struct mstdnt_relationships* rels);
 
 
 #endif /* MASTODONT_RELATIONSHIP_H */
