@@ -27,7 +27,8 @@ struct mstdnt_get_lists_args {
     size_t* size;
 };
 
-static void _mstdnt_val_replies_policy_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_replies_policy_call(cJSON* v, void* _type)
 {
     enum mstdnt_list_replies_policy* type = _type;
 
@@ -39,7 +40,8 @@ static void _mstdnt_val_replies_policy_call(cJSON* v, void* _type)
         *type = MSTDNT_LIST_REPLIES_POLICY_FOLLOWED;
 }
 
-int mstdnt_list_json(struct mstdnt_list* list, cJSON* js)
+int
+mstdnt_list_json(mstdnt_list* list, cJSON* js)
 {
     if (!list) return 1;
     cJSON* v;
@@ -62,70 +64,65 @@ int mstdnt_list_json(struct mstdnt_list* list, cJSON* js)
 
 GENERATE_JSON_ARRAY_FUNC(mstdnt_lists_json, struct mstdnt_list, mstdnt_list_json);
 
-static int mstdnt_list_json_callback(cJSON* json, void* _args)
+static int
+mstdnt_list_json_callback(cJSON* json,
+                          void* args,
+                          mstdnt_request_cb_data* data)
 {
-    return mstdnt_list_json(_args, json);
+    (void)args;
+    mstdnt_list* list = mstdnt_malloc(sizeof(mstdnt_list));
+    data->data = list;
+    return mstdnt_list_json(list, json);
 }
 
-static int mstdnt_lists_json_callback(cJSON* json, void* _args)
+static int
+mstdnt_lists_json_callback(cJSON* json,
+                           void* args,
+                           mstdnt_request_cb_data* data)
 {
-    struct mstdnt_get_lists_args* args = _args;
-    return mstdnt_lists_json(args->lists, args->size, json);
+    (void)args;
+    mstdnt_lists* lists = mstdnt_malloc(sizeof(mstdnt_lists));
+    data->data = lists;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_lists;
+    return mstdnt_lists_json(&(lists->lists), &(lists->len), json);
 }
 
-int mstdnt_get_lists(mastodont_t* data,
-                        struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                        struct mstdnt_storage* storage,
-                        struct mstdnt_list* lists[],
-                        size_t* size)
+int
+mstdnt_get_lists(mastodont_t* data,
+                 struct mstdnt_args* m_args,
+                 mstdnt_request_cb_t cb_request,
+                 void* cb_args)
 {
-    struct mstdnt_get_lists_args args = {
-        lists,
-        size
-    };
-    
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/lists",
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &args,
-        mstdnt_lists_json_callback
+        .url = "api/v1/lists",
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_lists_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_get_list(mastodont_t* data,
-                       struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                       char* id,
-                       struct mstdnt_storage* storage,
-                       struct mstdnt_list* list)
+int
+mstdnt_get_list(mastodont_t* data,
+                struct mstdnt_args* m_args,
+                mstdnt_request_cb_t cb_request,
+                void* cb_args,
+                char* id)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s", id);
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        list,
-        mstdnt_list_json_callback
+        .url = url,
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_list_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
+static const char*
+replies_policy_str(enum mstdnt_list_replies_policy pol)
 {
     switch (pol)
     {
@@ -139,95 +136,84 @@ static const char* replies_policy_str(enum mstdnt_list_replies_policy pol)
     }
 }
 
-int mstdnt_create_list(mastodont_t* data, struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                          struct mstdnt_list_args* args,
-                          struct mstdnt_storage* storage,
-                          struct mstdnt_list* list)
+int
+mstdnt_create_list(mastodont_t* data,
+                   struct mstdnt_args* m_args,
+                   mstdnt_request_cb_t cb_request,
+                   void* cb_args,
+                   struct mstdnt_list_args args)
 {
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "title", { .s = args->title } },
-        { _MSTDNT_QUERY_STRING, "replies_policy", { .s = (char*)replies_policy_str(args->replies_policy) } },
+        { _MSTDNT_QUERY_STRING, "title", { .s = args.title } },
+        { _MSTDNT_QUERY_STRING, "replies_policy", { .s = replies_policy_str(args.replies_policy) } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        "api/v1/lists",
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_POST,
-        NULL,
-        list,
-        mstdnt_list_json_callback
+        .url = "api/v1/lists",
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_POST,
+        .callback = mstdnt_list_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_update_list(mastodont_t* data,
-                          struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                          char* id,
-                          struct mstdnt_list_args* args,
-                          struct mstdnt_storage* storage,
-                          struct mstdnt_list* list)
+int
+mstdnt_update_list(mastodont_t* data,
+                   struct mstdnt_args* m_args,
+                   mstdnt_request_cb_t cb_request,
+                   void* cb_args,
+                   char* id,
+                   struct mstdnt_list_args args)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s", id);
 
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "title", { .s = args->title } },
-        { _MSTDNT_QUERY_STRING, "replies_policy", { .s = (char*)replies_policy_str(args->replies_policy) } },
+        { _MSTDNT_QUERY_STRING, "title", { .s = args.title } },
+        { _MSTDNT_QUERY_STRING, "replies_policy", { .s = (char*)replies_policy_str(args.replies_policy) } },
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_CUSTOMREQUEST,
-        "PUT",
-        list,
-        mstdnt_list_json_callback
+        .url = url,
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_CUSTOMREQUEST,
+        .request_type_custom = "PUT",
+        .callback = mstdnt_list_json_callback
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_delete_list(mastodont_t* api,
-                          struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                          char* id,
-                          struct mstdnt_storage* storage)
+int
+mstdnt_delete_list(mastodont_t* api,
+                   struct mstdnt_args* m_args,
+                   mstdnt_request_cb_t cb_request,
+                   void* cb_args,
+                   char* id)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s", id);
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_CUSTOMREQUEST,
-        "DELETE",
-        NULL,
-        NULL,
+        .url = url,
+        .request_type = CURLOPT_CUSTOMREQUEST,
+        .request_type_custom = "DELETE",
     };
 
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_list_add_accounts(mastodont_t* api,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                char* id,
-                                char** account_ids,
-                                size_t account_ids_len,
-                                struct mstdnt_storage* storage)
+int
+mstdnt_list_add_accounts(mastodont_t* api,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* id,
+                         char** account_ids,
+                         size_t account_ids_len)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s/accounts", id);
@@ -242,27 +228,23 @@ void* cb_args,
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_POST,
-        NULL,
-        NULL,
-        NULL,
+        .url = url,
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_POST,
     };
 
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_list_remove_accounts(mastodont_t* api,
-                                   struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                   char* id,
-                                   char** account_ids,
-                                   size_t account_ids_len,
-                                   struct mstdnt_storage* storage)
+int
+mstdnt_list_remove_accounts(mastodont_t* api,
+                            struct mstdnt_args* m_args,
+                            mstdnt_request_cb_t cb_request,
+                            void* cb_args,
+                            char* id,
+                            char** account_ids,
+                            size_t account_ids_len)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s/accounts", id);
@@ -277,60 +259,48 @@ void* cb_args,
     };
     
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        params, _mstdnt_arr_len(params),
-        CURLOPT_CUSTOMREQUEST,
-        "DELETE",
-        NULL,
-        NULL,
+        .url = url,
+        .params_post = params,
+        .params_post_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_CUSTOMREQUEST,
+        .request_type_custom = "DELETE",
     };
 
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
-int mstdnt_list_get_accounts(mastodont_t* data,
-                                struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                                char* id,
-                                struct mstdnt_account_args* args,
-                                struct mstdnt_storage* storage,
-                                struct mstdnt_account* accts[],
-                                size_t* accts_len)
+int
+mstdnt_list_get_accounts(mastodont_t* data,
+                         struct mstdnt_args* m_args,
+                         mstdnt_request_cb_t cb_request,
+                         void* cb_args,
+                         char* id,
+                         struct mstdnt_account_args args)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "api/v1/lists/%s/accounts", id);
-    struct _mstdnt_accounts_args _args = {
-        accts,
-        accts_len,
-    };
-
+    
     struct _mstdnt_query_param params[] = {
-        { _MSTDNT_QUERY_STRING, "max_id", { .s = args->max_id } },
-        { _MSTDNT_QUERY_STRING, "min_id", { .s = args->min_id } },
-        { _MSTDNT_QUERY_STRING, "since_id", { .s = args->since_id } },
-        { _MSTDNT_QUERY_INT, "offset", { .i = args->offset } },
-        { _MSTDNT_QUERY_INT, "limit", { .i = args->limit } },
-        { _MSTDNT_QUERY_INT, "with_relationships", { .i = args->with_relationships } },
+        { _MSTDNT_QUERY_STRING, "max_id", { .s = args.max_id } },
+        { _MSTDNT_QUERY_STRING, "min_id", { .s = args.min_id } },
+        { _MSTDNT_QUERY_STRING, "since_id", { .s = args.since_id } },
+        { _MSTDNT_QUERY_INT, "offset", { .i = args.offset } },
+        { _MSTDNT_QUERY_INT, "limit", { .i = args.limit } },
+        { _MSTDNT_QUERY_INT, "with_relationships", { .i = args.with_relationships } },
     };
 
     struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        params, _mstdnt_arr_len(params),
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        &_args,
-        mstdnt_accounts_json_callback,
+        .url = url,
+        .params_query = params,
+        .params_query_len = _mstdnt_arr_len(params),
+        .request_type = CURLOPT_HTTPGET,
+        .callback = mstdnt_accounts_json_callback,
     };
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
 
-void mstdnt_cleanup_lists(struct mstdnt_list* lists)
+void mstdnt_cleanup_lists(struct mstdnt_lists* lists)
 {
-    mstdnt_free(lists);
+    mstdnt_free(lists->lists);
 }
