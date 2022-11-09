@@ -19,7 +19,8 @@
 #include <mastodont_json_helper.h>
 #include <mastodont_emoji.h>
 
-void load_emoji_from_json(struct mstdnt_emoji* emo, cJSON* emo_json)
+void
+load_emoji_from_json(struct mstdnt_emoji* emo, cJSON* emo_json)
 {
     cJSON* it;
     
@@ -38,7 +39,8 @@ void load_emoji_from_json(struct mstdnt_emoji* emo, cJSON* emo_json)
         _mstdnt_key_val_ref(it, refs, _mstdnt_arr_len(refs));
 }
 
-void load_emoji_react_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
+void
+load_emoji_react_from_json(struct mstdnt_emoji_reaction* emo, cJSON* emo_json)
 {
     cJSON* it;
     

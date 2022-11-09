@@ -61,8 +61,8 @@ mstdnt_chat_json(struct mstdnt_chat* chat, cJSON* js);
 
 int
 mstdnt_chats_json(struct mstdnt_chat* statuses[],
-                      size_t* size,
-                      cJSON* js);
+                  size_t* size,
+                  cJSON* js);
 int
 mstdnt_message_json(struct mstdnt_message* message, cJSON* js);
 
