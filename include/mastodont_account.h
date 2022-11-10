@@ -31,13 +31,13 @@ struct _mstdnt_accounts_args
     size_t* size;
 };
 
-struct mstdnt_accounts
+typedef struct mstdnt_accounts
 {
     struct mstdnt_account* accts;
     size_t len;
-};
+} mstdnt_accounts;
 
-struct mstdnt_account
+typedef struct mstdnt_account
 {
     char* id;
     char* username;
@@ -71,7 +71,7 @@ struct mstdnt_account
     /* struct mstdnt_source* source */
     mstdnt_bool suspended;
     char* mute_expires_at;
-};
+} mstdnt_account;
 
 struct mstdnt_account_args
 {

@@ -190,12 +190,15 @@ int mstdnt_await(mastodont_t* mstdnt,
                 if (data->json_cb)
                     res = data->json_cb(storage.root, data->json_args, &results);
                 
-                data->callback(&(results), data->callback_args);
+                res = data->callback(&(results), data->callback_args);
 
             cleanup_res:
-                mstdnt_request_cb_cleanup(&results);
-                // Cleanup
-                mstdnt_fetch_data_cleanup(data);
+                if (res != MSTDNT_REQUEST_DATA_NOCLEANUP)
+                {
+                    mstdnt_request_cb_cleanup(&results);
+                    // Cleanup
+                    mstdnt_fetch_data_cleanup(data);
+                }
                 curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
                 curl_easy_cleanup(msg->easy_handle);
             }

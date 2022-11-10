@@ -30,14 +30,23 @@ typedef int8_t mstdnt_bool;
 
 struct mstdnt_storage;
 
-// Only god knows
 typedef void (*mstdnt_data_free_cb_t)(void*, size_t);
-typedef void (*mstdnt_request_cb_t)(void* data, void* args);
+
 typedef struct mstdnt_request_cb_data {
     struct mstdnt_storage* storage;
     void* data;
     mstdnt_data_free_cb_t data_free_cb;
 } mstdnt_request_cb_data;
+
+typedef void (*mstdnt_request_cb_t)(mstdnt_request_cb_data* data, void* args);
+
+// Return types for mstdnt_request_cb_t, specifies
+//  what we want to do with the data
+typedef enum mstdnt_enum_req
+{
+    MSTDNT_REQUEST_DONE = 0,
+    MSTDNT_REQUEST_DATA_NOCLEANUP = 1,
+} mstdnt_enum_req;
 
 #define MSTDNT_CB_DATA(_data) (_data->data)
 #define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
