@@ -30,7 +30,7 @@ typedef int8_t mstdnt_bool;
 
 struct mstdnt_storage;
 
-typedef void (*mstdnt_data_free_cb_t)(void*, size_t);
+typedef void (*mstdnt_data_free_cb_t)(void*);
 
 typedef struct mstdnt_request_cb_data {
     struct mstdnt_storage* storage;
@@ -38,7 +38,7 @@ typedef struct mstdnt_request_cb_data {
     mstdnt_data_free_cb_t data_free_cb;
 } mstdnt_request_cb_data;
 
-typedef void (*mstdnt_request_cb_t)(mstdnt_request_cb_data* data, void* args);
+typedef int (*mstdnt_request_cb_t)(mstdnt_request_cb_data* data, void* args);
 
 // Return types for mstdnt_request_cb_t, specifies
 //  what we want to do with the data
