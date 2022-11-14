@@ -1,5 +1,5 @@
 /*
- * Licensed under BSD 2-Clause License
+ * Licensed under BSD 3-Clause License
  */
 
 #ifndef MASTODONT_SEARCH_H
