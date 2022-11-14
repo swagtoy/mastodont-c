@@ -209,9 +209,10 @@ int mstdnt_await(mastodont_t* mstdnt,
 
 void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
 
-void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
+void
+mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
 {
     mstdnt_storage_cleanup(data->storage);
-    //data->data_free_cb(data->data, 0);
-    /* free(data); */
+    data->data_free_cb(data->data);
+    free(data);
 }
