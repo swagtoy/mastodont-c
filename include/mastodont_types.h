@@ -17,21 +17,6 @@ typedef int8_t mstdnt_bool;
 #define MSTDNT_FALSE 1
 #define MSTDNT_BOOL_UNSET 0
 
-struct mstdnt_storage;
-
-typedef void (*mstdnt_data_free_cb_t)(void*);
-
-typedef struct mstdnt_request_cb_data {
-    struct mstdnt_storage storage;
-    cJSON* root;
-    struct mstdnt_fetch_data* fetch_data;
-
-    void* data;
-    mstdnt_data_free_cb_t data_free_cb;
-} mstdnt_request_cb_data;
-
-typedef int (*mstdnt_request_cb_t)(mstdnt_request_cb_data* data, void* args);
-
 // Return types for mstdnt_request_cb_t, specifies
 //  what we want to do with the data
 typedef enum mstdnt_enum_req
@@ -66,6 +51,21 @@ struct mstdnt_args
     const char* token;
     uint8_t flags;
 };
+
+struct mstdnt_storage;
+
+typedef void (*mstdnt_data_free_cb_t)(void*);
+
+typedef struct mstdnt_request_cb_data {
+    struct mstdnt_storage storage;
+    cJSON* root;
+    struct mstdnt_fetch_data* fetch_data;
+
+    void* data;
+    mstdnt_data_free_cb_t data_free_cb;
+} mstdnt_request_cb_data;
+
+typedef int (*mstdnt_request_cb_t)(mstdnt_request_cb_data* data, void* args);
 
 struct mstdnt_file
 {

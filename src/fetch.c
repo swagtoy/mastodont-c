@@ -141,7 +141,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     // Data used with response, must keep it with request
     struct mstdnt_fetch_data* data;
     // Data that the user will work with
-    mstdnt_request_cb_data* results = calloc(1, mstdnt_request_cb_data);
+    mstdnt_request_cb_data* results = calloc(1, sizeof(mstdnt_request_cb_data));
     results->fetch_data = data; // So we can clean it up
 
     // Check if our socket is done
