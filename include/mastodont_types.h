@@ -22,7 +22,10 @@ struct mstdnt_storage;
 typedef void (*mstdnt_data_free_cb_t)(void*);
 
 typedef struct mstdnt_request_cb_data {
-    struct mstdnt_storage* storage;
+    struct mstdnt_storage storage;
+    cJSON* root;
+    struct mstdnt_fetch_data* fetch_data;
+
     void* data;
     mstdnt_data_free_cb_t data_free_cb;
 } mstdnt_request_cb_data;

@@ -30,11 +30,6 @@ size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _
     return size;
 }
 
-void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res)
-{
-    mstdnt_free(res->response);
-}
-
 #define TOKEN_STR_SIZE 512
 int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
                             CURL* curl,
@@ -140,13 +135,14 @@ int mstdnt_await(mastodont_t* mstdnt,
             fds[i].revents = extra_fds[i].revents;
         }
     }
-    
-    struct mstdnt_fetch_data* data;
-    cJSON* root;
-    struct mstdnt_storage storage = { 0 };
-    mstdnt_request_cb_data results = { 0 };
+
     int numfds;
     int running = 1;
+    // Data used with response, must keep it with request
+    struct mstdnt_fetch_data* data;
+    // Data that the user will work with
+    mstdnt_request_cb_data* results = calloc(1, mstdnt_request_cb_data);
+    results->fetch_data = data; // So we can clean it up
 
     // Check if our socket is done
     do
@@ -162,32 +158,37 @@ int mstdnt_await(mastodont_t* mstdnt,
                 // Get easy info
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
                 // Setup
-                storage.needs_cleanup = 0;
+                results->storage.needs_cleanup = 0;
                 // Fill in results
                 
                 // Get json
-                if (_mstdnt_json_init(&root, data, &storage))
+                if (_mstdnt_json_init(&(results->root),
+                                      data,
+                                      &(results->storage)))
                 {
                     res = 1;
                     goto cleanup_res;
                 }
 
-                // Setup callback results
-                results.storage = &storage;
-
-                // Yeah, it's like that sometimes... :')
+                // Pass data to json callback, so it can store it's data
                 if (data->json_cb)
-                    res = data->json_cb(storage.root, data->json_args, &results);
-                
-                res = data->callback(&(results), data->callback_args);
+                    res = data->json_cb(results->storage.root,
+                                        data->json_args,
+                                        results);
+
+                // Call the actual callback
+                res = data->callback(results, data->callback_args);
 
             cleanup_res:
+                /* The response of the callback is important!
+                 * If the user returns the below response, then the request
+                 * must be cleaned up by them */
                 if (res != MSTDNT_REQUEST_DATA_NOCLEANUP)
                 {
-                    mstdnt_request_cb_cleanup(&results);
-                    // Cleanup
-                    mstdnt_fetch_data_cleanup(data);
+                    // Will cleanup fetch too
+                    mstdnt_request_cb_cleanup(results);
                 }
+                // We can clean the handle up though
                 curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
                 curl_easy_cleanup(msg->easy_handle);
             }
@@ -209,10 +210,20 @@ int mstdnt_await(mastodont_t* mstdnt,
 
 void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
 
+void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res)
+{
+    mstdnt_free(res->response);
+    // Free ourself
+    mstdnt_free(res);
+}
+
 void
 mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
 {
-    mstdnt_storage_cleanup(data->storage);
+    mstdnt_storage_cleanup(&(data->storage));
     data->data_free_cb(data->data);
-    free(data);
+    // Cleanup
+    mstdnt_fetch_data_cleanup(data->fetch_data);
+    // Free ourself
+    mstdnt_free(data);
 }
