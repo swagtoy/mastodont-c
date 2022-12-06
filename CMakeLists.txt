@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
-project(mastodont-c
-  VERSION 0.0
-  DESCRIPTION "Terrible library for Mastodon and Pleroma 'n Friends"
+project(mastodont
+  VERSION 0.1
+  DESCRIPTION "Library for Mastodon, Pleroma, Wormhole, etc."
   LANGUAGES C)
 
 # Useful
@@ -9,9 +9,44 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(PkgConfig REQUIRED)
 find_package(CURL REQUIRED)
-add_library(mastodont-c STATIC)
+add_library(mastodont STATIC)
 
-target_sources(mastodont-c PUBLIC
+set(HEADERS_FILES
+  include/mastodont_account.h
+  include/mastodont_announcement.h
+  include/mastodont_application.h
+  include/mastodont_attachment.h
+  include/mastodont_chats.h
+  include/mastodont_codes.h
+  include/mastodont_emoji.h
+  include/mastodont_error.h
+  include/mastodont_fetch.h
+  include/mastodont_generate.h
+  include/mastodont_history.h
+  include/mastodont_hooks.h
+  include/mastodont_instance.h
+  include/mastodont_json_helper.h
+  include/mastodont_list.h
+  include/mastodont_mention.h
+  include/mastodont_nodeinfo.h
+  include/mastodont_notif_types.h
+  include/mastodont_notification.h
+  include/mastodont_pleroma.h
+  include/mastodont_query.h
+  include/mastodont_relationship.h
+  include/mastodont_request.h
+  include/mastodont_scrobbles.h
+  include/mastodont_search.h
+  include/mastodont_status.h
+  include/mastodont_tag.h
+  include/mastodont_timeline.h
+  include/mastodont_types.h
+  include/mastodont_uri.h
+  include/mastodont_visibility_types.h
+  include/mastodont.h
+)
+
+target_sources(mastodont PUBLIC
   src/account.c
   src/application.c
   src/attachment.c
@@ -42,21 +77,26 @@ target_sources(mastodont-c PUBLIC
   libs/cjson/cJSON.c
 )
 
-target_compile_options(mastodont-c PUBLIC
+target_compile_options(mastodont PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
 )
 
-target_link_options(mastodont-c PUBLIC
+target_link_options(mastodont PUBLIC
   -lmastodont
   ${CURL_LDFLAGS_OTHER}
 )
 
-target_include_directories(mastodont-c PUBLIC
+target_include_directories(mastodont PUBLIC
   include/
   ${CURL_INCLUDE_DIRS}
 
   PRIVATE
   libs/
 )
+
+install(FILES ${HEADER_FILES} DESTINATION include/mastodont/)
+install(TARGETS mastodont LIBRARY DESTINATION lib)
+# TODO
+#install(FILES MastodontConfig.cmake DESTINATION lib/cmake/mastodont)
 

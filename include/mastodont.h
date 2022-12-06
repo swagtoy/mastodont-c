@@ -19,9 +19,11 @@
 #include <mastodont_chats.h>
 
 /// Initializes libcurl
-void mstdnt_global_curl_init();
+void
+mstdnt_global_curl_init(void);
 /// Cleans up libcurl
-void mstdnt_global_curl_cleanup();
+void
+mstdnt_global_curl_cleanup(void);
 
 /**
  * Initializes a mstdnt struct
@@ -29,14 +31,16 @@ void mstdnt_global_curl_cleanup();
  * @param data Pointer to struct to fill in
  * @return Value of curl_easy_init(); either Zero or non-zero
  */
-int mstdnt_init(mastodont_t* data);
+int
+mstdnt_init(mastodont_t* data);
 
 /**
  * Cleans up the mstdnt struct
  *
  * @param data Pointer to the mstdnt data
  */
-void mstdnt_cleanup(mastodont_t* data);
+void
+mstdnt_cleanup(mastodont_t* data);
 
 /**
  * Cleans up a storage struct.
@@ -45,6 +49,7 @@ void mstdnt_cleanup(mastodont_t* data);
  *
  * @param storage The storage block to cleanup
  */
-void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
+void
+mstdnt_storage_cleanup(struct mstdnt_storage *storage);
 
 #endif /* MASTODONT_H */

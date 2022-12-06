@@ -4,7 +4,6 @@
 
 #ifndef MASTODONT_SEARCH_H
 #define MASTODONT_SEARCH_H
-#include "mastodont.h"
 #include "mastodont_types.h"
 
 enum mstdnt_search_type

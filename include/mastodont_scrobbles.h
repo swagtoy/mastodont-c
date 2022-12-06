@@ -5,7 +5,6 @@
 #ifndef MASTODONT_SCROBBLES_H
 #define MASTODONT_SCROBBLES_H
 #include <stddef.h>
-#include <mastodont.h>
 #include <mastodont_types.h>
 #include <mastodont_account.h>
 
