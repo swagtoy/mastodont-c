@@ -2,7 +2,6 @@
  * Licensed under BSD 3-Clause License
  */
 
-#include <features.h>
 #include <string.h>
 #include <stdlib.h>
 #include <mastodont_hooks.h>

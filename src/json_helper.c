@@ -59,24 +59,27 @@ void _mstdnt_val_datetime_unix_call(cJSON* v, void* _type)
 {
     // First, assure correct time properties like DST
     time_t loc_time = time(NULL);
-    struct tm* conv_time_cpy = gmtime(&loc_time);
-    struct tm conv_time;
-    // Copy over for use
-    memcpy(&conv_time, conv_time_cpy, sizeof(struct tm));
+    // Note: Not thread safe? This is a static pointer returned
+    struct tm* conv_time = gmtime(&loc_time);
     
     time_t* type = _type;
-
     if (sscanf(v->valuestring, "%d-%d-%dT%d:%d:%d.000Z",
-               &conv_time.tm_year,
-               &conv_time.tm_mon,
-               &conv_time.tm_mday,
-               &conv_time.tm_hour,
-               &conv_time.tm_min,
-               &conv_time.tm_sec) == 6)
+               &conv_time->tm_year,
+               &conv_time->tm_mon,
+               &conv_time->tm_mday,
+               &conv_time->tm_hour,
+               &conv_time->tm_min,
+               &conv_time->tm_sec) == 6)
     {
-        conv_time.tm_year -= 1900;
-        conv_time.tm_mon -= 1;
+        // ?????? 
+        conv_time->tm_year -= 1900;
+        conv_time->tm_mon -= 1;
+        // TODO 
+#if 0
+        // not portable
         *type = mktime(&conv_time) - timezone;
+#endif
+        *type = mktime(&conv_time);
     }
     else
         *type = 0; // 70's, baby!
@@ -94,7 +97,7 @@ void _mstdnt_val_string_uint_call(cJSON* v, void* _type)
         return;
     }
 
-    // Convert string to long
+    // Convert his string garbage to long
     conv = strtol(v->valuestring, &endptr, 10);
     *type = v->valuestring != endptr ? conv : 0;
 }
