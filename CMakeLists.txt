@@ -90,7 +90,6 @@ target_link_options(mastodont PUBLIC
 target_include_directories(mastodont PUBLIC
   include/
   ${CURL_INCLUDE_DIRS}
-
   PRIVATE
   libs/
 )
