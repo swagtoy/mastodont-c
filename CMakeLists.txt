@@ -4,14 +4,17 @@ project(mastodont
   DESCRIPTION "Library for Mastodon, Pleroma, Wormhole, etc."
   LANGUAGES C)
 
+include(CMakePackageConfigHelpers)
+set(INCLUDE_INSTALL_DIR include/)
+set(LIB_INSTALL_DIR lib/)
+
 # Useful
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(PkgConfig REQUIRED)
 find_package(CURL REQUIRED)
-add_library(mastodont STATIC)
 
-set(HEADERS_FILES
+set(HEADER_FILES
   include/mastodont_account.h
   include/mastodont_announcement.h
   include/mastodont_application.h
@@ -46,7 +49,9 @@ set(HEADERS_FILES
   include/mastodont.h
 )
 
-target_sources(mastodont PUBLIC
+add_library(mastodont STATIC ${HEADER_FILES})
+
+target_sources(mastodont PRIVATE
   src/account.c
   src/application.c
   src/attachment.c
@@ -72,8 +77,6 @@ target_sources(mastodont PUBLIC
   src/tag.c
   src/timeline.c
   src/uri.c
-  
-  PRIVATE
   libs/cjson/cJSON.c
 )
 
@@ -81,12 +84,9 @@ target_compile_options(mastodont PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
 )
-
 target_link_options(mastodont PUBLIC
-  -lmastodont
   ${CURL_LDFLAGS_OTHER}
 )
-
 target_include_directories(mastodont PUBLIC
   include/
   ${CURL_INCLUDE_DIRS}
@@ -94,8 +94,16 @@ target_include_directories(mastodont PUBLIC
   libs/
 )
 
-install(FILES ${HEADER_FILES} DESTINATION include/mastodont/)
-install(TARGETS mastodont LIBRARY DESTINATION lib)
-# TODO
-#install(FILES MastodontConfig.cmake DESTINATION lib/cmake/mastodont)
+# Install
+install(FILES ${HEADER_FILES} DESTINATION
+  include/mastodont/)
+install(TARGETS mastodont
+    LIBRARY DESTINATION lib)
+
+configure_package_config_file(cmake/MastodontConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake
+    INSTALL_DESTINATION lib/cmake
+    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake DESTINATION lib/cmake)
 
