@@ -4,7 +4,7 @@
 
 #ifndef MASTODONT_URI_H
 #define MASTODONT_URI_H
-#include <mastodont_types.h>
+#include "mastodont_types.h"
 #include <stddef.h>
 
 struct mstdnt_uri

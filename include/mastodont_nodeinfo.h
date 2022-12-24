@@ -4,8 +4,7 @@
 
 #ifndef MASTODONT_NODEINFO_H
 #define MASTODONT_NODEINFO_H
-#include <mastodont_types.h>
-
+#include "mastodont_types.h"
 
 struct mstdnt_nodeinfo_metadata
 {

@@ -4,8 +4,8 @@
 
 #ifndef MASTODONT_TIMELINE_H
 #define MASTODONT_TIMELINE_H
-#include <mastodont_types.h>
-#include <mastodont_status.h>
+#include "mastodont_types.h"
+#include "mastodont_status.h"
 
 enum mstdnt_reply_visibility
 {

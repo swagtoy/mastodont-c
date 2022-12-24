@@ -4,19 +4,19 @@
 
 #ifndef MASTODONT_H
 #define MASTODONT_H
-#include <mastodont_hooks.h>
-#include <mastodont_types.h>
-#include <mastodont_timeline.h>
-#include <mastodont_list.h>
-#include <mastodont_notification.h>
-#include <mastodont_status.h>
-#include <mastodont_relationship.h>
-#include <mastodont_account.h>
-#include <mastodont_attachment.h>
-#include <mastodont_scrobbles.h>
-#include <mastodont_search.h>
-#include <mastodont_announcement.h>
-#include <mastodont_chats.h>
+#include "mastodont_hooks.h"
+#include "mastodont_types.h"
+#include "mastodont_timeline.h"
+#include "mastodont_list.h"
+#include "mastodont_notification.h"
+#include "mastodont_status.h"
+#include "mastodont_relationship.h"
+#include "mastodont_account.h"
+#include "mastodont_attachment.h"
+#include "mastodont_scrobbles.h"
+#include "mastodont_search.h"
+#include "mastodont_announcement.h"
+#include "mastodont_chats.h"
 
 /// Initializes libcurl
 void

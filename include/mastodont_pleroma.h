@@ -6,8 +6,8 @@
 // TODO Move me to statuses
 #ifndef MASTODONT_PLEROMA
 #define MASTODONT_PLEROMA
-#include <mastodont_types.h>
-#include <mastodont_emoji.h>
+#include "mastodont_types.h"
+#include "mastodont_emoji.h"
 
 struct mstdnt_status_pleroma
 {

@@ -13,6 +13,15 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(PkgConfig REQUIRED)
 find_package(CURL REQUIRED)
+# Find the real cJSON
+pkg_check_modules(CJSON libcjson)
+
+if (NOT (CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14))
+  # This was a workaround to some distributions providing an older cJSON
+  message("CJSON not found or CJSON_VERSION < 1.7.14, falling back to header-only.")
+  list(APPEND SRC_FILES libs/cjson/cJSON.c)
+endif()
+
 
 set(HEADER_FILES
   include/mastodont_account.h
@@ -49,9 +58,7 @@ set(HEADER_FILES
   include/mastodont.h
 )
 
-add_library(mastodont STATIC ${HEADER_FILES})
-
-target_sources(mastodont PRIVATE
+list(APPEND SRC_FILES
   src/account.c
   src/application.c
   src/attachment.c
@@ -76,9 +83,11 @@ target_sources(mastodont PRIVATE
   src/status.c
   src/tag.c
   src/timeline.c
-  src/uri.c
-  libs/cjson/cJSON.c
-)
+  src/uri.c)
+
+add_library(mastodont STATIC ${HEADER_FILES})
+
+target_sources(mastodont PRIVATE ${SRC_FILES})
 
 target_compile_options(mastodont PUBLIC
   -Wall -Wextra -std=c99
@@ -95,15 +104,18 @@ target_include_directories(mastodont PUBLIC
 )
 
 # Install
-install(FILES ${HEADER_FILES} DESTINATION
-  include/mastodont/)
-install(TARGETS mastodont
+if(CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14)
+  install(FILES ${HEADER_FILES} DESTINATION
+    include/mastodont/)
+  install(TARGETS mastodont
     LIBRARY DESTINATION lib)
 
-configure_package_config_file(cmake/MastodontConfig.cmake.in
+  configure_package_config_file(cmake/MastodontConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake
-    INSTALL_DESTINATION lib/cmake
+    INSTALL_DESTINATION lib/cmake/mastodont
     PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake DESTINATION lib/cmake)
-
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake DESTINATION lib/cmake/mastodont)
+else()
+  message("Since CJSON wasn't found or your distribution doesn't provide correct version, you can still use cmake/mastodont-config.cmake and check for it in your package. You _probably_ don't want this")
+endif()

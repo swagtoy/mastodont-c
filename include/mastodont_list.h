@@ -4,10 +4,10 @@
 
 #ifndef MASTODONT_LIST_H
 #define MASTODONT_LIST_H
-#include <mastodont_types.h>
+#include "mastodont_types.h"
 #include <cjson/cJSON.h>
-#include <mastodont_fetch.h>
-#include <mastodont_account.h>
+#include "mastodont_fetch.h"
+#include "mastodont_account.h"
 
 enum mstdnt_list_replies_policy
 {

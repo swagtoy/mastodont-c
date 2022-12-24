@@ -5,8 +5,8 @@
 #ifndef MASTODONT_FETCH_H
 #define MASTODONT_FETCH_H
 #include <cjson/cJSON.h>
-#include <mastodont_types.h>
 #include <curl/curl.h>
+#include "mastodont_types.h"
 
 /** Used to store the response from CURL */
 struct mstdnt_fetch_data

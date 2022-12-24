@@ -6,8 +6,8 @@
 #define MASTODONT_RELATIONSHIP_H
 #include <stdint.h>
 #include <cjson/cJSON.h>
-#include <mastodont_types.h>
-#include <mastodont_request.h>
+#include "mastodont_types.h"
+#include "mastodont_request.h"
 
 typedef uint16_t mstdnt_relationship_flag_t;
 
