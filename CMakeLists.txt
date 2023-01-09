@@ -4,9 +4,13 @@ project(mastodont
   DESCRIPTION "Library for Mastodon, Pleroma, Wormhole, etc."
   LANGUAGES C)
 
+# BEGIN cmake package config info
 include(CMakePackageConfigHelpers)
-set(INCLUDE_INSTALL_DIR include/)
+set(INCLUDE_INSTALL_DIR include/mastodont/)
 set(LIB_INSTALL_DIR lib/)
+# This feels... UNIX-y
+set(LIB_INSTALL_PATH lib/libmastodont.a)
+# END cmake package config info
 
 # Useful
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -86,7 +90,6 @@ list(APPEND SRC_FILES
   src/uri.c)
 
 add_library(mastodont STATIC ${HEADER_FILES})
-
 target_sources(mastodont PRIVATE ${SRC_FILES})
 
 target_compile_options(mastodont PUBLIC
@@ -111,11 +114,11 @@ if(CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14)
     LIBRARY DESTINATION lib)
 
   configure_package_config_file(cmake/MastodontConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/mastodont-config.cmake
     INSTALL_DESTINATION lib/cmake/mastodont
-    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR)
+    PATH_VARS INCLUDE_INSTALL_DIR LIB_INSTALL_DIR LIB_INSTALL_PATH)
 
-  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/MastodontConfig.cmake DESTINATION lib/cmake/mastodont)
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mastodont-config.cmake DESTINATION lib/cmake/mastodont)
 else()
   message("Since CJSON wasn't found or your distribution doesn't provide correct version, you can still use cmake/mastodont-config.cmake and check for it in your package. You _probably_ don't want this")
 endif()
