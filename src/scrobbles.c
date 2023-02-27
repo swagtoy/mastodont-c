@@ -4,6 +4,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <mastodont_hooks.h>
 #include <mastodont_scrobbles.h>
 #include <mastodont_json_helper.h>
 #include <mastodont_query.h>
@@ -26,6 +27,7 @@ mstdnt_scrobble_json(struct mstdnt_scrobble* scrobble, cJSON* js)
         { "id", &(scrobble->id), _mstdnt_val_string_call },
         { "length", &(scrobble->length), _mstdnt_val_uint_call },
         { "title", &(scrobble->title), _mstdnt_val_string_call }
+        
     };
     
     for (v = js; v; v = v->next)
