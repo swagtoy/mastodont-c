@@ -20,6 +20,9 @@ find_package(CURL REQUIRED)
 # Find the real cJSON
 pkg_check_modules(CJSON libcjson)
 
+# Includes test programs... unit tests
+add_subdirectory(tests)
+
 if (NOT (CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14))
   # This was a workaround to some distributions providing an older cJSON
   message("CJSON not found or CJSON_VERSION < 1.7.14, falling back to header-only.")
@@ -96,9 +99,11 @@ target_compile_options(mastodont PUBLIC
   -Wall -Wextra -std=c99
   -Wshadow -Wcast-align -Wstrict-prototypes
 )
+
 target_link_options(mastodont PUBLIC
   ${CURL_LDFLAGS_OTHER}
 )
+
 target_include_directories(mastodont PUBLIC
   include/
   ${CURL_INCLUDE_DIRS}
