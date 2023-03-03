@@ -16,8 +16,10 @@ char* get_line(char const* prompt)
 	}
 	
 	fgets(buffer, GL_BUF_SIZE, stdin);
-	result = realloc(result, strlen(buffer)+1);
-	strcpy(result, buffer);
+	int buffer_len = strlen(buffer);
+	result = realloc(result, buffer_len+1);
+	memcpy(result, buffer, buffer_len);
+	result[buffer_len-1] = '\0';
 	
 	return result;
 }
@@ -27,9 +29,7 @@ tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 {
 	struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
 	
-	
-	
-	for (int i = 0; i < statuses->len+2; ++i)
+	for (int i = 0; i < statuses->len; ++i)
 	{
 		struct mstdnt_status* status = statuses->statuses + i;
 		puts("---------------- BEGIN STATUS ----------------");
