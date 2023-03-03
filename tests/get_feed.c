@@ -1,11 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <mastodont.h>
 
-char* get_line(char const* prompt, size_t* res_size)
+char* get_line(char const* prompt)
 {
 	char* result = NULL;
-#define GL_BUF_SIZE 25
-	size_t _res_size;
+#define GL_BUF_SIZE 255
 	char buffer[GL_BUF_SIZE];
 	
 	if (prompt)
@@ -14,21 +15,15 @@ char* get_line(char const* prompt, size_t* res_size)
 		fputs(": ", stdout);
 	}
 	
-	while (fgets(buffer, GL_BUF_SIZE, stdin) != NULL)
-	{
-		_res_size += GL_BUF_SIZE;
-		result = realloc(result, _res_size);
-		memcpy(result, buffer, GL_BUF_SIZE);
-	}
+	fgets(buffer, GL_BUF_SIZE, stdin);
+	result = realloc(result, strlen(buffer)+1);
+	strcpy(result, buffer);
 	
-	if (res_size)
-		*res_size = _res_size;
-		
 	return result;
 }
 
 int
-main()
+main(int argc, char** argv)
 {
 	mstdnt_global_curl_init();
 	
@@ -39,7 +34,7 @@ main()
 		fputs("Couldn't initialize Mastodont-c!", stderr);
 	}
 
-	char* instance = get_line("Instance: ", NULL);
+	char* instance = get_line("Instance");
 	
 	puts(instance);
 	
@@ -47,4 +42,6 @@ main()
 	
 	mstdnt_cleanup(&data);
 	mstdnt_global_curl_cleanup();
+	
+	return 1;
 }

@@ -4,11 +4,18 @@ set(MASTODONT_VERSION 0.1)
 
 # Get parent directory of this config file
 find_package(CURL REQUIRED)
+find_package(PkgConfig REQUIRED)
+# TODO account for built-in cjson lib
+pkg_check_modules(MSTDNT_CJSON libcjson)
 
 set(MASTODONT_INCLUDE_DIRS
-  "${CMAKE_CURRENT_LIST_DIR}/../include"
-  "${CMAKE_CURRENT_LIST_DIR}/../libs"
+  ../include
+  ../libs
 )
-set(MASTODONT_LIBRARIES ${CMAKE_CURRENT_LIST_DIR})
 
+set(MASTODONT_LIBRARIES 
+	mastodont
+	${MSTDNT_CJSON_LIBRARIES}
+	${CURL_LIBRARIES}
+)
 
