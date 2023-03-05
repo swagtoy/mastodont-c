@@ -142,12 +142,12 @@ int mstdnt_await(mastodont_t* mstdnt,
     struct mstdnt_fetch_data* data;
     // Data that the user will work with
     mstdnt_request_cb_data* results = calloc(1, sizeof(mstdnt_request_cb_data));
-    results->fetch_data = data; // So we can clean it up
 
     // Check if our socket is done
     do
     {
-        res = curl_multi_perform(mstdnt->curl, &running);
+    	// TODO error check
+		curl_multi_perform(mstdnt->curl, &running);
         
         res = curl_multi_poll(mstdnt->curl, fds, nfds, 1000, &numfds);
         
@@ -158,8 +158,8 @@ int mstdnt_await(mastodont_t* mstdnt,
                 // Get easy info
                 curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
                 // Setup
+				results->fetch_data = data; // So we can clean it up
                 results->storage.needs_cleanup = 0;
-                // Fill in results
                 
                 // Get json
                 if (_mstdnt_json_init(&(results->root),
@@ -182,7 +182,7 @@ int mstdnt_await(mastodont_t* mstdnt,
             cleanup_res:
                 /* The response of the callback is important!
                  * If the user returns the below response, then the request
-                 * must be cleaned up by them */
+                 * must be cleaned up manually by them */
                 if (res != MSTDNT_REQUEST_DATA_NOCLEANUP)
                 {
                     // Will cleanup fetch too
