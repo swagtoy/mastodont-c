@@ -24,6 +24,12 @@ char* get_line(char const* prompt)
 	return result;
 }
 
+static char const*
+itob(int i)
+{
+	return i ? "true" : "false";
+}
+
 int
 tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 {
@@ -33,7 +39,15 @@ tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 	{
 		struct mstdnt_status* status = statuses->statuses + i;
 		puts("---------------- BEGIN STATUS ----------------");
-		printf(" Author: %s", status->account.username);
+		printf(" Author: %s\n", status->account.username);
+		printf(" id: %s\n", status->id);
+		printf(" R/F/REPLIES: %u %u %u\n", status->reblogs_count, 
+		                                   status->favourites_count,
+		                                   status->replies_count);
+		printf(" Is Reply? %s\n", itob(status->in_reply_to_id != NULL));
+		printf(" Contains emojos? %s\n", itob(status->emojis_len > 0));
+		printf(" Has attachments? %s\n", itob(status->media_attachments_len > 0));
+		
 		puts("----------------- END STATUS -----------------");
 	}
 
@@ -63,14 +77,14 @@ main(int argc, char** argv)
 		.flags = 0,
 	};
 	
-	mstdnt_timeline_public(&data, &m_args, tl_callback, NULL, (struct mstdnt_timeline_args){});
+	mstdnt_timeline_public(&data, &m_args, tl_callback, NULL, (struct mstdnt_timeline_args){.limit=20});
 	
 	mstdnt_await(&data, 0, NULL, 0);
 
 	// Cleanup	
-	free(instance);
-	mstdnt_cleanup(&data);
-	mstdnt_global_curl_cleanup();
+	//free(instance);
+	//mstdnt_cleanup(&data);
+	//mstdnt_global_curl_cleanup();
 	
 	return 1;
 }

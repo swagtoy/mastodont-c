@@ -30,7 +30,7 @@
                                                                         \
         if (!arr_len)                                                   \
             return 0;                                                   \
-                                                                        \
+            															\                               
         *array = calloc(arr_len, sizeof(type));                         \
                                                                         \
         if (*array == NULL)                                             \
