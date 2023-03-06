@@ -2,6 +2,8 @@
  * Licensed under BSD 3-Clause License
  */
 
+#include <sys/select.h>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
@@ -114,6 +116,20 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     return 0;
 }
 
+int
+mstdnt_get_fds(mastodont_t* mstdnt,
+               fd_set* set,
+               int* nfds)
+{
+	assert(mstdnt && nfds);
+	
+	return curl_multi_fdset(mstdnt->curl,
+	                        set,
+	                        NULL,
+	                        NULL,
+	                        nfds) != CURLM_OK;
+}
+
 int mstdnt_await(mastodont_t* mstdnt,
                  enum mstdnt_fetch_await opt,
                  struct mstdnt_fd extra_fds[],
@@ -208,7 +224,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     return res;
 }
 
-void mstdnt_storage_cleanup(struct mstdnt_storage* storage);
+void mstdnt_storage_cleanup(struct mstdnt_storage* storage);// ?
 
 void mstdnt_fetch_data_cleanup(struct mstdnt_fetch_data* res)
 {

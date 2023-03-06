@@ -67,22 +67,43 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
                             char* request_t_custom);
 
 /**
- * @brief Blocks until a transfer is complete.
+ * \brief Blocks until a transfer is complete.
  *
- * You can also check curl's socket 
+ * You can also check curl's socket, but mastodont offers ways to do that
+ *  in case of change
  *
- * @param mstdnt Mastodont struct
- * @param opt Option, MSTDNT_AWAIT_ALL means it will keep going until
+ * \param mstdnt Mastodont struct
+ * \param opt Option, MSTDNT_AWAIT_ALL means it will keep going until
  *  there are no more transfers. MSTDNT_AWAIT_ONCE will run
- * @param extra_fds Set of file descriptors to poll alongside
+ * \param extra_fds Set of file descriptors to poll alongside
  *  the mastodont data.
- * @param nfds Length of extra_fds
- * @return 1 on error
+ * \param nfds Length of extra_fds
+ * \return 1 on error
  */
 int mstdnt_await(mastodont_t* mstdnt,
                  enum mstdnt_fetch_await opt,
                  struct mstdnt_fd extra_fds[],
                  size_t nfds);
+            
+
+/**
+ * Returns a array of file descriptors to network sockets (if any)
+ *
+ * These file descriptors only notify when ready to read.
+ *
+ * \remark If you need the write-ready sockets available, poke at CURLM*
+ directly
+ * \remark Usually required if you want to interface Mastodont with
+ *         application event loops (i.e. GTK, QT, EFL)
+ *
+ * \param  set   Reference ptr to set
+ * \param  nfds  Number of file descriptors to check for reading.
+ * \return 0 on success, 1 on error
+ */
+int
+mstdnt_get_fds(mastodont_t* mstdnt,
+               fd_set* set,
+               int* nfds);
 
 void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
 

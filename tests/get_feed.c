@@ -82,9 +82,9 @@ main(int argc, char** argv)
 	mstdnt_await(&data, 0, NULL, 0);
 
 	// Cleanup	
-	//free(instance);
-	//mstdnt_cleanup(&data);
-	//mstdnt_global_curl_cleanup();
+	free(instance);
+	mstdnt_cleanup(&data);
+	mstdnt_global_curl_cleanup();
 	
 	return 1;
 }
