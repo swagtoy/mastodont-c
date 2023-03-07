@@ -104,9 +104,11 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
         printf("error %s\n", curl_multi_strerror(res));
         return -1;
     }
-
-    /* int running; */
-    /* res = curl_multi_perform(mstdnt->curl, &running); */
+    
+    // TODO add option to "queue" and not perform a request
+    // Get her running...
+    int running;
+    res = curl_multi_perform(mstdnt->curl, &running);
     /* if (res != CURLM_OK) */
     /* { */
     /*     printf("error %s\n", curl_multi_strerror(res)); */
@@ -118,15 +120,17 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
 
 int
 mstdnt_get_fds(mastodont_t* mstdnt,
-               fd_set* set,
+               fd_set* read_set,
+               fd_set* write_set,
+               fd_set* error_set,
                int* nfds)
 {
 	assert(mstdnt && nfds);
 	
 	return curl_multi_fdset(mstdnt->curl,
-	                        set,
-	                        NULL,
-	                        NULL,
+	                        read_set,
+	                        write_set,
+	                        error_set,
 	                        nfds) != CURLM_OK;
 }
 
@@ -160,6 +164,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     mstdnt_request_cb_data* results = calloc(1, sizeof(mstdnt_request_cb_data));
 
     // Check if our socket is done
+    // BUG: Reusing data structures if multiple transfers in place
     do
     {
     	// TODO error check

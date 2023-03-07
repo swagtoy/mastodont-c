@@ -96,13 +96,17 @@ int mstdnt_await(mastodont_t* mstdnt,
  * \remark Usually required if you want to interface Mastodont with
  *         application event loops (i.e. GTK, QT, EFL)
  *
- * \param  set   Reference ptr to set
- * \param  nfds  Number of file descriptors to check for reading.
+ * \param  read   Reference ptr to read set
+ * \param  write  Reference ptr to write set
+ * \param  error  Reference ptr to error set
+ * \param  nfds   Number of file descriptors to check for reading.
  * \return 0 on success, 1 on error
  */
 int
 mstdnt_get_fds(mastodont_t* mstdnt,
-               fd_set* set,
+               fd_set* read,
+               fd_set* write,
+               fd_set* error,
                int* nfds);
 
 void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
