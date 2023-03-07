@@ -26,9 +26,20 @@ gui_quit_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 }
 
 static void
+gui_create_status(struct mstdnt_status* status)
+{
+	Eo* root = efl_add(EFL_UI_BOX_CLASS,
+	                   efl_name_set(efl_added, "Status"));
+	
+	//Eo* avatar = efl_add();
+	
+	return root;
+}
+
+static void
 gui_add_status(struct mstdnt_status* status)
 {
-
+	efl_pack_end(gui_create_status(status));
 }
 
 int
@@ -39,7 +50,7 @@ tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 	for (int i = 0; i < statuses->len; ++i)
 	{
 		struct mstdnt_status* status = statuses->statuses + i;
-		
+		gui_add_status(status);
 	}
 
 	return MSTDNT_REQUEST_DONE;
@@ -69,8 +80,15 @@ mstdnt_results_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 	mstdnt_await(&mstdnt, 0, NULL, 0);
 }
 
+static void
+mstdnt_update_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
+{
+	int running;
+	curl_multi_perform(mstdnt.curl, &running);
+}
+
 void
-update_mstdnt_fds(void)
+update_mstdnt_fds()
 {
 	int nfds;
 	// Get                        
@@ -82,18 +100,26 @@ update_mstdnt_fds(void)
 	FD_ZERO(&error);
 	
 	mstdnt_get_fds(&mstdnt, &read, &write, &error, &nfds);
-	printf("%d\n", nfds);
 	
-	for (int i = 0; i < nfds; ++i)
+	for (int i = 0; i <= nfds; ++i)
 	{
+		printf("FD_ISSET: %i\n", i);
 		if (FD_ISSET(i, &read))
 		{
-			printf("Added: %i\n", i);
-			fd = efl_add(EFL_LOOP_FD_CLASS,
+			efl_add(EFL_LOOP_FD_CLASS,
 						 efl_main_loop_get(),
 						 efl_loop_fd_set(efl_added, i),
 						 efl_event_callback_add(efl_added, EFL_LOOP_FD_EVENT_READ, mstdnt_results_cb, &i));
 		}
+#if 0
+		if (FD_ISSET(i, &write))
+		{
+			efl_add(EFL_LOOP_FD_CLASS,
+						 efl_main_loop_get(),
+						 efl_loop_fd_set(efl_added, i),
+						 efl_event_callback_add(efl_added, EFL_LOOP_FD_EVENT_WRITE, mstdnt_update_cb, &i));
+		}
+#endif
 	}
 }
 

@@ -157,7 +157,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     }
 
     int numfds;
-    int running = 1;
+    int running;
     // Data used with response, must keep it with request
     struct mstdnt_fetch_data* data;
     // Data that the user will work with
@@ -168,56 +168,57 @@ int mstdnt_await(mastodont_t* mstdnt,
     do
     {
     	// TODO error check
-		curl_multi_perform(mstdnt->curl, &running);
+		res = curl_multi_perform(mstdnt->curl, &running);
+		
+        if (running)
+            res = curl_multi_poll(mstdnt->curl, fds, nfds, 1000, &numfds);
         
-        res = curl_multi_poll(mstdnt->curl, fds, nfds, 1000, &numfds);
-        
-        while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)) != NULL)
-        {
-            if (msg->msg == CURLMSG_DONE)
-            {
-                // Get easy info
-                curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
-                // Setup
-				results->fetch_data = data; // So we can clean it up
-                results->storage.needs_cleanup = 0;
-                
-                // Get json
-                if (_mstdnt_json_init(&(results->root),
-                                      data,
-                                      &(results->storage)))
-                {
-                    res = 1;
-                    goto cleanup_res;
-                }
-
-                // Pass data to json callback, so it can store it's data
-                if (data->json_cb)
-                    res = data->json_cb(results->storage.root,
-                                        data->json_args,
-                                        results);
-
-                // Call the actual callback
-                res = data->callback(results, data->callback_args);
-
-            cleanup_res:
-                /* The response of the callback is important!
-                 * If the user returns the below response, then the request
-                 * must be cleaned up manually by them */
-                if (res != MSTDNT_REQUEST_DATA_NOCLEANUP)
-                {
-                    // Will cleanup fetch too
-                    mstdnt_request_cb_cleanup(results);
-                }
-                // We can clean the handle up though
-                curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
-                curl_easy_cleanup(msg->easy_handle);
-            }
-        }
-
         if (res) break;
     }
     while (/* opt == MSTDNT_AWAIT_ALL && msgs_left */ running);
+    
+    while ((msg = curl_multi_info_read(mstdnt->curl, &msgs_left)) != NULL)
+    {
+        if (msg->msg == CURLMSG_DONE)
+        {
+            // Get easy info
+            curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
+            // Setup
+            results->fetch_data = data; // So we can clean it up
+            results->storage.needs_cleanup = 0;
+            
+            // Get json
+            if (_mstdnt_json_init(&(results->root),
+                                  data,
+                                  &(results->storage)))
+            {
+                res = 1;
+                goto cleanup_res;
+            }
+
+            // Pass data to json callback, so it can store it's data
+            if (data->json_cb)
+                res = data->json_cb(results->storage.root,
+                                    data->json_args,
+                                    results);
+
+            // Call the actual callback
+            res = data->callback(results, data->callback_args);
+
+        cleanup_res:
+            /* The response of the callback is important!
+             * If the user returns the below response, then the request
+             * must be cleaned up manually by them */
+            if (res != MSTDNT_REQUEST_DATA_NOCLEANUP)
+            {
+                // Will cleanup fetch too
+                mstdnt_request_cb_cleanup(results);
+            }
+            // We can clean the handle up though
+            curl_multi_remove_handle(mstdnt->curl, msg->easy_handle);
+            curl_easy_cleanup(msg->easy_handle);
+        }
+    }
 
     // Put revents back for callee
     if (extra_fds)
