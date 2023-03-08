@@ -15,6 +15,7 @@ void update_mstdnt_fds(void);
 Eo* textbox_instance;
 Eo* fd;
 Eo* posts;
+Eo* fake_list;
 mastodont_t mstdnt;
 
 static void
@@ -28,18 +29,27 @@ gui_quit_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 static Eo*
 gui_create_status(struct mstdnt_status* status)
 {
-	Eo* root = efl_add(EFL_UI_BOX_CLASS,
-	                   efl_name_set(efl_added, "Status"));
+#if 0
+	Eo* box = efl_add(EFL_UI_ITEM_CLASS,
+	                  root,
+	                  efl_text_set(efl_added, status->text)
+	                  );
+#endif
 	
-	Eo* avatar = efl_add();
+	Eo* content = efl_add(EFL_UI_TEXTBOX_CLASS, fake_list,
+	                      efl_text_interactive_selection_allowed_set(efl_added, EINA_FALSE),
+	                      efl_text_wrap_set(efl_added, EINA_TRUE),
+	                      efl_gfx_hint_fill_set(efl_added, EINA_TRUE, EINA_FALSE),
+	                      efl_text_markup_set(efl_added, status->content),
+	                      efl_pack(fake_list, efl_added));
 	
-	return root;
+	return content;
 }
 
 static void
 gui_add_status(struct mstdnt_status* status)
 {
-	efl_pack_end(gui_create_status(status));
+	efl_pack_end(fake_list, gui_create_status(status));
 }
 
 int
@@ -83,8 +93,8 @@ mstdnt_results_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 static void
 mstdnt_update_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 {
-	int running;
-	curl_multi_perform(mstdnt.curl, &running);
+	//int running;
+	//curl_multi_perform(mstdnt.curl, &running);
 }
 
 void
@@ -143,12 +153,16 @@ gui_setup(void)
 	              efl_content_set(win, efl_added),
 	              efl_gfx_hint_size_min_set(efl_added, EINA_SIZE2D(360, 440)));
 	              
-	posts = efl_add(EFL_UI_LIST_CLASS,
+	posts = efl_add(EFL_UI_SCROLLER_CLASS,
 	                box,
 	                //efl_text_interactive_selection_allowed_set(efl_added, EINA_FALSE),
 	                //efl_gfx_hint_weight_set(efl_added, 1.0, 0.9),
 	                //efl_gfx_hint_align_set(efl_added, 0.5, 0.5),
 	                efl_pack(box, efl_added));
+	
+	fake_list = efl_add(EFL_UI_BOX_CLASS,
+	                    posts,
+	                    efl_content_set(posts, efl_added));
 
 	textbox_instance = efl_add(EFL_UI_TEXTBOX_CLASS,
 	                           box,
