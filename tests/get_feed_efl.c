@@ -25,13 +25,13 @@ gui_quit_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 	efl_exit(0);
 }
 
-static void
+static Eo*
 gui_create_status(struct mstdnt_status* status)
 {
 	Eo* root = efl_add(EFL_UI_BOX_CLASS,
 	                   efl_name_set(efl_added, "Status"));
 	
-	//Eo* avatar = efl_add();
+	Eo* avatar = efl_add();
 	
 	return root;
 }
