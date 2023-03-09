@@ -29,21 +29,38 @@ gui_quit_cb(void *data EINA_UNUSED, const Efl_Event *event EINA_UNUSED)
 static Eo*
 gui_create_status(struct mstdnt_status* status)
 {
-#if 0
-	Eo* box = efl_add(EFL_UI_ITEM_CLASS,
-	                  root,
-	                  efl_text_set(efl_added, status->text)
-	                  );
-#endif
+	Eo* root = efl_add(EFL_UI_BOX_CLASS, fake_list,
+	                   efl_gfx_hint_margin_set(efl_added, 5, 5, 5, 0),
+	                   efl_gfx_color_set(efl_part(efl_added, "background"), 84, 84, 84, 150)
+	                   );
 	
-	Eo* content = efl_add(EFL_UI_TEXTBOX_CLASS, fake_list,
+	Eo* header = efl_add(EFL_UI_BOX_CLASS, root,
+	                     efl_ui_layout_orientation_set(efl_added, EFL_UI_LAYOUT_ORIENTATION_HORIZONTAL),
+	                     efl_gfx_hint_fill_set(efl_added, EINA_FALSE, EINA_FALSE),
+	                     efl_gfx_hint_align_set(efl_added, 0.0, 0.0),
+	                     efl_pack(root, efl_added));
+	                     
+	efl_add(EFL_UI_TEXTBOX_CLASS, header,
+	        efl_text_set(efl_added, status->account.display_name),
+	        efl_gfx_hint_margin_set(efl_added, 0, 5, 0, 0),
+	        efl_pack(header, efl_added));
+	
+	efl_add(EFL_UI_TEXTBOX_CLASS, header,
+	        efl_text_set(efl_added, status->account.acct),
+	        efl_text_font_weight_set(efl_added, EFL_TEXT_FONT_WEIGHT_BOLD),
+	        efl_pack(header, efl_added));
+	
+	Eo* content = efl_add(EFL_UI_TEXTBOX_CLASS, root,
 	                      efl_text_interactive_selection_allowed_set(efl_added, EINA_FALSE),
 	                      efl_text_wrap_set(efl_added, EINA_TRUE),
 	                      efl_gfx_hint_fill_set(efl_added, EINA_TRUE, EINA_FALSE),
 	                      efl_text_markup_set(efl_added, status->content),
-	                      efl_pack(fake_list, efl_added));
-	
-	return content;
+	                      efl_text_interactive_editable_set(efl_added, EINA_FALSE),
+	                      efl_gfx_color_set(efl_part(efl_added, "background"), 84, 84, 84, 150),
+	                      efl_gfx_hint_margin_set(efl_added, 0, 0, 0, 5),
+	                      efl_pack(root, efl_added));
+	efl_pack_layout_update(fake_list);
+	return root;
 }
 
 static void
@@ -84,17 +101,10 @@ gui_fetch_posts(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 }
 
 static void
-mstdnt_results_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
+mstdnt_results_cb(void* _data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 {
-	printf("Mastodont data ready to be read!\n");
+	Eo* data = _data;
 	mstdnt_await(&mstdnt, 0, NULL, 0);
-}
-
-static void
-mstdnt_update_cb(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
-{
-	//int running;
-	//curl_multi_perform(mstdnt.curl, &running);
 }
 
 void
@@ -119,17 +129,8 @@ update_mstdnt_fds()
 			efl_add(EFL_LOOP_FD_CLASS,
 						 efl_main_loop_get(),
 						 efl_loop_fd_set(efl_added, i),
-						 efl_event_callback_add(efl_added, EFL_LOOP_FD_EVENT_READ, mstdnt_results_cb, &i));
+						 efl_event_callback_add(efl_added, EFL_LOOP_FD_EVENT_READ, mstdnt_results_cb, efl_added));
 		}
-#if 0
-		if (FD_ISSET(i, &write))
-		{
-			efl_add(EFL_LOOP_FD_CLASS,
-						 efl_main_loop_get(),
-						 efl_loop_fd_set(efl_added, i),
-						 efl_event_callback_add(efl_added, EFL_LOOP_FD_EVENT_WRITE, mstdnt_update_cb, &i));
-		}
-#endif
 	}
 }
 
@@ -151,7 +152,7 @@ gui_setup(void)
 	box = efl_add(EFL_UI_BOX_CLASS,
 	              win,
 	              efl_content_set(win, efl_added),
-	              efl_gfx_hint_size_min_set(efl_added, EINA_SIZE2D(360, 440)));
+	              efl_gfx_hint_size_min_set(efl_added, EINA_SIZE2D(300, 440)));
 	              
 	posts = efl_add(EFL_UI_SCROLLER_CLASS,
 	                box,
@@ -167,6 +168,7 @@ gui_setup(void)
 	textbox_instance = efl_add(EFL_UI_TEXTBOX_CLASS,
 	                           box,
 	                           efl_gfx_hint_weight_set(efl_added, 1.0, 0.1),
+	                           efl_gfx_color_set(efl_added, 0, 255, 0, 255),
 	                           efl_pack(box, efl_added));
 		
 	efl_add(EFL_UI_BUTTON_CLASS,
