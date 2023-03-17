@@ -4,3 +4,6 @@ src/*.o
 docs/html/
 docs/latex/
 build/
+obj/
+Mastodont.make
+Makefile
