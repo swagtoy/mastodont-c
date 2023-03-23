@@ -5,5 +5,5 @@ docs/html/
 docs/latex/
 build/
 obj/
-Mastodont.make
+mastodont.make
 Makefile

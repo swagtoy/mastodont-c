@@ -1,22 +1,22 @@
-workspace("Mastodont");
+solution "mastodont-c"
 configurations { "Debug", "Release" };
 
 -- BEGIN Mastodont project
-project("Mastodont");
+project("mastodont");
 kind("StaticLib");
 language("C");
 files { "include/*.h", "src/*.c" };
 includedirs { "include/" };
 
-filter { "system:linux or bsd or macosx", "action:gmake" }
+configuration { "linux", "bsd", "gmake" }
 	linkoptions { "`curl-config --libs`" }
 	linkoptions { "`pkg-config --libs cjson`" }
 
-filter { "configurations:Debug" };
+configuration { "Debug" };
 	defines { "DEBUG" };
-	symbols("On");
+	flags("Symbols");
 
-filter { "configurations:Release" };
+configuration { "Release" };
 	defines { "NDEBUG" };
-	optimize("On");
+	flags("Optimize");
 -- END Mastodont-c
