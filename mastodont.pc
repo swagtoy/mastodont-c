@@ -1,0 +1,10 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/lib
+
+Name: mastodont
+Description: The mastodont library
+Version: 0.0.1
+Cflags: -I${includedir}/mastodont
+Libs: -L${libdir} -lmastodont
