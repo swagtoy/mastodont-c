@@ -1,4 +1,6 @@
-solution "mastodont-c"
+premake.gcc.cc = os.getenv("CC") or 'cc';
+
+solution "mastodont-c";
 configurations { "Debug", "Release" };
 
 -- BEGIN Mastodont project
@@ -9,16 +11,17 @@ files { "include/*.h", "src/*.c" };
 includedirs { "include/" };
 
 configuration { "linux", "bsd", "gmake" };
-	linkoptions { "`curl-config --libs`" };
-	linkoptions { "`pkg-config --libs cjson`" };
+linkoptions { "`curl-config --libs`" };
+linkoptions { "`pkg-config --libs cjson`" };
+	
 
 configuration { "Debug" };
-	defines { "DEBUG" };
-	flags("Symbols");
+defines { "DEBUG" };
+flags("Symbols");
 
 configuration { "Release" };
-	defines { "NDEBUG" };
-	flags("Optimize");
+defines { "NDEBUG" };
+flags("Optimize");
 -- END Mastodont-c
 
 local prefix = os.getenv("PREFIX") or "/usr/local";
