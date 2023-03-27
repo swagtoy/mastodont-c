@@ -35,6 +35,7 @@ newaction {
 	execute = function()
 		os.copyfile("libmastodont.a", prefix .. "/lib");
 		os.execute("install -d include/ " .. prefix .. "/include");
+		os.execute("cp -r include/ " .. prefix .. "/include/mastodont");
 		os.mkdir(pkgconfig_path);
 		os.copyfile("mastodont.pc", pkgconfig_path .. "/mastodont.pc");
 	end
