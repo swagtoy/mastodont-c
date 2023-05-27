@@ -1,5 +1,3 @@
-premake.gcc.cc = os.getenv("CC") or 'cc';
-
 solution "mastodont-c";
 configurations { "Debug", "Release" };
 
