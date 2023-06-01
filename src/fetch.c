@@ -161,7 +161,6 @@ int mstdnt_await(mastodont_t* mstdnt,
     // Data used with response, must keep it with request
     struct mstdnt_fetch_data* data;
     // Data that the user will work with
-    mstdnt_request_cb_data* results = calloc(1, sizeof(mstdnt_request_cb_data));
 
     // Check if our socket is done
     // BUG: Reusing data structures if multiple transfers in place
@@ -170,7 +169,7 @@ int mstdnt_await(mastodont_t* mstdnt,
     	// TODO error check
 		res = curl_multi_perform(mstdnt->curl, &running);
 		
-        if (running)
+        if (running || nfds)
             res = curl_multi_poll(mstdnt->curl, fds, nfds, 1000, &numfds);
         
         if (res) break;
@@ -184,6 +183,8 @@ int mstdnt_await(mastodont_t* mstdnt,
             // Get easy info
             curl_easy_getinfo(msg->easy_handle, CURLINFO_PRIVATE, &data);
             // Setup
+            mstdnt_request_cb_data* results = calloc(1, sizeof(mstdnt_request_cb_data));
+
             results->fetch_data = data; // So we can clean it up
             results->storage.needs_cleanup = 0;
             
@@ -203,7 +204,10 @@ int mstdnt_await(mastodont_t* mstdnt,
                                     results);
 
             // Call the actual callback
-            res = data->callback(results, data->callback_args);
+            if (data->callback)
+                res = data->callback(results, data->callback_args);
+            else
+                res = MSTDNT_REQUEST_DONE;
 
         cleanup_res:
             /* The response of the callback is important!
@@ -243,7 +247,8 @@ void
 mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data)
 {
     mstdnt_storage_cleanup(&(data->storage));
-    data->data_free_cb(data->data);
+    if (data->data_free_cb)
+        data->data_free_cb(data->data);
     // Cleanup
     mstdnt_fetch_data_cleanup(data->fetch_data);
     // Free ourself
