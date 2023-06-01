@@ -10,6 +10,7 @@
 #include <mastodont_hooks.h>
 #include <mastodont_fetch.h>
 #include <mastodont_json_helper.h>
+#include <mastodont_error.h>
 
 /* For use with libcurl */
 size_t mstdnt_curl_write_callback(char* ptr, size_t _size, size_t nmemb, void* _content)
@@ -196,14 +197,17 @@ int mstdnt_await(mastodont_t* mstdnt,
                 res = 1;
                 goto cleanup_res;
             }
+            
+            if (!mstdnt_check_error(&results->storage))
+            {
+                // Pass data to json callback, so it can store it's data
+                if (data->json_cb)
+                    res = data->json_cb(results->storage.root,
+                                        data->json_args,
+                                        results);    
+            }
 
-            // Pass data to json callback, so it can store it's data
-            if (data->json_cb)
-                res = data->json_cb(results->storage.root,
-                                    data->json_args,
-                                    results);
-
-            // Call the actual callback
+            // Call the actual callback, regardless of error
             if (data->callback)
                 res = data->callback(results, data->callback_args);
             else
