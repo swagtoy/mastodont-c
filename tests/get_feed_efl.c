@@ -74,6 +74,11 @@ int
 tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 {
 	struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
+	if (!statuses)
+	{
+		puts("Failed to make the request...");
+		return MSTDNT_REQUEST_DONE;
+	}
 	
 	for (int i = 0; i < statuses->len; ++i)
 	{
