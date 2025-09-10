@@ -8,6 +8,10 @@
 #include "mastodont_types.h"
 #include "mastodont_account.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct mstdnt_scrobble
 {
     struct mstdnt_account account;
@@ -67,5 +71,9 @@ mstdnt_cleanup_scrobble(mstdnt_scrobble* scrobble);
 
 void
 mstdnt_cleanup_scrobbles(mstdnt_scrobbles* scrobbles);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_SCROBBLES_H */

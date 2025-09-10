@@ -8,6 +8,10 @@
 #include "mastodont_fetch.h"
 #include <cjson/cJSON.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_app
 {
     char* id;
@@ -60,5 +64,9 @@ mstdnt_obtain_oauth_token(mastodont_t* data,
                           struct mstdnt_application_args args);
 
 void _mstdnt_val_malloc_application_call(cJSON* v, void* _type);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_ACCOUNT */

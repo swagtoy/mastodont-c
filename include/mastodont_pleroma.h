@@ -9,6 +9,10 @@
 #include "mastodont_types.h"
 #include "mastodont_emoji.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_status_pleroma
 {
     /* content */
@@ -28,5 +32,9 @@ struct mstdnt_status_pleroma
 void mstdnt_cleanup_status_pleroma(struct mstdnt_status_pleroma* pleroma);
 int mstdnt_status_pleroma_from_json(struct mstdnt_status_pleroma* pleroma, cJSON* js);
 void _mstdnt_val_status_pleroma_call(cJSON* v, void* _type);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_PLEROMA_H */

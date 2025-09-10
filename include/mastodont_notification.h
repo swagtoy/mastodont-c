@@ -12,6 +12,10 @@
 #include "mastodont_visibility_types.h"
 #include <cjson/cJSON.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_notification_pleroma
 {
     unsigned is_muted;
@@ -105,5 +109,9 @@ mstdnt_notification_dismiss(mastodont_t* data,
 
 void mstdnt_cleanup_notifications(struct mstdnt_notifications* notif);
 void mstdnt_cleanup_notification(struct mstdnt_notification* notif);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_NOTIFICATION */

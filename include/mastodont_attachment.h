@@ -7,6 +7,10 @@
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum mstdnt_attachment_type
 {
     MSTDNT_ATTACHMENT_UNKNOWN,
@@ -55,5 +59,8 @@ mstdnt_cleanup_attachments(struct mstdnt_attachment* attachment);
 void
 _mstdnt_val_attachments_call(cJSON* v, void* _type);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_ATTACHMENT */

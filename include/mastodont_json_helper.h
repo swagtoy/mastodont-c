@@ -7,6 +7,10 @@
 #include "mastodont_types.h"
 #include "mastodont_fetch.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct _mstdnt_generic_args
 {
     void* arg;
@@ -57,4 +61,8 @@ int _mstdnt_key_val_iter(cJSON* v,
                          struct _mstdnt_bool_val* bools,
                          size_t bool_len);
 
+#ifdef __cplusplus
+}
+#endif
+						 
 #endif /* MASTODONT_JSON_HELPER_H */

@@ -9,6 +9,10 @@
 #include "mastodont_types.h"
 #include "mastodont_request.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef uint16_t mstdnt_relationship_flag_t;
 
 #define MSTDNT_RELATIONSHIP_NOOP 0
@@ -63,5 +67,9 @@ mstdnt_get_relationships(mastodont_t* data,
 
 void mstdnt_cleanup_relationships(struct mstdnt_relationships* rels);
 
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_RELATIONSHIP_H */

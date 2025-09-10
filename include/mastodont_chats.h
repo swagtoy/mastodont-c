@@ -10,6 +10,10 @@
 #include "mastodont_account.h"
 #include "mastodont_emoji.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_chat
 {
     struct mstdnt_account account;
@@ -94,5 +98,9 @@ mstdnt_get_chat(mastodont_t* data,
 void mstdnt_cleanup_chat(struct mstdnt_chat* chat);
 void mstdnt_cleanup_chats(struct mstdnt_chats* chats);
 void mstdnt_cleanup_message(struct mstdnt_message* chats);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MASTODONT_CHATS_H

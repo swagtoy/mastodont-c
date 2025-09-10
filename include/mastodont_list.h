@@ -9,6 +9,10 @@
 #include "mastodont_fetch.h"
 #include "mastodont_account.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum mstdnt_list_replies_policy
 {
     MSTDNT_LIST_REPLIES_POLICY_NONE,
@@ -110,5 +114,9 @@ mstdnt_list_remove_accounts(mastodont_t* api,
 
 // Cleanup
 void mstdnt_cleanup_lists(struct mstdnt_lists* lists);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_LIST_H */

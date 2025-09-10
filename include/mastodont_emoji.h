@@ -6,6 +6,10 @@
 #define MASTODONT_EMOJI
 #include "mastodont_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_emoji
 {
     /* Required */
@@ -38,5 +42,9 @@ void _mstdnt_val_emoji_reactions_call(cJSON* v, void* _type);
 void mstdnt_cleanup_emoji_reaction(struct mstdnt_emoji_reaction* reactions);
 void mstdnt_cleanup_emoji_reactions(struct mstdnt_emoji_reaction* reactions, size_t s);
 void mstdnt_cleanup_emojis(struct mstdnt_emoji* emo);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_EMOJI */

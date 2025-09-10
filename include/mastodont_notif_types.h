@@ -6,6 +6,10 @@
 #define MASTODONT_NOTIF_TYPES
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* uint16 */
 #define MSTDNT_NOTIFICATION_NOOP 0
 #define MSTDNT_NOTIFICATION_FOLLOW (1<<0)
@@ -28,5 +32,9 @@ typedef uint16_t mstdnt_notification_t;
  * @return String literal representing type, e.g. 'follow', 'follow request'
  */
 const char* mstdnt_notification_t_to_str(mstdnt_notification_t type);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_NOTIF_TYPES */

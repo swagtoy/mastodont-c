@@ -7,6 +7,10 @@
 #include <stddef.h>
 #include "mastodont_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum _mstdnt_query_type
 {
     _MSTDNT_QUERY_STRING,
@@ -41,4 +45,8 @@ char* _mstdnt_query_string(mastodont_t* data,
                            struct _mstdnt_query_param* params,
                            size_t param_len);
 
+#ifdef __cplusplus
+}
+#endif
+						   
 #endif /* MASTODONT_QUERY_H */

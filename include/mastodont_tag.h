@@ -7,6 +7,10 @@
 #include <stdint.h>
 #include "mastodont_history.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_tag
 {
     char* name;
@@ -19,5 +23,9 @@ int mstdnt_tag_json(struct mstdnt_tag* tag, cJSON* emo_json);
 int mstdnt_tags_json(struct mstdnt_tag* array[], size_t* array_size, cJSON* js);
 void mstdnt_cleanup_tag(struct mstdnt_tag* tag);
 void mstdnt_cleanup_tags(struct mstdnt_tag* tags, size_t s);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_TAG */

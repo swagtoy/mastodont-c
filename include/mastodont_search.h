@@ -6,6 +6,10 @@
 #define MASTODONT_SEARCH_H
 #include "mastodont_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum mstdnt_search_type
 {
     MSTDNT_SEARCH_ACCOUNTS = 1,
@@ -52,5 +56,9 @@ mstdnt_search(mastodont_t* data,
               struct mstdnt_search_args args);
 
 void mstdnt_cleanup_search_results(struct mstdnt_search_results* res);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_SEARCH_H */

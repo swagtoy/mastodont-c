@@ -18,6 +18,10 @@
 #include "mastodont_announcement.h"
 #include "mastodont_chats.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /// Initializes libcurl
 void
 mstdnt_global_curl_init(void);
@@ -51,5 +55,9 @@ mstdnt_cleanup(mastodont_t* data);
  */
 void
 mstdnt_storage_cleanup(struct mstdnt_storage *storage);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_H */

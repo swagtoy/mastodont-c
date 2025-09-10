@@ -7,6 +7,10 @@
 #include "mastodont_types.h"
 #include "mastodont_status.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum mstdnt_reply_visibility
 {
     MSTDNT_REPLY_VIS_NONE = 0,
@@ -66,4 +70,8 @@ mstdnt_timeline_tag(mastodont_t* data,
                     char* hashtag,
                     struct mstdnt_timeline_args args);
 
+#ifdef __cplusplus
+}
+#endif
+					
 #endif /* MASTODONT_TIMELINE_H */

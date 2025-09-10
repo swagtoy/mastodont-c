@@ -10,6 +10,10 @@
 #include "mastodont_emoji.h"
 #include <cjson/cJSON.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MSTDNT_LOOKUP_ACCT 0
 #define MSTDNT_LOOKUP_ID 1
 
@@ -172,5 +176,9 @@ void _mstdnt_val_malloc_account_call(cJSON* v, void* _type);
 // Cleanup
 void mstdnt_cleanup_account(struct mstdnt_account* acct);
 void mstdnt_cleanup_accounts(struct mstdnt_accounts* accts);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_ACCOUNT */

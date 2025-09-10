@@ -6,6 +6,10 @@
 #define MASTODONT_VISIBILITY_TYPES_H
 #include <stdint.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* These used to uint8_t's, but because lists are custom strings,
    it was better to make these regular strings */
 #define MSTDNT_STR_VISIBILITY_PUBLIC "public"
@@ -26,5 +30,9 @@ enum mstdnt_visibility_type
     MSTDNT_VISIBILITY_DIRECT,
     MSTDNT_VISIBILITY_LOCAL,
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_VISIBILITY_TYPES_H */

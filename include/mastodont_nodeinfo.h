@@ -6,6 +6,10 @@
 #define MASTODONT_NODEINFO_H
 #include "mastodont_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct mstdnt_nodeinfo_metadata
 {
     char* node_name;
@@ -37,5 +41,9 @@ int mstdnt_get_nodeinfo(mastodont_t* api,
                         char* version);
 
 void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* MASTODONT_NODEINFO_H */
