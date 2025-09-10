@@ -1,9 +1,0 @@
-*.o
-src/*.o
-*.a
-docs/html/
-docs/latex/
-build/
-obj/
-mastodont.make
-Makefile
