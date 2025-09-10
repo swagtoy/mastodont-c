@@ -1,3 +1,4 @@
+#include "mastodont_nodeinfo.h"
 #include "mastodont_types.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,30 +33,40 @@ itob(int i)
 }
 
 int
-tl_callback(mstdnt_request_cb_data* cb_data, void* args)
+ni_callback(mstdnt_request_cb_data* cb_data, void* args)
 {
-	struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
-	if (!statuses)
+	struct mstdnt_nodeinfo* ninfo = MSTDNT_CB_DATA(cb_data);
+	if (!ninfo)
 	{
 		printf("Failed to make the request...\n -- %s\n", cb_data->storage.error);
 		return MSTDNT_REQUEST_DONE;
 	}
 	
-	for (int i = 0; i < statuses->len; ++i)
-	{
-		struct mstdnt_status* status = statuses->statuses + i;
-		puts("---------------- BEGIN STATUS ----------------");
-		printf(" Author: %s\n", status->account.username);
-		printf(" id: %s\n", status->id);
-		printf(" R/F/REPLIES: %u %u %u\n", status->reblogs_count, 
-		                                   status->favourites_count,
-		                                   status->replies_count);
-		printf(" Is Reply? %s\n", itob(status->in_reply_to_id != NULL));
-		printf(" Contains emojos? %s\n", itob(status->emojis_len > 0));
-		printf(" Has attachments? %s\n", itob(status->media_attachments_len > 0));
-		
-		puts("----------------- END STATUS -----------------");
-	}
+	if (ninfo->software)
+	printf(
+		"Software:\n"
+		"   Name: %s\n"
+		"   Repository: %s\n"
+		"   Version: %s\n",
+		ninfo->software->name,
+		ninfo->software->repository,
+		ninfo->software->version
+	);
+	
+	
+	if (ninfo->metadata)
+	printf(
+		"Metadata:\n"
+		"   Name: %s\n"
+		"   Descriptions: %s\n",
+		ninfo->metadata->node_name,
+		ninfo->metadata->node_description
+	);
+	
+	printf(
+		"Open registrations? %s\n",
+		ninfo->open_registrations ? "True" : "False"
+	);
 
 	return MSTDNT_REQUEST_DONE;
 }
@@ -83,7 +94,9 @@ main(int argc, char** argv)
 		.flags = 0,
 	};
 	
-	mstdnt_timeline_public(&data, &m_args, tl_callback, NULL, (struct mstdnt_timeline_args){.limit=20});
+	
+	printf("==== Nodeinfo for %s ====\n", instance);
+	mstdnt_get_nodeinfo(&data, &m_args, ni_callback, NULL, NULL);
 	
 	mstdnt_await(&data, 0, NULL, 0);
 

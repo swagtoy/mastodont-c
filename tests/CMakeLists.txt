@@ -9,7 +9,6 @@ target_include_directories(get_feed PUBLIC
 	${MASTODONT_INCLUDE_DIRS}
 )
 
-
 # GUI demo
 pkg_check_modules(EFL_ECORE efl-core)
 if (EFL_ECORE_FOUND)
@@ -29,3 +28,13 @@ if (EFL_ECORE_FOUND)
 		${EFL_ELEMENTARY_INCLUDE_DIRS}
 	)
 endif(EFL_ECORE_FOUND)		
+
+add_executable(get_nodeinfo get_nodeinfo.c)
+target_compile_options(get_nodeinfo PUBLIC -std=c99 -Wall)
+target_link_libraries(get_nodeinfo PUBLIC
+	${MASTODONT_LIBRARIES}
+)
+target_include_directories(get_nodeinfo PUBLIC
+	${MASTODONT_INCLUDE_DIRS}
+
+)

@@ -76,7 +76,7 @@ tl_callback(mstdnt_request_cb_data* cb_data, void* args)
 	struct mstdnt_statuses* statuses = MSTDNT_CB_DATA(cb_data);
 	if (!statuses)
 	{
-		puts("Failed to make the request...");
+		printf("Failed to make the request...\n -- %s\n", cb_data->storage.error);
 		return MSTDNT_REQUEST_DONE;
 	}
 	

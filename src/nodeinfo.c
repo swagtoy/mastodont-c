@@ -2,7 +2,6 @@
  * Licensed under BSD 3-Clause License
  */
 
-#if 0
 #include <stdlib.h>
 #include <string.h>
 #include <mastodont_nodeinfo.h>
@@ -10,7 +9,8 @@
 #include <mastodont_request.h>
 #include <mastodont_json_helper.h>
 
-static void _mstdnt_val_software_malloc_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_software_malloc_call(cJSON* v, void* _type)
 {
     struct mstdnt_nodeinfo_software** type = _type;
 
@@ -20,9 +20,6 @@ static void _mstdnt_val_software_malloc_call(cJSON* v, void* _type)
     if (*type)
     {
         struct mstdnt_nodeinfo_software* soft = *type;
-
-        // Zero
-        memset(soft, 0, sizeof(struct mstdnt_nodeinfo_software));
 
         struct _mstdnt_val_ref refs[] = {
             { "name", &(soft->name), _mstdnt_val_string_call },
@@ -36,7 +33,8 @@ static void _mstdnt_val_software_malloc_call(cJSON* v, void* _type)
 }
 
 
-static void _mstdnt_val_metadata_malloc_call(cJSON* v, void* _type)
+static void
+_mstdnt_val_metadata_malloc_call(cJSON* v, void* _type)
 {
     struct mstdnt_nodeinfo_metadata** type = _type;
 
@@ -47,12 +45,10 @@ static void _mstdnt_val_metadata_malloc_call(cJSON* v, void* _type)
     {
         struct mstdnt_nodeinfo_metadata* soft = *type;
 
-        // Zero
-        memset(soft, 0, sizeof(struct mstdnt_nodeinfo_metadata));
-
         struct _mstdnt_val_ref refs[] = {
             // TODO
-            { "version", &(soft->version), _mstdnt_val_string_call },
+            { "nodeName", &(soft->node_name), _mstdnt_val_string_call },
+            { "nodeDescription", &(soft->node_description), _mstdnt_val_string_call },
         };
 
         for (cJSON* w = v->child; w; w = w->next)
@@ -60,7 +56,8 @@ static void _mstdnt_val_metadata_malloc_call(cJSON* v, void* _type)
     }
 }
 
-int mstdnt_nodeinfo_json(struct mstdnt_nodeinfo* nodeinfo, cJSON* js)
+int
+mstdnt_nodeinfo_json(struct mstdnt_nodeinfo* nodeinfo, cJSON* js)
 {
     // Zero out
     memset(nodeinfo, 0, sizeof(struct mstdnt_nodeinfo));
@@ -80,18 +77,23 @@ int mstdnt_nodeinfo_json(struct mstdnt_nodeinfo* nodeinfo, cJSON* js)
     return 0;
 }
 
-int mstdnt_nodeinfo_json_callback(cJSON* json, void* nodeinfo)
+int
+mstdnt_nodeinfo_json_callback(cJSON *json,
+                              void  *args,
+                              mstdnt_request_cb_data *data)
 {
-    return mstdnt_nodeinfo_json(nodeinfo, json);
+	(void)args;
+	struct mstdnt_nodeinfo* ninfo = malloc(sizeof(struct mstdnt_nodeinfo));
+	data->data = ninfo;
+	data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_nodeinfo;
+    return mstdnt_nodeinfo_json(ninfo, json->child);
 }
 
 int mstdnt_get_nodeinfo(mastodont_t* api,
-                           struct mstdnt_args* m_args,
-mstdnt_request_cb_t cb_request,
-void* cb_args,
-                           char* version,
-                           struct mstdnt_storage* storage,
-                           struct mstdnt_nodeinfo* nodeinfo)
+                        struct mstdnt_args* m_args,
+                        mstdnt_request_cb_t cb_request,
+                        void* cb_args,
+                        char* version)
 {
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "nodeinfo/%s.json", version ? version : "2.1");
@@ -101,18 +103,8 @@ void* cb_args,
 		.request_type = CURLOPT_HTTPGET,
 		.callback = mstdnt_nodeinfo_json_callback,
 	};
-    struct mstdnt_request_args req_args = {
-        storage,
-        url,
-        NULL, 0,
-        NULL, 0,
-        CURLOPT_HTTPGET,
-        NULL,
-        nodeinfo,
-        mstdnt_nodeinfo_json_callback
-    };
 
-    return mstdnt_request(api, m_args, &req_args, cb_request, cb_args);
+    return mstdnt_request(api, m_args, cb_request, cb_args, &req_args);
 }
 
 void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)
@@ -121,4 +113,4 @@ void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)
     mstdnt_free(nodeinfo->software);
     mstdnt_free(nodeinfo->metadata);
 }
-#endif
+

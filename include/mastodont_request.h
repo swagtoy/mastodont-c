@@ -11,7 +11,6 @@
 
 struct mstdnt_request_args
 {
-    struct mstdnt_storage* storage;
     char* url;
     struct _mstdnt_query_param* params_query;
     size_t params_query_len;

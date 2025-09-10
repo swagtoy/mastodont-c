@@ -99,7 +99,6 @@ int mstdnt_request(mastodont_t* data,
                    struct mstdnt_request_args* args)
 {
     int res = 0, curlerror = 0;
-    struct mstdnt_storage* storage = args->storage;
     cJSON* root;
     curl_mime* mime = NULL;
     char* post;
