@@ -38,3 +38,15 @@ target_include_directories(get_nodeinfo PUBLIC
 	${MASTODONT_INCLUDE_DIRS}
 
 )
+
+# C++ tests
+if(BUILD_CXX_BINDINGS)
+	add_executable(cxx_test mastodont-cxx-test.cpp)
+	target_compile_options(cxx_test PUBLIC -std=c++17 -Wall)
+	target_link_libraries(cxx_test PUBLIC
+		mastodont-cxx
+	)
+	target_include_directories(cxx_test PUBLIC
+		mastodont-cxx
+	)
+endif(BUILD_CXX_BINDINGS)

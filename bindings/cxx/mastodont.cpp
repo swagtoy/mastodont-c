@@ -9,6 +9,7 @@ namespace mstdnt
 
 Mastodont::Mastodont()
 {
+	
 }
 
 } // namespace mstdnt

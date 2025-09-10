@@ -22,9 +22,6 @@ find_package(CURL REQUIRED)
 # Find the real cJSON
 pkg_check_modules(CJSON libcjson)
 
-# Includes test programs... unit tests
-add_subdirectory(tests)
-
 if (NOT (CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14))
   # This was a workaround to some distributions providing an older cJSON
   message("CJSON not found or CJSON_VERSION < 1.7.14, falling back to header-only.")
@@ -113,6 +110,7 @@ target_include_directories(mastodont PUBLIC
 )
 
 add_subdirectory(bindings)
+add_subdirectory(tests)
 
 # Install
 if(CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14)

@@ -16,14 +16,14 @@ target_include_directories(mastodont-cxx PUBLIC
 target_compile_options(mastodont-cxx PUBLIC
 	-Wall -Wextra -std=c++17)
 
-set(INCLUDE_INSTALL_DIR include/mastodont/cxx/)
+set(INCLUDE_INSTALL_DIR include/mastodont-cxx/)
 set(LIB_INSTALL_DIR lib/)
 # This feels... UNIX-y
 set(LIB_INSTALL_PATH lib/libmastodont-cxx.a)
 
 	
 install(FILES ${CXX_HEADER_FILES} DESTINATION
-	include/mastodont/cxx/)
+	include/mastodont-cxx/)
 install(TARGETS mastodont-cxx
 	LIBRARY DESTINATION lib)
 
