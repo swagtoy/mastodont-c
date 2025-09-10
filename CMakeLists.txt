@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 project(mastodont
   VERSION 0.1
   DESCRIPTION "Library for Mastodon, Pleroma, Wormhole, etc."
-  LANGUAGES C)
+  LANGUAGES C CXX)
 
 # BEGIN cmake package config info
 include(CMakePackageConfigHelpers)
@@ -14,6 +14,8 @@ set(LIB_INSTALL_PATH lib/libmastodont.a)
 
 # Useful
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+option(BUILD_CXX_BINDINGS "Build the C++ bindings (mastodont-cxx)" ON)
 
 find_package(PkgConfig REQUIRED)
 find_package(CURL REQUIRED)
@@ -28,7 +30,6 @@ if (NOT (CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14))
   message("CJSON not found or CJSON_VERSION < 1.7.14, falling back to header-only.")
   list(APPEND SRC_FILES libs/cjson/cJSON.c)
 endif()
-
 
 set(HEADER_FILES
   include/mastodont_account.h
@@ -93,7 +94,7 @@ list(APPEND SRC_FILES
   src/uri.c)
 
 add_library(mastodont STATIC ${HEADER_FILES})
-target_sources(mastodont PRIVATE ${SRC_FILES})
+target_sources(mastodont PUBLIC ${SRC_FILES})
 
 target_compile_options(mastodont PUBLIC
   -Wall -Wextra -std=c99
@@ -110,6 +111,8 @@ target_include_directories(mastodont PUBLIC
   PRIVATE
   libs/
 )
+
+add_subdirectory(bindings)
 
 # Install
 if(CJSON_FOUND AND CJSON_VERSION VERSION_GREATER_EQUAL 1.7.14)
