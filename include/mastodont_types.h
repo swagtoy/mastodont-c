@@ -32,7 +32,7 @@ typedef enum mstdnt_enum_req
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
-typedef struct mstdnt
+typedef struct mstdnt_t
 {
     CURLM* curl;
 } mastodont_t;
