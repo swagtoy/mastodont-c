@@ -75,7 +75,7 @@ mstdnt_message_json_callback(cJSON* json,
 {
     struct mstdnt_message* msg = malloc(sizeof(struct mstdnt_message));
     data->data = msg;
-    data->data_free_cb = (mstdnt_request_cb_t)mstdnt_cleanup_message;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_message;
     return mstdnt_message_json(msg, json->child);
 }
 
@@ -86,7 +86,7 @@ mstdnt_chat_json_callback(cJSON* json,
 {
     struct mstdnt_chat* chat = malloc(sizeof(struct mstdnt_chat));
     data->data = chat;
-    data->data_free_cb = (mstdnt_request_cb_t)mstdnt_cleanup_chats;
+    data->data_free_cb = (mstdnt_data_free_cb_t)mstdnt_cleanup_chats;
     return mstdnt_chat_json(chat, json->child);
 }
 
@@ -96,15 +96,19 @@ GENERATE_JSON_ARRAY_FUNC(mstdnt_chats_json, struct mstdnt_chat, mstdnt_chat_json
 // GENERATE mstdnt_messages_json
 GENERATE_JSON_ARRAY_FUNC(mstdnt_messages_json, struct mstdnt_message, mstdnt_message_json)
 
+#if 0
 static int
-mstdnt_chats_json_callback(cJSON* json, void* _args)
+mstdnt_chats_json_callback(cJSON* json,
+                           void* _args,
+						   mstdnt_request_cb_data* data)
 {
     struct _mstdnt_chats_cb_args* args = _args;
     return mstdnt_chats_json(args->chats, args->chats_len, json);
 }
 
 static int
-mstdnt_messages_json_callback(cJSON* json, void* _args)
+mstdnt_messages_json_callback(cJSON* json, void* _args,
+						   mstdnt_request_cb_data* data)
 {
     struct _mstdnt_messages_cb_args* args = _args;
     return mstdnt_messages_json(args->messages, args->messages_len, json);
@@ -167,6 +171,7 @@ mstdnt_get_chat_messages(mastodont_t* data,
 
     return mstdnt_request(data, m_args, cb_request, cb_args, &req_args);
 }
+#endif
 
 int
 mstdnt_get_chat(mastodont_t* data,

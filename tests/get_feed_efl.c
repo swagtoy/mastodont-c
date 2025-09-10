@@ -1,4 +1,5 @@
-#define _POSIX_C_SOURCE 200112L
+#define EFL_PACK_LAYOUT_PROTECTED
+#define _POSIX_C_SOURCE 200809L
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +8,6 @@
 
 #include <signal.h>
 #define EFL_BETA_API_SUPPORT 1
- 
 #include <Efl_Ui.h>
 
 void update_mstdnt_fds(void);
@@ -59,6 +59,7 @@ gui_create_status(struct mstdnt_status* status)
 	                      efl_gfx_color_set(efl_part(efl_added, "background"), 84, 84, 84, 150),
 	                      efl_gfx_hint_margin_set(efl_added, 0, 0, 0, 5),
 	                      efl_pack(root, efl_added));
+	//efl_pack_layout_update(fake_list);
 	efl_pack_layout_update(fake_list);
 	return root;
 }

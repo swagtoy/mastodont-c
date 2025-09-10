@@ -2,6 +2,7 @@
  * Licensed under BSD 3-Clause License
  */
 
+#if 0
 #include <stdlib.h>
 #include <string.h>
 #include <mastodont_nodeinfo.h>
@@ -95,6 +96,11 @@ void* cb_args,
     char url[MSTDNT_URLSIZE];
     snprintf(url, MSTDNT_URLSIZE, "nodeinfo/%s.json", version ? version : "2.1");
     
+	struct mstdnt_request_args req_args = {
+		.url = url,
+		.request_type = CURLOPT_HTTPGET,
+		.callback = mstdnt_nodeinfo_json_callback,
+	};
     struct mstdnt_request_args req_args = {
         storage,
         url,
@@ -115,3 +121,4 @@ void mstdnt_cleanup_nodeinfo(struct mstdnt_nodeinfo* nodeinfo)
     mstdnt_free(nodeinfo->software);
     mstdnt_free(nodeinfo->metadata);
 }
+#endif
