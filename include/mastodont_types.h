@@ -26,9 +26,6 @@ typedef enum mstdnt_enum_req
 } mstdnt_enum_req;
 
 #define MSTDNT_CB_DATA(_data) (_data->data)
-#define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
-#define MSTDNT_FLAG_SSL_UNVERIFIED (1<<1)
-#define MSTDNT_FLAG_SYNC (1<<2)
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
@@ -45,11 +42,25 @@ struct mstdnt_storage
     char* error_description;
 };
 
+/// Queues the request instead of immediately dispatching it. Call `mstdnt_dispatch_requests` later.
+#define MSTDNT_REQ_FLAG_QUEUE_REQUEST (1<<0)
+/// If you want to asynchronously watch and respond to the sockets.
+#define MSTDNT_REQ_FLAG_WATCH_SOCKETS (1<<1)
+struct mstdnt_request_opts
+{
+	uint8_t flags;
+};
+
+#define MSTDNT_FLAG_NO_URI_SANITIZE (1<<0)
+#define MSTDNT_FLAG_SSL_UNVERIFIED (1<<1)
+#define MSTDNT_FLAG_SYNC (1<<2)
 struct mstdnt_args
 {
     const char* url;
     const char* token;
     uint8_t flags;
+	/// Request specific options, will be set to NULL after it's usage to prevent reuse.
+	struct mstdnt_request_opts* request_opts;
 };
 
 struct mstdnt_storage;

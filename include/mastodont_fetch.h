@@ -109,6 +109,19 @@ mstdnt_get_fds(mastodont_t* mstdnt,
                fd_set* error,
                int* nfds);
 
+
+/**
+ * Dispatch any and all queue'd up requests. (Typically set with
+ *  mstdnt_request_opts->flags | MSTDNT_REQ_FLAG_QUEUE_REQUEST)
+ *
+ * \remark Queueing requests won't improve performance, as typically
+ *          when you call `mstdnt_await` it will slurp up all requests anyway.
+ *
+ * \param  flags  Request flags to decide how the requests will be dispatched.
+ * \return Number of currently running requests.
+ */
+int mstdnt_dispatch_requests(mastodont_t *mstdnt, int flags);
+
 void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
 
 #endif /* MASTODONT_FETCH_H */

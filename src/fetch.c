@@ -2,6 +2,7 @@
  * Licensed under BSD 3-Clause License
  */
 
+#include "mastodont_types.h"
 #include <sys/select.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -69,6 +70,7 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     results = calloc(1, sizeof(struct mstdnt_fetch_data));
     if (!results)
     {
+		// TODO No.
         perror("calloc");
         return -1;
     }
@@ -102,6 +104,7 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     res = curl_multi_add_handle(mstdnt->curl, curl);
     if (res != CURLM_OK)
     {
+		// TODO No.
         printf("error %s\n", curl_multi_strerror(res));
         return -1;
     }
@@ -109,14 +112,31 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     // TODO add option to "queue" and not perform a request
     // Get her running...
     int running;
-    res = curl_multi_perform(mstdnt->curl, &running);
+	if (!m_args->request_opts ||
+	    (MSTDNT_T_FLAG_ISSET(m_args->request_opts, MSTDNT_REQ_FLAG_WATCH_SOCKETS) &&
+		 !MSTDNT_T_FLAG_ISSET(m_args->request_opts, MSTDNT_REQ_FLAG_QUEUE_REQUEST)))
+	{
+    	res = curl_multi_perform(mstdnt->curl, &running);
+	}
     /* if (res != CURLM_OK) */
     /* { */
     /*     printf("error %s\n", curl_multi_strerror(res)); */
     /*     return -1; */
     /* } */
-
+	
+	m_args->request_opts = NULL;
     return 0;
+}
+
+int
+mstdnt_dispatch_requests(mastodont_t *mstdnt, int flags)
+{
+	int running = -1;
+	if (MSTDNT_FLAG_ISSET(flags, MSTDNT_REQ_FLAG_WATCH_SOCKETS))
+		; // TODO
+	else
+		curl_multi_perform(mstdnt->curl, &running);
+	return running;
 }
 
 int
