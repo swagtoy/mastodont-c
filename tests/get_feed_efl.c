@@ -95,10 +95,14 @@ gui_fetch_posts(void* data EINA_UNUSED, const Efl_Event* event EINA_UNUSED)
 {
 	printf("Got %s...\n", efl_text_get(textbox_instance));
 	
+	struct mstdnt_request_opts m_opts = {
+		.flags = MSTDNT_REQ_FLAG_WATCH_SOCKETS
+	};
 	struct mstdnt_args m_args = {
 		.url = efl_text_get(textbox_instance),
 		.token = NULL,
 		.flags = 0,
+		.request_opts = &m_opts
 	};
 	
 	mstdnt_timeline_public(&mstdnt, &m_args, tl_callback, NULL,
@@ -191,6 +195,18 @@ gui_setup(Efl_Loop_Arguments *args)
 		efl_ui_focus_object_focus_set(btn, EINA_TRUE);
 	}
 }
+
+void
+socket_add_cb(mstdnt_socket_t sock)
+{
+	printf("Adding %d\n", sock);
+}
+
+void
+socket_rm_cb(mstdnt_socket_t sock)
+{
+	printf("Removing %d\n", sock);
+}
  
 EAPI_MAIN void
 efl_main(void *data EINA_UNUSED, const Efl_Event *ev)
@@ -204,6 +220,11 @@ efl_main(void *data EINA_UNUSED, const Efl_Event *ev)
 		fputs("Couldn't initialize Mastodont-c!", stderr);
 		exit(1);
 	}
+	
+	mstdnt.socket_add_cb = socket_add_cb;
+	mstdnt.socket_rm_cb  = socket_rm_cb;
+	
+	mstdnt_init_socket_callbacks(&mstdnt);
 	
 	gui_setup(args);
 }

@@ -122,6 +122,8 @@ mstdnt_get_fds(mastodont_t* mstdnt,
  */
 int mstdnt_dispatch_requests(mastodont_t *mstdnt, int flags);
 
+void mstdnt_init_socket_callbacks(mastodont_t *mstdnt);
+
 void mstdnt_request_cb_cleanup(mstdnt_request_cb_data* data);
 
 #endif /* MASTODONT_FETCH_H */

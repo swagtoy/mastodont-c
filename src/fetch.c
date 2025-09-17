@@ -111,12 +111,9 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     
     // TODO add option to "queue" and not perform a request
     // Get her running...
-    int running;
-	if (!m_args->request_opts ||
-	    (MSTDNT_T_FLAG_ISSET(m_args->request_opts, MSTDNT_REQ_FLAG_WATCH_SOCKETS) &&
-		 !MSTDNT_T_FLAG_ISSET(m_args->request_opts, MSTDNT_REQ_FLAG_QUEUE_REQUEST)))
+	if (!m_args->request_opts || !MSTDNT_T_FLAG_ISSET(m_args->request_opts, MSTDNT_REQ_FLAG_QUEUE_REQUEST))
 	{
-    	res = curl_multi_perform(mstdnt->curl, &running);
+		mstdnt_dispatch_requests(mstdnt, (m_args->request_opts ? m_args->request_opts->flags : 0));
 	}
     /* if (res != CURLM_OK) */
     /* { */
@@ -128,12 +125,47 @@ int mstdnt_fetch_curl_async(mastodont_t* mstdnt,
     return 0;
 }
 
+static int
+_mstdnt_handle_socket(CURL *curl, curl_socket_t s, int action, void *data, void *socket)
+{
+	mastodont_t *mstdnt = data;
+	int events = 0;
+	
+	switch (action)
+	{
+	case CURL_POLL_IN:
+	case CURL_POLL_OUT:
+	case CURL_POLL_INOUT:
+		if (action != CURL_POLL_IN)
+			events |= MSTDNT_SOCKET_OUT;
+		if (action != CURL_POLL_OUT)
+			events |= MSTDNT_SOCKET_IN;
+	
+		if (mstdnt->socket_add_cb) mstdnt->socket_add_cb(s);
+		
+		break;
+	case CURL_POLL_REMOVE:
+		if (mstdnt->socket_rm_cb) mstdnt->socket_rm_cb(s);
+		break;
+	default:
+		break;
+	}
+	return 0;
+}
+
+void
+mstdnt_init_socket_callbacks(mastodont_t *mstdnt)
+{
+	curl_multi_setopt(mstdnt->curl, CURLMOPT_SOCKETFUNCTION, _mstdnt_handle_socket);
+	curl_multi_setopt(mstdnt->curl, CURLMOPT_SOCKETDATA, mstdnt);
+}
+
 int
 mstdnt_dispatch_requests(mastodont_t *mstdnt, int flags)
 {
 	int running = -1;
 	if (MSTDNT_FLAG_ISSET(flags, MSTDNT_REQ_FLAG_WATCH_SOCKETS))
-		; // TODO
+		curl_multi_socket_action(mstdnt->curl, CURL_SOCKET_TIMEOUT, 0, &running);
 	else
 		curl_multi_perform(mstdnt->curl, &running);
 	return running;

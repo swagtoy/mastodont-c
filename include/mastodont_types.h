@@ -29,9 +29,15 @@ typedef enum mstdnt_enum_req
 #define MSTDNT_FLAG_ISSET(flags, flag) (((flags) & (flag)) == (flag))
 #define MSTDNT_T_FLAG_ISSET(flag_ref, flag) (((flag_ref->flags) & (flag)) == (flag))
 
+typedef int mstdnt_socket_t;
+#define MSTDNT_SOCKET_IN   1
+#define MSTDNT_SOCKET_OUT  2
+
 typedef struct mstdnt_t
 {
     CURLM* curl;
+	void (*socket_add_cb)(mstdnt_socket_t);
+	void (*socket_rm_cb)(mstdnt_socket_t);
 } mastodont_t;
 
 struct mstdnt_storage
