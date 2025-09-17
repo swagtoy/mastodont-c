@@ -1,4 +1,5 @@
 #define EFL_PACK_LAYOUT_PROTECTED
+#define EFL_UI_FOCUS_OBJECT_PROTECTED
 #define _POSIX_C_SOURCE 200809L
 #include <pthread.h>
 #include <stdio.h>
@@ -141,7 +142,7 @@ update_mstdnt_fds()
 }
 
 static void
-gui_setup(void)
+gui_setup(Efl_Loop_Arguments *args)
 {
 	Eo *win, *box;
 	
@@ -176,19 +177,25 @@ gui_setup(void)
 	                           efl_gfx_hint_weight_set(efl_added, 1.0, 0.1),
 	                           efl_gfx_color_set(efl_added, 0, 255, 0, 255),
 	                           efl_pack(box, efl_added));
-		
-	efl_add(EFL_UI_BUTTON_CLASS,
+	Eo* btn = efl_add(EFL_UI_BUTTON_CLASS,
 	        box,
 	        efl_text_set(efl_added, "Fetch posts asynchronously"),
 	        efl_gfx_hint_weight_set(efl_added, 1.0, 0.2),
 	        efl_pack(box, efl_added),
 	        efl_event_callback_add(efl_added, EFL_INPUT_EVENT_CLICKED,
                                    gui_fetch_posts, NULL));
+	//efl_ui_focus_object_focus_get(textbox_instance);
+	if (eina_array_count(args->argv) > 0)
+	{
+		efl_text_set(textbox_instance, eina_array_data_get(args->argv, 1));
+		efl_ui_focus_object_focus_set(btn, EINA_TRUE);
+	}
 }
  
 EAPI_MAIN void
-efl_main(void *edata EINA_UNUSED, const Efl_Event *ev EINA_UNUSED)
+efl_main(void *data EINA_UNUSED, const Efl_Event *ev)
 {
+	Efl_Loop_Arguments *args = ev->info;
 	// Initialize Mastodont library
 	mstdnt_global_curl_init();
 	
@@ -198,7 +205,7 @@ efl_main(void *edata EINA_UNUSED, const Efl_Event *ev EINA_UNUSED)
 		exit(1);
 	}
 	
-	gui_setup();
+	gui_setup(args);
 }
 EFL_MAIN()
 
